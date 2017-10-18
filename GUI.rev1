@@ -1,0 +1,203 @@
+
+import tkinter as tk
+import tkinter.ttk as ttk
+from tkinter import *
+
+class MainGUI(Frame):
+    def __init__(self, master):
+        self.master = master
+        Frame.__init__(self, master)
+        self.grid()
+        self.master.title("PLL TOOL")
+
+        for r in range(20):
+            self.master.rowconfigure(r, weight=1)    
+        for c in range(20):
+            self.master.columnconfigure(c, weight=1)
+            
+        Frame1 = Frame(master, width=100, height=100)
+        Frame1.grid(row = 0, column = 0, rowspan = 10, columnspan = 10, sticky = W+E+N+S) 
+        Frame2 = Frame(master, bg="red", width=100, height=10)
+        Frame2.grid(row = 10, column = 0, rowspan = 100, columnspan = 100, sticky = W+E+N+S)
+        Frame3 = Frame(master, bg="blue", width=100, height=10)
+        Frame3.grid(row = 0, column = 10, rowspan = 10, columnspan = 10, sticky = W+E+N+S)
+        Frame4 = Frame(master, bg="black", width=100, height=10)
+        Frame4.grid(row = 10, column = 10, rowspan = 10, columnspan = 10, sticky = W+E+N+S)
+        
+        
+        self.label1 = ttk.Label(Frame2, text="This is in the Frame", font="Arial 10 bold")
+        self.label1.grid(in_=Frame2, row=0, column=0)        
+        
+        self.label2 = ttk.Label(Frame2, text="This is not", font="Arial 10 bold")
+        self.label2.grid(in_=Frame2, row=0, column=0, columnspan = 10)
+
+        self.close_button = Button(master, text=" Close ", command=master.destroy)
+        self.close_button.grid(row=10, column=5, sticky=W + E)
+        
+        
+        self.label3 = ttk.Label(Frame4, text="Enter the Number 5", font="Arial 10 bold")
+        self.label3.grid(in_=Frame4, row=0, column=0)
+        
+        self.enter_button = Button(Frame4, text=" Enter ", command=self.button_pressed)
+        self.enter_button.grid(in_=Frame4, row=1, column=0, sticky=W + E)
+        
+        self.entry = Entry(Frame4, width=10)
+        self.entry.grid(in_=Frame4, row=0, column=1, sticky=W + E)
+
+        global text_value
+        
+        text_value= ttk.Label(Frame4, text="", font="Arial 10 bold")
+        text_value.grid(in_=Frame4, row=2, column=0, columnspan = 10)
+        
+        self.try_button = Button(Frame3, text=" Try Clicking This Button ", command=self.new_window)
+        self.try_button.grid(in_=Frame3, row=10, column=0, sticky=W + E)
+        
+        self.label4 = ttk.Label(Frame1, text="     S Domain Responce Settings", font="Arial 10 bold")
+        self.label4.grid(in_=Frame1, row=1, column=2)
+        
+        self.label5 = ttk.Label(Frame1, text="VCO Frequency", font="Arial 10 bold")
+        self.label5.grid(in_=Frame1, row=1, column=0)
+        self.entry2 = Entry(Frame1, width=10)
+        self.entry2.grid(in_=Frame1, row=1, column=1, sticky=W + E)
+        
+        self.label6 = ttk.Label(Frame1, text="Fixed inloop divider", font="Arial 10 bold")
+        self.label6.grid(in_=Frame1, row=2, column=0)
+        self.entry3 = Entry(Frame1, width=10)
+        self.entry3.grid(in_=Frame1, row=2, column=1, sticky=W + E)
+
+        self.label7 = ttk.Label(Frame1, text="PFD Frequency", font="Arial 10 bold")
+        self.label7.grid(in_=Frame1, row=3, column=0)
+        self.entry2 = Entry(Frame1, width=10)
+        self.entry2.grid(in_=Frame1, row=3, column=1, sticky=W + E)
+        
+        self.label8 = ttk.Label(Frame1, text="TCXO Frequency", font="Arial 10 bold")
+        self.label8.grid(in_=Frame1, row=4, column=0)
+        self.entry2 = Entry(Frame1, width=10)
+        self.entry2.grid(in_=Frame1, row=4, column=1, sticky=W + E)
+        
+        self.label7 = ttk.Label(Frame1, text="VCO Gain (V/Hz)", font="Arial 10 bold")
+        self.label7.grid(in_=Frame1, row=5, column=0)
+        self.entry2 = Entry(Frame1, width=10)
+        self.entry2.grid(in_=Frame1, row=5, column=1, sticky=W + E)
+        
+        self.label7 = ttk.Label(Frame1, text="Phase Detector Gain", font="Arial 10 bold")
+        self.label7.grid(in_=Frame1, row=6, column=0)
+        self.entry2 = Entry(Frame1, width=10)
+        self.entry2.grid(in_=Frame1, row=6, column=1, sticky=W + E)
+        
+        self.label7 = ttk.Label(Frame1, text="PLL Detector Offset", font="Arial 10 bold")
+        self.label7.grid(in_=Frame1, row=7, column=0)
+        self.entry2 = Entry(Frame1, width=10)
+        self.entry2.grid(in_=Frame1, row=7, column=1, sticky=W + E)
+        
+        self.label7 = ttk.Label(Frame1, text="PLL Division Ratio N ", font="Arial 10 bold")
+        self.label7.grid(in_=Frame1, row=8, column=0)
+        self.entry2 = Entry(Frame1, width=10)
+        self.entry2.grid(in_=Frame1, row=8, column=1, sticky=W + E)
+        
+        self.label7 = ttk.Label(Frame1, text="Desisred Bandwidth", font="Arial 10 bold")
+        self.label7.grid(in_=Frame1, row=9, column=0)
+        self.entry2 = Entry(Frame1, width=10)
+        self.entry2.grid(in_=Frame1, row=9, column=1, sticky=W + E)
+        
+        self.label7 = ttk.Label(Frame1, text="Desired Phase Margin", font="Arial 10 bold")
+        self.label7.grid(in_=Frame1, row=10, column=0)
+        self.entry2 = Entry(Frame1, width=10)
+        self.entry2.grid(in_=Frame1, row=10, column=1, sticky=W + E)
+        
+        self.label7 = ttk.Label(Frame1, text="Start Frequency", font="Arial 10 bold")
+        self.label7.grid(in_=Frame1, row=2, column=2)
+        self.entry2 = Entry(Frame1, width=10)
+        self.entry2.grid(in_=Frame1, row=2, column=3, sticky=W + E)
+        
+        self.label7 = ttk.Label(Frame1, text="Stop Frequency", font="Arial 10 bold")
+        self.label7.grid(in_=Frame1, row=3, column=2)
+        self.entry2 = Entry(Frame1, width=10)
+        self.entry2.grid(in_=Frame1, row=3, column=3, sticky=W + E)
+        
+        self.label7 = ttk.Label(Frame1, text="Number of Points", font="Arial 10 bold")
+        self.label7.grid(in_=Frame1, row=4, column=2)
+        self.entry2 = Entry(Frame1, width=10)
+        self.entry2.grid(in_=Frame1, row=4, column=3, sticky=W + E)
+        
+        self.label7 = ttk.Label(Frame1, text="Transient Reesponse Settings", font="Arial 10 bold")
+        self.label7.grid(in_=Frame1, row=5, column=2)
+        
+        self.label7 = ttk.Label(Frame1, text="Transient Mode", font="Arial 10 bold")
+        self.label7.grid(in_=Frame1, row=6, column=2)
+        self.entry2 = Entry(Frame1, width=10)
+        self.entry2.grid(in_=Frame1, row=6, column=3, sticky=W + E)
+        
+        self.label7 = ttk.Label(Frame1, text="Initial Frequency", font="Arial 10 bold")
+        self.label7.grid(in_=Frame1, row=7, column=2)
+        self.entry2 = Entry(Frame1, width=5)
+        self.entry2.grid(in_=Frame1, row=7, column=3, sticky=W + E)
+        
+        self.label7 = ttk.Label(Frame1, text="Initial Time", font="Arial 10 bold")
+        self.label7.grid(in_=Frame1, row=7, column=4)
+        self.entry2 = Entry(Frame1, width=5)
+        self.entry2.grid(in_=Frame1, row=7, column=5, sticky=W + E)
+        
+        self.label7 = ttk.Label(Frame1, text="Frequency Step", font="Arial 10 bold")
+        self.label7.grid(in_=Frame1, row=8, column=2)
+        self.entry2 = Entry(Frame1, width=5)
+        self.entry2.grid(in_=Frame1, row=8, column=3, sticky=W + E)
+        
+        self.label7 = ttk.Label(Frame1, text="Final Time", font="Arial 10 bold")
+        self.label7.grid(in_=Frame1, row=8, column=4)
+        self.entry2 = Entry(Frame1, width=5)
+        self.entry2.grid(in_=Frame1, row=8, column=5, sticky=W + E)
+        
+        self.enter_button2 = Button(Frame1, text=" Noise Contributions ", command=self.multiply_pressed)
+        self.enter_button2.grid(in_=Frame1, row=9, column=2, sticky=W + E)  
+        
+        self.label7 = ttk.Label(Frame1, text="Noise Integration", font="Arial 10 bold")
+        self.label7.grid(in_=Frame1, row=10, column=2)
+        
+        self.label7 = ttk.Label(Frame1, text="From", font="Arial 10 bold")
+        self.label7.grid(in_=Frame1, row=10, column=3)
+        self.entry2 = Entry(Frame1, width=5)
+        self.entry2.grid(in_=Frame1, row=10, column=4, sticky=W + E)
+        
+        self.label7 = ttk.Label(Frame1, text="To", font="Arial 10 bold")
+        self.label7.grid(in_=Frame1, row=10, column=5)
+        self.entry2 = Entry(Frame1, width=5)
+        self.entry2.grid(in_=Frame1, row=10, column=6, sticky=W + E)
+        
+        global multiply_value        
+        
+        self.label7 = ttk.Label(Frame2, text="  ", font="Arial 10 bold")
+        self.label7.grid(in_=Frame2, row=12, column=0)
+        multiply_value= ttk.Label(Frame2, text="", font="Arial 10 bold")
+        multiply_value.grid(in_=Frame2, row=12, column=1, columnspan = 10)
+        
+    def button_pressed(self):
+        global button_input
+        button_input = self.entry.get()
+        global text_value
+        
+        if button_input == '5':
+            text_value.config(text="Nice Job!")
+        else:
+            text_value.config(text="You didn't follow directions, tisk tisk...")
+            
+    def multiply_pressed(self):
+        global button_inputx
+        global button_inputy
+        button_inputx = self.entry2.get()
+        button_inputy = self.entry3.get()
+        global multiply_value
+        output_value = float(button_inputx) * float(button_inputy)
+        multiply_value.config(text=str(output_value))
+
+    def new_window(self):
+        root10 = Toplevel(self.master)
+        root10.geometry("250x50")
+        pls_label = Label(root10, text="You clicked the button", font=24, fg="red")
+        pls_label.pack()
+
+if __name__ == '__main__':
+    root = tk.Tk()
+    my_gui = MainGUI(root)
+    root.geometry('750x750')
+    root.mainloop()
