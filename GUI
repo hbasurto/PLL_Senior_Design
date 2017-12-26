@@ -6,6 +6,11 @@ import matplotlib.pyplot as plt
 import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter import *
+import Pmw, os, csv, datetime, math
+from tkinter import messagebox
+import tkinter.simpledialog
+import numpy as np
+from numpy import exp, sqrt, log, log10, absolute, genfromtxt
 import warnings
 
 warnings.filterwarnings("ignore")
@@ -16,6 +21,10 @@ class MainGUI(Frame):
         Frame.__init__(self, master)
         self.grid()
         self.master.title("PLL TOOL")
+        
+        os.chdir(os.path.join(os.getenv('userprofile'), 'Desktop'))  # change the current directory to desktop       
+        if not os.path.exists('GD PLL Design Tool'):
+            os.makedirs('GD PLL Design Tool')
 
         for r in range(42):
             self.master.rowconfigure(r, weight=1)    
@@ -32,7 +41,7 @@ class MainGUI(Frame):
         Frame3.grid(row = 18, column =37, rowspan = 23, columnspan = 12, sticky = W+E+N+S)
         
         Frame4=  Frame(highlightcolor="black", highlightthickness=2, bd=0)
-        Frame4.grid(row = 18, column =24, rowspan = 23, columnspan = 13, sticky = W+E+N+S) 
+        Frame4.grid(row = 18, column =24, rowspan = 23, columnspan = 13, sticky = W+E+N+S)
     
         GuiTitle = ttk.Label(master, text="General Dynamics Mission Systems Phase Locked Loop Tool", font="Arial 18 bold")
         GuiTitle.grid(row=0, column=0,columnspan=50)
@@ -45,83 +54,83 @@ class MainGUI(Frame):
                 
         label1 = ttk.Label(Frame1, text="VCO Frequency", font="Arial 10 bold")
         label1.place(in_=Frame1, x=5, y=10)   
-        entry1 = Entry(Frame1, width=10)
-        entry1.place(in_=Frame1, x=175, y=10)
+        self.entry1 = Entry(Frame1, width=10)
+        self.entry1.place(in_=Frame1, x=175, y=10)
         
  
         label2 = ttk.Label(Frame1, text="Fixed In-Loop Divider", font="Arial 10 bold")
         label2.place(in_= Frame1, x=5, y=40)
-        entry2 = Entry(Frame1, width=10)
-        entry2.place(in_=Frame1, x=175, y=40)
+        self.entry2 = Entry(Frame1, width=10)
+        self.entry2.place(in_=Frame1, x=175, y=40)
         
         label3 = ttk.Label(Frame1, text="PFD Frequency", font="Arial 10 bold")
         label3.place(in_= Frame1, x=5, y=70)
-        entry3 = Entry(Frame1, width=10)
-        entry3.place(in_=Frame1, x=175, y=70)
+        self.entry3 = Entry(Frame1, width=10)
+        self.entry3.place(in_=Frame1, x=175, y=70)
 
         label4 = ttk.Label(Frame1, text="TCXO Frequency", font="Arial 10 bold")
         label4.place(in_= Frame1, x=5, y=100)
-        entry4 = Entry(Frame1, width=10)
-        entry4.place(in_=Frame1, x=175, y=100)
+        self.entry4 = Entry(Frame1, width=10)
+        self.entry4.place(in_=Frame1, x=175, y=100)
 
         label5 = ttk.Label(Frame1, text="VCO Gain [Hz/V]", font="Arial 10 bold")
         label5.place(in_= Frame1, x=5, y=130)
-        entry5 = Entry(Frame1, width=10)
-        entry5.place(in_=Frame1, x=175, y=130)
+        self.entry5 = Entry(Frame1, width=10)
+        self.entry5.place(in_=Frame1, x=175, y=130)
 
         label6 = ttk.Label(Frame1, text="Phase Detector Gain", font="Arial 10 bold")
         label6.place(in_= Frame1, x=5, y=160)
-        entry6 = Entry(Frame1, width=10)
-        entry6.place(in_=Frame1, x=175, y=160)
+        self.entry6 = Entry(Frame1, width=10)
+        self.entry6.place(in_=Frame1, x=175, y=160)
 
         label7= ttk.Label(Frame1, text="Phase Detector Offset", font="Arial 10 bold")
         label7.place(in_= Frame1, x=5, y=190)
-        entry7 = Entry(Frame1, width=10)
-        entry7.place(in_=Frame1, x=175, y=190) 
+        self.entry7 = Entry(Frame1, width=10)
+        self.entry7.place(in_=Frame1, x=175, y=190) 
         
         label8 = ttk.Label(Frame1, text="PLL Division Ration N", font="Arial 10 bold")
         label8.place(in_= Frame1, x=5, y=220)
-        entry8 = Entry(Frame1, width=10)
-        entry8.place(in_=Frame1, x=175, y=220) 
+        self.entry8 = Entry(Frame1, width=10)
+        self.entry8.place(in_=Frame1, x=175, y=220) 
     
         label9 = ttk.Label(Frame1, text="Desired Bandwidth", font="Arial 10 bold")
         label9.place(in_= Frame1, x=5, y=250)
-        entry9 = Entry(Frame1, width=10)
-        entry9.place(in_=Frame1, x=175, y=250) 
+        self.entry9 = Entry(Frame1, width=10)
+        self.entry9.place(in_=Frame1, x=175, y=250) 
 
         label10 = ttk.Label(Frame1, text="Desired Phase Margin", font="Arial 10 bold")
         label10.place(in_= Frame1, x=5, y=280)
-        entry10 = Entry(Frame1, width=10)
-        entry10.place(in_=Frame1, x=175, y=280) 
+        self.entry10 = Entry(Frame1, width=10)
+        self.entry10.place(in_=Frame1, x=175, y=280) 
 
         paramMenu=['GHz','MHz','kHz']
-        option_select=StringVar(root)
-        option_select.set("GHz")
-        drop1=OptionMenu(root,option_select,*paramMenu)
+        self.option_select1=StringVar(root)
+        self.option_select1.set(VCO_Freq_Hz) #option_select1.set("GHz")
+        drop1=OptionMenu(root,self.option_select1,*paramMenu)
         drop1.place(in_=Frame1,x=245,y=7)   
         drop1.config(font=('Arial 6 bold'),bg='white',width=3)
         drop1['menu'].config(font=('Arial 6 bold'),bg='white')
         
         paramMenu=['GHz','MHz','kHz']
-        option_select=StringVar(root)
-        option_select.set("GHz")
-        drop2=OptionMenu(root,option_select,*paramMenu)
+        self.option_select2=StringVar(root)
+        self.option_select2.set(PFD_Freq_Hz)
+        drop2=OptionMenu(root,self.option_select2,*paramMenu)
         drop2.place(in_=Frame1,x=245,y=67)   
         drop2.config(font=('Arial 6 bold'),bg='white',width=3)
         drop2['menu'].config(font=('Arial 6 bold'),bg='white') 
         
         paramMenu=['GHz','MHz','kHz']
-        option_select=StringVar(root)
-        option_select.set("GHz")
-        drop3=OptionMenu(root,option_select,*paramMenu)
+        self.option_select3=StringVar(root)
+        self.option_select3.set(TCXO_Freq_Hz)
+        drop3=OptionMenu(root,self.option_select3,*paramMenu)
         drop3.place(in_=Frame1,x=245,y=97)   
         drop3.config(font=('Arial 6 bold'),bg='white',width=3)
         drop3['menu'].config(font=('Arial 6 bold'),bg='white')
         
         paramMenu=['GHz','MHz','kHz']
-        option_select=StringVar(root)
-        option_select.set("GHz")
-        drop3=OptionMenu(root,option_select,*paramMenu)
+        self.option_select4=StringVar(root)
+        self.option_select4.set(Desired_Band_Hz)
+        drop3=OptionMenu(root,self.option_select4,*paramMenu)
         drop3.place(in_=Frame1,x=245,y=247)   
         drop3.config(font=('Arial 6 bold'),bg='white',width=3)
         drop3['menu'].config(font=('Arial 6 bold'),bg='white') 
@@ -131,26 +140,26 @@ class MainGUI(Frame):
         
         label12 = ttk.Label(Frame1, text="Start Frequency", font="Arial 10 bold")
         label12.place(in_= Frame1, x=360, y=40)
-        entry12 = Entry(Frame1, width=10)
-        entry12.place(in_=Frame1, x=510, y=40)
+        self.entry12 = Entry(Frame1, width=10)
+        self.entry12.place(in_=Frame1, x=510, y=40)
         
         paramMenu=['GHz','MHz','kHz']
-        option_select=StringVar(root)
-        option_select.set("GHz")
-        drop3=OptionMenu(root,option_select,*paramMenu)
+        self.option_select5=StringVar(root)
+        self.option_select5.set(Start_Freq_Hz)
+        drop3=OptionMenu(root,self.option_select5,*paramMenu)
         drop3.place(in_=Frame1,x=580,y=37)   
         drop3.config(font=('Arial 6 bold'),bg='white',width=3)
         drop3['menu'].config(font=('Arial 6 bold'),bg='white') 
         
         label13 = ttk.Label(Frame1, text="Stop Frequency", font="Arial 10 bold")
         label13.place(in_= Frame1, x=360, y=70)
-        entry13 = Entry(Frame1, width=10)
-        entry13.place(in_=Frame1, x=510, y=70)
+        self.entry13 = Entry(Frame1, width=10)
+        self.entry13.place(in_=Frame1, x=510, y=70)
         
         paramMenu=['GHz','MHz','kHz']
-        option_select=StringVar(root)
-        option_select.set("GHz")
-        drop3=OptionMenu(root,option_select,*paramMenu)
+        self.option_select6=StringVar(root)
+        self.option_select6.set(Stop_Freq_Hz)
+        drop3=OptionMenu(root,self.option_select6,*paramMenu)
         drop3.place(in_=Frame1,x=580,y=67)   
         drop3.config(font=('Arial 6 bold'),bg='white',width=3)
         drop3['menu'].config(font=('Arial 6 bold'),bg='white')
@@ -158,8 +167,8 @@ class MainGUI(Frame):
         
         label14 = ttk.Label(Frame1, text="Number of Points", font="Arial 10 bold")
         label14.place(in_= Frame1, x=360, y=100)
-        entry14 = Entry(Frame1, width=10)
-        entry14.place(in_=Frame1, x=510, y=100)
+        self.entry14 = Entry(Frame1, width=10)
+        self.entry14.place(in_=Frame1, x=510, y=100)
         
         label15 = ttk.Label(Frame1, text="Transient Response Settings", font="Arial 10 bold")
         label15.place(in_= Frame1, x=400, y=130)
@@ -169,8 +178,8 @@ class MainGUI(Frame):
         
         def transResp(event):
         
-            global chosen_option
-            chosen_option1 = option_select1.get()
+            global chosen_option1
+            chosen_option1 = self.option_select10.get()
             
             if chosen_option1 == 'Frequency Step':
                 label17 = ttk.Label(Frame1, text="Initial Frequency  ", font="Arial 10 bold")
@@ -224,32 +233,32 @@ class MainGUI(Frame):
 
                 
         myoptions=['Frequency Step','Frequency Sweep','Phase Step']
-        option_select1=StringVar(root)
-        option_select1.set("Frequency Step")
-        drop=OptionMenu(root,option_select1,*myoptions, command=transResp)
+        self.option_select10=StringVar(root)
+        self.option_select10.set("Frequency Step")
+        drop=OptionMenu(root,self.option_select10,*myoptions, command=transResp)
         drop.place(in_= Frame1, x=500, y=155)   
         drop.config(font=('Arial 10 bold'),bg='white',width=16)
         drop['menu'].config(font=('Arial 10 bold'),bg='white')      
         
         label17 = ttk.Label(Frame1, text="Initial Frequency", font="Arial 10 bold")
         label17.place(in_= Frame1, x=320, y=190)
-        entry17 = Entry(Frame1, width=10)
-        entry17.place(in_=Frame1, x=445, y=190)
+        self.entry17 = Entry(Frame1, width=10)
+        self.entry17.place(in_=Frame1, x=445, y=190)
    
         label18 = ttk.Label(Frame1, text="Frequency Step", font="Arial 10 bold")
         label18.place(in_= Frame1, x=320, y=220)
-        entry18 = Entry(Frame1, width=10)
-        entry18.place(in_=Frame1, x=445, y=220)
+        self.entry18 = Entry(Frame1, width=10)
+        self.entry18.place(in_=Frame1, x=445, y=220)
     
         label19 = ttk.Label(Frame1, text="Initial Time", font="Arial 10 bold")
         label19.place(in_= Frame1, x=522, y=190)
-        entry19 = Entry(Frame1, width=10)
-        entry19.place(in_=Frame1, x=610, y=190)
+        self.entry19 = Entry(Frame1, width=10)
+        self.entry19.place(in_=Frame1, x=610, y=190)
         
         label20 = ttk.Label(master, text="Final Time", font="Arial 10 bold")
         label20.place(in_= Frame1, x=522, y=220)
-        entry20 = Entry(Frame1, width=10)
-        entry20.place(in_=Frame1, x=610, y=220)
+        self.entry20 = Entry(Frame1, width=10)
+        self.entry20.place(in_=Frame1, x=610, y=220)
         
         noise_button = Button(Frame1, text="Noise Contributions", bg="white",font="Arial 10 bold", command=self.new_window1)
         noise_button.place(in_= Frame1, x=320, y=247) 
@@ -261,14 +270,16 @@ class MainGUI(Frame):
         
         label22 = ttk.Label(Frame1, text="Noise Integration", font="Arial 10 bold")
         label22.place(in_= Frame1, x=320, y=280) 
+        
         label23 = ttk.Label(Frame1, text="From", font="Arial 10 bold")
         label23.place(in_= Frame1, x=450, y=280) 
-        entry23= Entry(Frame1, width=8)
-        entry23.place(in_= Frame1, x=500, y=280)
+        self.entry23= Entry(Frame1, width=8)
+        self.entry23.place(in_= Frame1, x=500, y=280)
+        
         label24 = ttk.Label(Frame1, text="To", font="Arial 10 bold")
         label24.place(in_= Frame1, x=565, y=280)
-        entry24= Entry(Frame1, width=8)
-        entry24.place(in_= Frame1, x=600, y=280)
+        self.entry24= Entry(Frame1, width=8)
+        self.entry24.place(in_= Frame1, x=600, y=280)
         
         filter_button = Button(Frame2, text="Filter Design", bg="white",font="Arial 10 bold", command=self.filter_design)
         filter_button.place(in_= Frame2, x=7, y=10) 
@@ -279,49 +290,57 @@ class MainGUI(Frame):
         Checkbutton(master, variable=check_var).place(in_= Frame2, x=250, y=10) 
         
         filterType = ttk.Label(Frame2, text="Filter Type:", font="Arial 10 bold")
-        filterType.place(in_= Frame2, x=7, y=44) 
+        filterType.place(in_= Frame2, x=7, y=44)
+        
         filterOrder = ttk.Label(Frame2, text="Filter Order:", font="Arial 10 bold")
         filterOrder.place(in_= Frame2, x=7, y=70) 
         
-        label25 = ttk.Label(Frame2, text="C1", font="Arial 10 bold") #
-        label25.place(in_= Frame2, x=7, y=100) 
+        self.label25 = ttk.Label(Frame2, text="C1", font="Arial 10 bold") #
+        self.label25.place(in_= Frame2, x=7, y=100) 
         self.entry25 = Entry(master, width=15)
         self.entry25.place(in_= Frame2, x=50, y=100)
+        self.entry25.config(state='disabled')
         
-        label26 = ttk.Label(Frame2, text="C2", font="Arial 10 bold") #
-        label26.place(in_= Frame2, x=7, y=130) 
+        self.label26 = ttk.Label(Frame2, text="C2", font="Arial 10 bold") #
+        self.label26.place(in_= Frame2, x=7, y=130) 
         self.entry26 = Entry(Frame2, width=15)
-        self.entry26.place(in_= Frame2, x=50, y=130) 
+        self.entry26.place(in_= Frame2, x=50, y=130)
+        self.entry26.config(state='disabled')
         
-        label27 = ttk.Label(Frame2, text="C3", font="Arial 10 bold") #
-        label27.place(in_= Frame2, x=7, y=160) 
+        self.label27 = ttk.Label(Frame2, text="C3", font="Arial 10 bold") #
+        self.label27.place(in_= Frame2, x=7, y=160) 
         self.entry27 = Entry(Frame2, width=15)
         self.entry27.place(in_= Frame2, x=50, y=160)
+        self.entry27.config(state='disabled')
         
-        label28 = ttk.Label(Frame2, text="L1", font="Arial 10 bold")
-        label28.place(in_= Frame2, x=7, y=190) 
+        self.label28 = ttk.Label(Frame2, text="L1", font="Arial 10 bold")
+        self.label28.place(in_= Frame2, x=7, y=190) 
         self.entry28 = Entry(Frame2, width=15)
-        self.entry28.place(in_= Frame2, x=50, y=190) 
+        self.entry28.place(in_= Frame2, x=50, y=190)
+        self.entry28.config(state='disabled')
 
         #label29 = ttk.Label(Frame2, text="C6", font="Arial 10 bold") #
         #label29.place(in_= Frame2, x=7, y=220) 
         #self.entry29 = Entry(Frame2, width=15)
         #self.entry29.place(in_= Frame2, x=50, y=220)
         
-        label30 = ttk.Label(Frame2, text="R1", font="Arial 10 bold") #
-        label30.place(in_= Frame2, x=175, y=100) 
+        self.label30 = ttk.Label(Frame2, text="R1", font="Arial 10 bold") #
+        self.label30.place(in_= Frame2, x=175, y=100) 
         self.entry30 = Entry(Frame2, width=15)
         self.entry30.place(in_= Frame2, x=210, y=100)
+        self.entry30.config(state='disabled')
 
-        label31 = ttk.Label(Frame2, text="R2", font="Arial 10 bold") #
-        label31.place(in_= Frame2, x=175, y=130) 
+        self.label31 = ttk.Label(Frame2, text="R2", font="Arial 10 bold") #
+        self.label31.place(in_= Frame2, x=175, y=130) 
         self.entry31 = Entry(Frame2, width=15)
-        self.entry31.place(in_= Frame2, x=210, y=130) 
+        self.entry31.place(in_= Frame2, x=210, y=130)
+        self.entry31.config(state='disabled')
         
-        label32 = ttk.Label(Frame2, text="R3", font="Arial 10 bold") #
-        label32.place(in_= Frame2, x=175, y=160) 
+        self.label32 = ttk.Label(Frame2, text="R3", font="Arial 10 bold") #
+        self.label32.place(in_= Frame2, x=175, y=160) 
         self.entry32 = Entry(Frame2, width=15)
-        self.entry32.place(in_= Frame2, x=210, y=160) 
+        self.entry32.place(in_= Frame2, x=210, y=160)
+        self.entry32.config(state='disabled')
 
         #label33 = ttk.Label(Frame2, text="L3", font="Arial 10 bold")
         #label33.place(in_= Frame2, x=175, y=190) 
@@ -332,32 +351,135 @@ class MainGUI(Frame):
         #label34.place(in_= Frame2, x=175, y=220) 
         #self.entry34 = Entry(Frame2, width=15)
         #self.entry34.place(in_= Frame2, x=210, y=220)
+    
+        global filterbox
+        def filterbox():
+                    
+            global filtertype
+            global filterselect
+
+            if filtertype == 1:  #C1, C2, R2
+                filterselect = "Passive"                
+                filter_type=Label(root, text='Passive        ')
+                filter_type.place(in_= Frame2, x=80, y=44)
+                
+                self.label30.config(text="    ")     #Remove R1
+                self.entry30.place_forget()
+                
+                self.label32.config(text="    ")     #Remove R3
+                self.entry32.place_forget()
+                
+                self.label27.config(text="    ")     #Remove C3
+                self.entry27.place_forget()
+                
+                self.label28.config(text="    ")     #Remove L1
+                self.entry28.place_forget()
+                
+                self.label31 = ttk.Label(Frame2, text="R2", font="Arial 10 bold")
+                self.label31.place(in_= Frame2, x=175, y=130) 
+                self.entry31.place(in_= Frame2, x=210, y=130)
+                
+                self.label25 = ttk.Label(Frame2, text="C1", font="Arial 10 bold")
+                self.label25.place(in_= Frame2, x=7, y=100) 
+                self.entry25.place(in_= Frame2, x=50, y=100)
+        
+                self.label26 = ttk.Label(Frame2, text="C2", font="Arial 10 bold")
+                self.label26.place(in_= Frame2, x=7, y=130) 
+                self.entry26.place(in_= Frame2, x=50, y=130)
             
-        label35 = ttk.Label(master, text="3dB Bandwidth", font="Arial 10 bold")
-        label35.place(in_= Frame2, x=50, y=250) 
-        entry35 = Entry(Frame2, width=15)
-        entry35.place(in_= Frame2, x=210, y=250)
+            elif filtertype == 2: #C1, R1, L1, C2
+                filterselect = "Butterworth"
+                filter_type=Label(root, text='Butterworth')
+                filter_type.place(in_= Frame2, x=80, y=44)
+                
+                self.label27.config(text="    ")     #Remove C3
+                self.entry27.place_forget()
+                
+                self.label31.config(text="    ")     #Remove R2
+                self.entry31.place_forget()
+                
+                self.label32.config(text="    ")     #Remove R3
+                self.entry32.place_forget()
+                
+                self.label25 = ttk.Label(Frame2, text="C1", font="Arial 10 bold")
+                self.label25.place(in_= Frame2, x=7, y=100) 
+                self.entry25.place(in_= Frame2, x=50, y=100)
         
-        label36 = ttk.Label(master, text="Actual Phase Margin", font="Arial 10 bold")
-        label36.place(in_= Frame2, x=50, y=280) 
-        entry36 = Entry(Frame2, width=15)
-        entry36.place(in_= Frame2, x=210, y=280)
+                self.label26 = ttk.Label(Frame2, text="C2", font="Arial 10 bold")
+                self.label26.place(in_= Frame2, x=7, y=130) 
+                self.entry26.place(in_= Frame2, x=50, y=130)
+                
+                self.label30 = ttk.Label(Frame2, text="R1", font="Arial 10 bold") #
+                self.label30.place(in_= Frame2, x=175, y=100) 
+                self.entry30.place(in_= Frame2, x=210, y=100)
         
-        label38 = ttk.Label(Frame4, text="Time Domain Settling", font="Arial 10 bold")
-        label38.place(in_= Frame4, x=40, y=10)
+                self.label28 = ttk.Label(Frame2, text="L1", font="Arial 10 bold")
+                self.label28.place(in_= Frame2, x=7, y=190) 
+                self.entry28.place(in_= Frame2, x=50, y=190)
         
-        label382 = ttk.Label(Frame4, text="±Hz", font="Arial 10 bold")
-        label382.place(in_= Frame4, x=135, y=40)
-        entry382 = Entry(Frame4, width=8)
-        entry382.place(in_= Frame4, x=75, y=40)
+            elif filtertype == 3:  #C1, C2, R2, C3, R3
+                filterselect = "Active C"
+                filter_type=Label(root, text='Active C      ')
+                filter_type.place(in_= Frame2, x=80, y=44)
+                
+                self.label28.config(text="    ")     #Remove L1
+                self.entry28.place_forget()
+                
+                self.label30.config(text="    ")     #Remove R1
+                self.entry30.place_forget()
+                
+                self.label25 = ttk.Label(Frame2, text="C1", font="Arial 10 bold")
+                self.label25.place(in_= Frame2, x=7, y=100) 
+                self.entry25.place(in_= Frame2, x=50, y=100)
         
-        label39 = ttk.Label(Frame4, text="±Degrees", font="Arial 10 bold")
-        label39.place(in_= Frame4, x=135, y=70)
-        entry39 = Entry(Frame4, width=8)
-        entry39.place(in_= Frame4, x=75, y=70)
+                self.label26 = ttk.Label(Frame2, text="C2", font="Arial 10 bold")
+                self.label26.place(in_= Frame2, x=7, y=130) 
+                self.entry26.place(in_= Frame2, x=50, y=130)
+                
+                self.label31 = ttk.Label(Frame2, text="R2", font="Arial 10 bold")
+                self.label31.place(in_= Frame2, x=175, y=130) 
+                self.entry31.place(in_= Frame2, x=210, y=130)
+                
+                self.label32 = ttk.Label(Frame2, text="R3", font="Arial 10 bold") #
+                self.label32.place(in_= Frame2, x=175, y=160) 
+                self.entry32.place(in_= Frame2, x=210, y=160)
+                
+                self.label27 = ttk.Label(Frame2, text="C3", font="Arial 10 bold") #
+                self.label27.place(in_= Frame2, x=7, y=160) 
+                self.entry27.place(in_= Frame2, x=50, y=160)
+                        
+            else:
+                filter_type=Label(root, text='None        ')
+                filter_type.place(in_= Frame2, x=80, y=44)
+                
+        filterbox()
+            
+            
+        label38 = ttk.Label(master, text="3dB Bandwidth", font="Arial 10 bold")
+        label38.place(in_= Frame2, x=50, y=250) 
+        entry38 = Entry(Frame2, width=15)
+        entry38.place(in_= Frame2, x=210, y=250)
         
-        label392 = ttk.Label(Frame4, text="Select Plot Type", font="Arial 10 bold")
-        label392.place(in_= Frame4, x=60, y=100)
+        label39 = ttk.Label(master, text="Actual Phase Margin", font="Arial 10 bold")
+        label39.place(in_= Frame2, x=50, y=280) 
+        entry39 = Entry(Frame2, width=15)
+        entry39.place(in_= Frame2, x=210, y=280)
+        
+        label40 = ttk.Label(Frame4, text="Time Domain Settling", font="Arial 10 bold")
+        label40.place(in_= Frame4, x=40, y=10)
+        
+        label41 = ttk.Label(Frame4, text="±Hz", font="Arial 10 bold")
+        label41.place(in_= Frame4, x=135, y=40)
+        self.entry41 = Entry(Frame4, width=8)
+        self.entry41.place(in_= Frame4, x=75, y=40)
+        
+        label42 = ttk.Label(Frame4, text="±Degrees", font="Arial 10 bold")
+        label42.place(in_= Frame4, x=135, y=70)
+        self.entry42 = Entry(Frame4, width=8)
+        self.entry42.place(in_= Frame4, x=75, y=70)
+        
+        label43 = ttk.Label(Frame4, text="Select Plot Type", font="Arial 10 bold")
+        label43.place(in_= Frame4, x=60, y=100)
         
         plotType=['Open Loop Response','Close Loop Response','Loop Filter Response','Reference Phase Noise',
         'Phase Detector Noise','VCO Phase Noise','Closed Loop Modulated Filter Noise',
@@ -372,36 +494,32 @@ class MainGUI(Frame):
         drop2.config(font=('Arial 10 bold'),bg='white',width=25)
         drop2['menu'].config(font=('Arial 10 bold'),bg='white')
 
-        label40 = ttk.Label(Frame4, text="Frequency Reponse Scale", font="Arial 10 bold")
-        label40.place(in_= Frame4, x=35, y=170)
+        label44 = ttk.Label(Frame4, text="Frequency Reponse Scale", font="Arial 10 bold")
+        label44.place(in_= Frame4, x=35, y=170)
         
-        label41 = ttk.Label(Frame4, text="fmin", font="Arial 10 bold")
-        label41.place(in_= Frame4, x=45, y=200)
-        entry41 = Entry(Frame4, width=8)
-        entry41.place(in_= Frame4, x=90, y=200)
-        entry41.insert(1,"1")
+        label45 = ttk.Label(Frame4, text="fmin", font="Arial 10 bold")
+        label45.place(in_= Frame4, x=45, y=200)
+        self.entry45 = Entry(Frame4, width=8)
+        self.entry45.place(in_= Frame4, x=90, y=200)
         
-        label42 = ttk.Label(Frame4, text="fmax", font="Arial 10 bold")
-        label42.place(in_= Frame4, x=45, y=230)
-        entry42 = Entry(Frame4, width=8)
-        entry42.place(in_= Frame4, x=90, y=230)
-        entry42.insert(1,"10")
+        label46 = ttk.Label(Frame4, text="fmax", font="Arial 10 bold")
+        label46.place(in_= Frame4, x=45, y=230)
+        self.entry46 = Entry(Frame4, width=8)
+        self.entry46.place(in_= Frame4, x=90, y=230)
         
-        label43 = ttk.Label(Frame4, text="Ymin", font="Arial 10 bold")
-        label43.place(in_= Frame4, x=45, y=260)
-        entry43 = Entry(Frame4, width=8)
-        entry43.place(in_= Frame4, x=90, y=260)
-        entry43.insert(1,"0")
+        label47 = ttk.Label(Frame4, text="Ymin", font="Arial 10 bold")
+        label47.place(in_= Frame4, x=45, y=260)
+        self.entry47 = Entry(Frame4, width=8)
+        self.entry47.place(in_= Frame4, x=90, y=260)
         
-        label44 = ttk.Label(Frame4, text="Ymax", font="Arial 10 bold")
-        label44.place(in_= Frame4, x=45, y=290)
-        entry44 = Entry(Frame4, width=8)
-        entry44.place(in_= Frame4, x=90, y=290)
-        entry44.insert(1,"50")
+        label48 = ttk.Label(Frame4, text="Ymax", font="Arial 10 bold")
+        label48.place(in_= Frame4, x=45, y=290)
+        self.entry48 = Entry(Frame4, width=8)
+        self.entry48.place(in_= Frame4, x=90, y=290)
         
         paramMenu=['GHz','MHz','kHz']
         option_select=StringVar(root)
-        option_select.set("Freq")
+        option_select.set("GHz")
         drop3=OptionMenu(root,option_select,*paramMenu)
         drop3.place(in_=Frame4,x=150,y=200)   
         drop3.config(font=('Arial 6 bold'),bg='white',width=3)
@@ -409,7 +527,7 @@ class MainGUI(Frame):
         
         paramMenu=['GHz','MHz','kHz']
         option_select=StringVar(root)
-        option_select.set("Freq")
+        option_select.set("GHz")
         drop3=OptionMenu(root,option_select,*paramMenu)
         drop3.place(in_=Frame4,x=150,y=230)   
         drop3.config(font=('Arial 6 bold'),bg='white',width=3)
@@ -424,10 +542,8 @@ class MainGUI(Frame):
         exportData_button = Button(Frame4, text="Export Data", bg="white",font="Arial 10 bold", command=master.destroy)
         exportData_button.place(in_=Frame4,x=78,y=400)
 
-
-
-        label45 = ttk.Label(Frame3, text="Loop Parameters", font="Arial 12 bold")
-        label45.place(in_=Frame3,x=80,y=0)
+        label49 = ttk.Label(Frame3, text="Loop Parameters", font="Arial 12 bold")
+        label49.place(in_=Frame3,x=80,y=0)
         
         paramMenu=['PLL Parameters','Integrated Noise: VCO','Time Domain Parameters']
         option_select=StringVar(root)
@@ -456,7 +572,6 @@ class MainGUI(Frame):
         dataPlot.show()
         dataPlot.get_tk_widget().grid(row=18, column=1, sticky=N+W+E+S, columnspan=23,rowspan=23)
         a.legend(loc='upper right', bbox_to_anchor=(1.1, 1.05),fancybox=True, shadow=True, ncol=1).draggable()
-
       
         compute_button = Button(master, text="Compute", bg="white",font="Arial 10 bold", command=master.destroy)
         compute_button.grid(row=41, column=48) 
@@ -464,17 +579,375 @@ class MainGUI(Frame):
 
     def load(self):
         root = Toplevel(self.master)
-        root.geometry("100x100")
+        root.geometry("450x235")
         
-        label41 = ttk.Label(root, text="Nothing to see here", font="Arial 10 bold")
-        label41.grid(row=2, column=3,columnspan=2, sticky=W) 
+        root.title("Double Click to Select Input")
+        #global filtertype
+        #global filterbox
+        def load_filterbox():
+            if filtertype == 1:  #C1, C2, R2
+                
+                self.entry25.config(state='normal')             #C1
+                self.entry25.delete(0, END)
+                self.entry25.insert(0, self.input425)
+                self.entry25.config(state='disabled')
+                
+                self.entry26.config(state='normal')              #C2
+                self.entry26.delete(0, END)
+                self.entry26.insert(0, self.input426)
+                self.entry26.config(state='disabled')
+                
+                self.entry31.config(state='normal')              #R2
+                self.entry31.delete(0, END)
+                self.entry31.insert(0, self.input431)
+                self.entry31.config(state='disabled')
+                
+            elif filtertype == 2: #C1, R1, L1, C2 Butterworth
+
+                self.entry25.config(state='normal')              #C1
+                self.entry25.delete(0, END)
+                self.entry25.insert(0, self.input425)
+                self.entry25.config(state='disabled')
+                
+                self.entry26.config(state='normal')              #C2
+                self.entry26.delete(0, END)
+                self.entry26.insert(0, self.input426)
+                self.entry26.config(state='disabled')
+                
+                self.entry30.config(state='normal')              #R1
+                self.entry30.delete(0, END)
+                self.entry30.insert(0, self.input430)
+                self.entry30.config(state='disabled')
+                
+                self.entry28.config(state='normal')              #L1
+                self.entry28.delete(0, END)
+                self.entry28.insert(0, self.input428)
+                self.entry28.config(state='disabled') 
+                
+            else: #filtertype == 3:  #C1, C2, R2, C3, R3
+
+                self.entry25.config(state='normal')              #C1
+                self.entry25.delete(0, END)
+                self.entry25.insert(0, self.input425)
+                self.entry25.config(state='disabled')
+                
+                self.entry26.config(state='normal')              #C2
+                self.entry26.delete(0, END)
+                self.entry26.insert(0, self.input426)
+                self.entry26.config(state='disabled')
+                
+                self.entry31.config(state='normal')              #R2
+                self.entry31.delete(0, END)
+                self.entry31.insert(0, self.input431)
+                self.entry31.config(state='disabled')
+                
+                self.entry27.config(state='normal')              #C3
+                self.entry27.delete(0, END)
+                self.entry27.insert(0, self.input427)
+                self.entry27.config(state='disabled')
+                
+                self.entry32.config(state='normal')              #R3
+                self.entry32.delete(0, END)
+                self.entry32.insert(0, self.input432)
+                self.entry32.config(state='disabled')
+        
+        def ensure_dir(self, f):
+            if not os.path.exists(f):
+                os.makedirs(f)
+                
+        def load_from_csv(self, name='test'):  #Not sure how to make this load the value selected
+            string = "%s.csv" % name
+            my_data = genfromtxt(string, delimiter=',')
+            return my_data
+        
+        def loadbutton():
+            global loadedvalues
+            global filtertype
+            global filterbox
+            loadedvalues= load_from_csv(self.selected_file)
+            
+            self.entry1.delete(0, END)
+            self.entry1.insert(0, loadedvalues[0])
+            self.entry2.delete(0, END)
+            self.entry2.insert(0, loadedvalues[1])
+            self.entry3.delete(0, END)
+            self.entry3.insert(0, loadedvalues[2])
+            self.entry4.delete(0, END)
+            self.entry4.insert(0, loadedvalues[3])
+            self.entry5.delete(0, END)
+            self.entry5.insert(0, loadedvalues[4])
+            self.entry6.delete(0, END)
+            self.entry6.insert(0, loadedvalues[5])
+            self.entry7.delete(0, END)
+            self.entry7.insert(0, loadedvalues[6])
+            self.entry8.delete(0, END)
+            self.entry8.insert(0, loadedvalues[7])
+            self.entry9.delete(0, END)
+            self.entry9.insert(0, loadedvalues[8])
+            self.entry10.delete(0, END)
+            self.entry10.insert(0, loadedvalues[9])
+            dropx = loadedvalues[10]
+            
+            if dropx == 0:
+                self.option_select1.set('GHz')
+            elif dropx == 1:
+                self.option_select1.set('MHz')
+            else:
+                self.option_select1.set('kHz')
+            self.entry12.delete(0, END)
+            self.entry12.insert(0, loadedvalues[11])
+            self.entry13.delete(0, END)
+            self.entry13.insert(0, loadedvalues[12])
+            self.entry14.delete(0, END)
+            self.entry14.insert(0, loadedvalues[13])
+            dropx = loadedvalues[14]
+            if dropx == 0:
+                self.option_select2.set('GHz')
+            elif dropx == 1:
+                self.option_select2.set('MHz')
+            else:
+                self.option_select2.set('kHz')
+                
+            dropx = loadedvalues[15]
+            if dropx == 0:
+                self.option_select3.set('GHz')
+            elif dropx == 1:
+                self.option_select3.set('MHz')
+            else:
+                self.option_select3.set('kHz')
+            self.entry17.delete(0, END)
+            self.entry17.insert(0, loadedvalues[16])
+            self.entry18.delete(0, END)
+            self.entry18.insert(0, loadedvalues[17])
+            self.entry19.delete(0, END)
+            self.entry19.insert(0, loadedvalues[18])
+            self.entry20.delete(0, END)
+            self.entry20.insert(0, loadedvalues[19])
+            dropx = loadedvalues[20]
+            if dropx == 0:
+                self.option_select4.set('GHz')
+            elif dropx == 1:
+                self.option_select4.set('MHz')
+            else:
+                self.option_select4.set('kHz')
+                
+            dropx = loadedvalues[21]
+            if dropx == 0:
+                self.option_select5.set('GHz')
+            elif dropx == 1:
+                self.option_select5.set('MHz')
+            else:
+                self.option_select5.set('kHz')
+                
+            self.entry23.delete(0, END)
+            self.entry23.insert(0, loadedvalues[22])
+            self.entry24.delete(0, END)
+            self.entry24.insert(0, loadedvalues[23])
+            dropx = loadedvalues[24]
+            if dropx == 0:
+                self.option_select6.set('GHz')
+            elif dropx == 1:
+                self.option_select6.set('MHz')
+            else:
+                self.option_select6.set('kHz')
+            dropx = loadedvalues[25]
+            if dropx == 0:
+                self.option_select10.set('Frequency Step')
+            elif dropx == 1:
+                self.option_select10.set('Frequency Sweep')
+            else:
+                self.option_select10.set('Phase Step')
+            filtertype = loadedvalues[26]
+            self.entry41.delete(0, END)
+            self.entry41.insert(0, loadedvalues[27])
+            self.entry42.delete(0, END)
+            self.entry42.insert(0, loadedvalues[28])
+            self.entry45.delete(0, END)
+            self.entry45.insert(0, loadedvalues[29])
+            self.entry46.delete(0, END)
+            self.entry46.insert(0, loadedvalues[30])
+            self.entry47.delete(0, END)
+            self.entry47.insert(0, loadedvalues[31])
+            self.entry48.delete(0, END)
+            self.entry48.insert(0, loadedvalues[32])
+            self.input417 = loadedvalues[33]
+            self.input418 = loadedvalues[34]
+            self.input419 = loadedvalues[35]
+            self.input420 = loadedvalues[36]
+            self.input421 = loadedvalues[37]
+            self.input422 = loadedvalues[38]
+            self.input423 = loadedvalues[39]
+            self.input424 = loadedvalues[40]
+            self.input425 = loadedvalues[41]
+            self.input426 = loadedvalues[42]
+            self.input427 = loadedvalues[43]
+            self.input428 = loadedvalues[44]
+            self.input430 = loadedvalues[45]
+            self.input431 = loadedvalues[46]
+            self.input432 = loadedvalues[47]
+            self.input435 = loadedvalues[48]
+            self.input436 = loadedvalues[49]
+            self.input437 = loadedvalues[50]
+            self.input438 = loadedvalues[51]
+            self.input439 = loadedvalues[52]
+            
+
+            filterbox()
+            load_filterbox()
+            root.destroy()
+            
+        def Double(event):
+            widget = event.widget
+            selection = [0]
+            selection = widget.curselection()[0]
+            self.selected_file = widget.get(selection)
+            self.selected_file_label.config(text='Selected: %s' % (self.selected_file))
+
+        self.selected_file = ""
+        os.chdir(os.path.join(os.getenv('userprofile'), 'Desktop'))  # change the current directory to desktop
+        os.chdir('GD PLL Design Tool')  # change the cuurent dir
+
+        select_formular_button = Button(root, text='Load', width=7, command=loadbutton)
+        select_formular_button.place(in_=root, x=150, y=200)
+        select_formular_button = Button(root, text='Cancel', width=7, command=root.destroy)
+        select_formular_button.place(in_=root, x=225, y=200)
+
+        self.selected_file_label = Label(root, text='Selected: %s' % (self.selected_file), background='white', font=(12))
+
+
+        self.selected_file_label.grid(row=1, column=0, columnspan=6)
+
+        # scrollbar for this grid()
+        scrollbar = Scrollbar(root)
+        scrollbar.grid(sticky=E, row=0, column=11, rowspan=10, ipady=80)
+
+        # This is the list box that contains all the csv files inside formular list dir:
+        self.listbox = Listbox(root, width=70)
+        self.listbox.grid(row=2, column=0, columnspan=6)
+
+        # make this become a def so that you can recall it everytime to finish create, update or rename
+        self.listFileNames = os.listdir('.')  # put all the file name in the filenames array
+        for fileName in self.listFileNames:
+            if ".csv" in fileName:
+                self.listbox.insert(0, fileName)
+
+        self.listbox.bind("<Double-Button-1>", Double)
+        self.listbox.config(yscrollcommand=scrollbar.set)
+        scrollbar.config(command=self.listbox.yview)
+        
         
     def save(self):
-        root = Toplevel(self.master)
-        root.geometry("100x100")
+        #root = Toplevel(self.master)
+        #root.geometry("400x400")
+        global array
         
-        label41 = ttk.Label(root, text="I don't want your crap", font="Arial 10 bold")
-        label41.grid(row=2, column=3,columnspan=2, sticky=W) 
+        def save_to_csv(array, name='test'):
+            # load an array from given name .csv file into certain array
+            a = np.asarray(array)
+            string = "%s.csv" % name
+            a.tofile(string, sep=',')
+        
+        os.chdir(os.path.join(os.getenv('userprofile'), 'Desktop'))
+        os.chdir('GD PLL Design Tool')
+        
+        array[0] = self.entry1.get()
+        array[1] = self.entry2.get()
+        array[2] = self.entry3.get()
+        array[3] = self.entry4.get()
+        array[4] = self.entry5.get()
+        array[5] = self.entry6.get()
+        array[6] = self.entry7.get()
+        array[7] = self.entry8.get()
+        array[8] = self.entry9.get()
+        array[9] = self.entry10.get()
+        #array[10] = self.drop1
+        if self.option_select1 == 'GHz':
+            array[10] = 0
+        elif self.option_select1 == 'MHz':
+            array[10] = 1
+        else:
+            array[10] = 2
+        array[11] = self.entry12.get()
+        array[12] = self.entry13.get()
+        array[13] = self.entry14.get()
+        if self.option_select2 == 'GHz':
+            array[14] = 0
+        elif self.option_select2 == 'MHz':
+            array[14] = 1
+        else:
+            array[14] = 2
+        if self.option_select3 == 'GHz':
+            array[15] = 0
+        elif self.option_select3 == 'MHz':
+            array[15] = 1
+        else:
+            array[15] = 2
+        array[16] = self.entry17.get()
+        array[17] = self.entry18.get()
+        array[18] = self.entry19.get()
+        array[19] = self.entry20.get()
+        if self.option_select4 == 'GHz':
+            array[20] = 0
+        elif self.option_select4 == 'MHz':
+            array[20] = 1
+        else:
+            array[20] = 2
+        if self.option_select5 == 'GHz':
+            array[21] = 0
+        elif self.option_select5 == 'MHz':
+            array[21] = 1
+        else:
+            array[21] = 2
+        array[22] = self.entry23.get()
+        array[23] = self.entry24.get()
+        if self.option_select6 == 'GHz':
+            array[24] = 0
+        elif self.option_select6 == 'MHz':
+            array[24] = 1
+        else:
+            array[24] = 2
+        if self.option_select10 == "Frequency Step":
+            array[25] = 0
+        elif self.option_select10 == "Frequency Sweep":
+            array[25] = 1
+        else:
+            array[25] = 2
+        array[26] = filtertype  #loads the filter type
+        array[27] = self.entry41.get()
+        array[28] = self.entry42.get()
+        array[29] = self.entry45.get()
+        array[30] = self.entry46.get()
+        array[31] = self.entry47.get()
+        array[32] = self.entry48.get()
+        array[33] = self.input417
+        array[34] = self.input418
+        array[35] = self.input419
+        array[36] = self.input420
+        array[37] = self.input421
+        array[38] = self.input422
+        array[39] = self.input423
+        array[40] = self.input424
+        array[41] = self.input425
+        array[42] = self.input426
+        array[43] = self.input427
+        array[44] = self.input428
+        array[45] = self.input430
+        array[46] = self.input431
+        array[47] = self.input432
+        array[48] = self.input435
+        array[49] = self.input436
+        array[50] = self.input437
+        array[51] = self.input438
+        array[52] = self.input439
+        
+        
+        # a window pop up asking: pls input a new name
+        var = tkinter.simpledialog.askstring("Name prompt", "Save your input as")
+        # use save_to_csv to save current input into a new csv file
+        if var is not None:
+            save_to_csv(array, var)
+        
+        
         
     def new_window1(self):
         root = Toplevel(self.master)
@@ -510,7 +983,7 @@ class MainGUI(Frame):
         def change_noise():
         
             if noise == 1:
-                entry102=entry102.get()
+                self.entry102 = entry102.get()
                 #Frame2.destroy()
             elif noise == 2:
                 Frame2.destroy()
@@ -574,8 +1047,9 @@ class MainGUI(Frame):
             
             output101 = ttk.Label(Frame2, text="Frequency Offset", font="Arial 10 bold")
             output101.place(in_=Frame2,x=10,y=10)
-            entry102 = Entry(Frame2, width=6)
-            entry102.place(in_=Frame2, x=170, y=10)
+            self.entry102 = Entry(Frame2, width=6)
+            self.entry102.place(in_=Frame2, x=170, y=10)
+            self.entry102.delete(0, END)
         
             entry103 = Entry(Frame2, width=6)
             entry103.place(in_=Frame2, x=220, y=10)
@@ -600,41 +1074,43 @@ class MainGUI(Frame):
             
             output110 = ttk.Label(Frame2, text="Crystal Oscillator Noise", font="Arial 10 bold")
             output110.place(in_=Frame2,x=10,y=40)
-            entry111 = Entry(Frame2, width=6)
-            entry111.place(in_=Frame2, x=170, y=40)
+            entry110 = Entry(Frame2, width=6)
+            entry110.place(in_=Frame2, x=170, y=40)
             
-            entry112 = Entry(Frame2, width=6)
-            entry112.place(in_=Frame2, x=220, y=40)
+            entry111 = Entry(Frame2, width=6)
+            entry111.place(in_=Frame2, x=220, y=40)
         
+            entry112 = Entry(Frame2, width=6)
+            entry112.place(in_=Frame2, x=270, y=40)
+            
             entry113 = Entry(Frame2, width=6)
-            entry113.place(in_=Frame2, x=270, y=40)
+            entry113.place(in_=Frame2, x=320, y=40)
             
             entry114 = Entry(Frame2, width=6)
-            entry114.place(in_=Frame2, x=320, y=40)
+            entry114.place(in_=Frame2, x=370, y=40)
             
             entry115 = Entry(Frame2, width=6)
-            entry115.place(in_=Frame2, x=370, y=40)
+            entry115.place(in_=Frame2, x=420, y=40)
             
             entry116 = Entry(Frame2, width=6)
-            entry116.place(in_=Frame2, x=420, y=40)
+            entry116.place(in_=Frame2, x=470, y=40)
             
-            entry117 = Entry(Frame2, width=6)
-            entry117.place(in_=Frame2, x=470, y=40)
+            output117 = ttk.Label(Frame2, text="dBc/Hz", font="Arial 10 bold")
+            output117.place(in_=Frame2,x=520,y=40)
             
-            output118 = ttk.Label(Frame2, text="dBc/Hz", font="Arial 10 bold")
-            output118.place(in_=Frame2,x=520,y=40)
+            output118 = ttk.Label(Frame2, text="Add / Subtract from Crystal Phase Noise?", font="Arial 10 bold")
+            output118.place(in_=Frame2,x=10,y=70)
+            entry118 = Entry(Frame2, width=6)
+            entry118.place(in_=Frame2, x=470, y=70)
             
-            output119 = ttk.Label(Frame2, text="Add / Subtract from Crystal Phase Noise?", font="Arial 10 bold")
-            output119.place(in_=Frame2,x=10,y=70)
-            entry120 = Entry(Frame2, width=6)
-            entry120.place(in_=Frame2, x=470, y=70)
+            output119 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
+            output119.place(in_=Frame2,x=520,y=70)
             
-            output121 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
-            output121.place(in_=Frame2,x=520,y=70)
+            #command=load_noise
             
-            command=load_noise
+            #l_noise = 1
             
-            l_noise = 1
+            self.entry102.insert(0, entry102)            
             
         def change_noise2():
             
@@ -655,89 +1131,89 @@ class MainGUI(Frame):
             
             output1 = ttk.Label(Frame2, text="Frequency Offset", font="Arial 10 bold")
             output1.place(in_=Frame2,x=10,y=10)
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=170, y=10)
+            entry119 = Entry(Frame2, width=6)
+            entry119.place(in_=Frame2, x=170, y=10)
         
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=220, y=10)
+            entry120 = Entry(Frame2, width=6)
+            entry120.place(in_=Frame2, x=220, y=10)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=270, y=10)
+            entry121 = Entry(Frame2, width=6)
+            entry121.place(in_=Frame2, x=270, y=10)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=320, y=10)
+            entry122 = Entry(Frame2, width=6)
+            entry122.place(in_=Frame2, x=320, y=10)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=370, y=10)
+            entry123 = Entry(Frame2, width=6)
+            entry123.place(in_=Frame2, x=370, y=10)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=420, y=10)
+            entry124 = Entry(Frame2, width=6)
+            entry124.place(in_=Frame2, x=420, y=10)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=470, y=10)
+            entry425 = Entry(Frame2, width=6)
+            entry425.place(in_=Frame2, x=470, y=10)
             
-            output1 = ttk.Label(Frame2, text="Hz", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=520,y=10)
+            output126 = ttk.Label(Frame2, text="Hz", font="Arial 10 bold")
+            output126.place(in_=Frame2,x=520,y=10)
             
-            output1 = ttk.Label(Frame2, text="Reference Buffer Noise", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=10,y=40)
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=170, y=40)
+            output127 = ttk.Label(Frame2, text="Reference Buffer Noise", font="Arial 10 bold")
+            output127.place(in_=Frame2,x=10,y=40)
+            entry127 = Entry(Frame2, width=6)
+            entry127.place(in_=Frame2, x=170, y=40)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=220, y=40)
+            entry128 = Entry(Frame2, width=6)
+            entry128.place(in_=Frame2, x=220, y=40)
         
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=270, y=40)
+            entry129 = Entry(Frame2, width=6)
+            entry129.place(in_=Frame2, x=270, y=40)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=320, y=40)
+            entry130 = Entry(Frame2, width=6)
+            entry130.place(in_=Frame2, x=320, y=40)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=370, y=40)
+            entry131 = Entry(Frame2, width=6)
+            entry131.place(in_=Frame2, x=370, y=40)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=420, y=40)
+            entry132 = Entry(Frame2, width=6)
+            entry132.place(in_=Frame2, x=420, y=40)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=470, y=40)
+            entry133 = Entry(Frame2, width=6)
+            entry133.place(in_=Frame2, x=470, y=40)
             
-            output1 = ttk.Label(Frame2, text="dBc/Hz", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=520,y=40)
+            output134 = ttk.Label(Frame2, text="dBc/Hz", font="Arial 10 bold")
+            output134.place(in_=Frame2,x=520,y=40)
             
-            output1 = ttk.Label(Frame2, text="Referance Buffer Gain", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=10,y=70)
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=170, y=70)
+            output135 = ttk.Label(Frame2, text="Referance Buffer Gain", font="Arial 10 bold")
+            output135.place(in_=Frame2,x=10,y=70)
+            entry135 = Entry(Frame2, width=6)
+            entry135.place(in_=Frame2, x=170, y=70)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=220, y=70)
+            entry136 = Entry(Frame2, width=6)
+            entry136.place(in_=Frame2, x=220, y=70)
         
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=270, y=70)
+            entry137 = Entry(Frame2, width=6)
+            entry137.place(in_=Frame2, x=270, y=70)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=320, y=70)
+            entry138 = Entry(Frame2, width=6)
+            entry138.place(in_=Frame2, x=320, y=70)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=370, y=70)
+            entry139 = Entry(Frame2, width=6)
+            entry139.place(in_=Frame2, x=370, y=70)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=420, y=70)
+            entry140 = Entry(Frame2, width=6)
+            entry140.place(in_=Frame2, x=420, y=70)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=470, y=70)
+            entry141 = Entry(Frame2, width=6)
+            entry141.place(in_=Frame2, x=470, y=70)
             
-            output1 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=520,y=70)
+            output142 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
+            output142.place(in_=Frame2,x=520,y=70)
             
-            output1 = ttk.Label(Frame2, text="Reference Buffer Noise Offset", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=10,y=100)
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=470, y=100)
+            output143 = ttk.Label(Frame2, text="Reference Buffer Noise Offset", font="Arial 10 bold")
+            output143.place(in_=Frame2,x=10,y=100)
+            entry143 = Entry(Frame2, width=6)
+            entry143.place(in_=Frame2, x=470, y=100)
             
-            output1 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=520,y=100)
+            output144 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
+            output144.place(in_=Frame2,x=520,y=100)
             
         def change_noise3():
             
@@ -756,214 +1232,214 @@ class MainGUI(Frame):
             Frame2 = Frame(root, highlightbackground="black", highlightcolor="black", highlightthickness=2, width=600, height=450, bd=0)
             Frame2.grid(row = 2, column =5, rowspan = 2, columnspan = 2, sticky = W+E+N+S)            
             
-            output1 = ttk.Label(Frame2, text="Use Simple Phase Detector Model?", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=10,y=10)   
+            output145 = ttk.Label(Frame2, text="Use Simple Phase Detector Model?", font="Arial 10 bold")
+            output145.place(in_=Frame2,x=10,y=10)   
             check_var = IntVar()
             Checkbutton(root, variable=check_var).place(in_=Frame2, x=490, y=10)
             
-            output1 = ttk.Label(Frame2, text="Phase Detector Noise Specification Frequency", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=10,y=40)
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=470, y=40)
-            output1 = ttk.Label(Frame2, text="Hz", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=520,y=40)
+            output146 = ttk.Label(Frame2, text="Phase Detector Noise Specification Frequency", font="Arial 10 bold")
+            output146.place(in_=Frame2,x=10,y=40)
+            entry144 = Entry(Frame2, width=6)
+            entry144.place(in_=Frame2, x=470, y=40)
+            output147 = ttk.Label(Frame2, text="Hz", font="Arial 10 bold")
+            output147.place(in_=Frame2,x=520,y=40)
             
             output1 = ttk.Label(Frame2, text="Frequency Offset", font="Arial 10 bold")
             output1.place(in_=Frame2,x=10,y=70)
-            entry44 = Entry(Frame2, width=6)
+            entry145 = Entry(Frame2, width=6)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=170, y=70)
+            entry146 = Entry(Frame2, width=6)
+            entry146.place(in_=Frame2, x=170, y=70)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=220, y=70)
+            entry147 = Entry(Frame2, width=6)
+            entry147.place(in_=Frame2, x=220, y=70)
         
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=270, y=70)
+            entry148 = Entry(Frame2, width=6)
+            entry148.place(in_=Frame2, x=270, y=70)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=320, y=70)
+            entry149 = Entry(Frame2, width=6)
+            entry149.place(in_=Frame2, x=320, y=70)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=370, y=70)
+            entry150 = Entry(Frame2, width=6)
+            entry150.place(in_=Frame2, x=370, y=70)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=420, y=70)
+            entry151 = Entry(Frame2, width=6)
+            entry151.place(in_=Frame2, x=420, y=70)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=470, y=70)
+            entry152 = Entry(Frame2, width=6)
+            entry152.place(in_=Frame2, x=470, y=70)
             
-            output1 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=520,y=70)
+            output153 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
+            output153.place(in_=Frame2,x=520,y=70)
             
-            output1 = ttk.Label(Frame2, text="Supply Noise", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=10,y=100)
-            entry44 = Entry(Frame2, width=6)
+            output154 = ttk.Label(Frame2, text="Supply Noise", font="Arial 10 bold")
+            output154.place(in_=Frame2,x=10,y=100)
+            entry153 = Entry(Frame2, width=6)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=170, y=100)
+            entry154 = Entry(Frame2, width=6)
+            entry154.place(in_=Frame2, x=170, y=100)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=220, y=100)
+            entry155 = Entry(Frame2, width=6)
+            entry155.place(in_=Frame2, x=220, y=100)
         
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=270, y=100)
+            entry156 = Entry(Frame2, width=6)
+            entry156.place(in_=Frame2, x=270, y=100)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=320, y=100)
+            entry157 = Entry(Frame2, width=6)
+            entry157.place(in_=Frame2, x=320, y=100)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=370, y=100)
+            entry158 = Entry(Frame2, width=6)
+            entry158.place(in_=Frame2, x=370, y=100)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=420, y=100)
+            entry159 = Entry(Frame2, width=6)
+            entry159.place(in_=Frame2, x=420, y=100)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=470, y=100)
+            entry160 = Entry(Frame2, width=6)
+            entry160.place(in_=Frame2, x=470, y=100)
             
-            output1 = ttk.Label(Frame2, text="dBV^2/Hz", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=520,y=100)
+            output161 = ttk.Label(Frame2, text="dBV^2/Hz", font="Arial 10 bold")
+            output161.place(in_=Frame2,x=520,y=100)
             
-            output1 = ttk.Label(Frame2, text="PSRR", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=10,y=130)
-            entry44 = Entry(Frame2, width=6)
+            output162 = ttk.Label(Frame2, text="PSRR", font="Arial 10 bold")
+            output162.place(in_=Frame2,x=10,y=130)
+            entry161 = Entry(Frame2, width=6)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=170, y=130)
+            entry162 = Entry(Frame2, width=6)
+            entry162.place(in_=Frame2, x=170, y=130)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=220, y=130)
+            entry163 = Entry(Frame2, width=6)
+            entry163.place(in_=Frame2, x=220, y=130)
         
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=270, y=130)
+            entry164 = Entry(Frame2, width=6)
+            entry164.place(in_=Frame2, x=270, y=130)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=320, y=130)
+            entry165 = Entry(Frame2, width=6)
+            entry165.place(in_=Frame2, x=320, y=130)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=370, y=130)
+            entry166 = Entry(Frame2, width=6)
+            entry166.place(in_=Frame2, x=370, y=130)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=420, y=130)
+            entry167 = Entry(Frame2, width=6)
+            entry167.place(in_=Frame2, x=420, y=130)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=470, y=130)
+            entry168 = Entry(Frame2, width=6)
+            entry168.place(in_=Frame2, x=470, y=130)
             
-            output1 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=520,y=130)
+            output169 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
+            output169.place(in_=Frame2,x=520,y=130)
             
-            output1 = ttk.Label(Frame2, text="Gain/Cycle", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=50,y=170)
+            output170 = ttk.Label(Frame2, text="Gain/Cycle", font="Arial 10 bold")
+            output170.place(in_=Frame2,x=50,y=170)
             
-            output1 = ttk.Label(Frame2, text="Input Referred Phase Detector Phase Noise", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=200,y=170)
+            output171 = ttk.Label(Frame2, text="Input Referred Phase Detector Phase Noise", font="Arial 10 bold")
+            output171.place(in_=Frame2,x=200,y=170)
             
-            output1 = ttk.Label(Frame2, text="Min:", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=10,y=190)
-            entry44 = Entry(Frame2, width=6)
+            output172 = ttk.Label(Frame2, text="Min:", font="Arial 10 bold")
+            output172.place(in_=Frame2,x=10,y=190)
+            entry169 = Entry(Frame2, width=6)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=70, y=190)
+            entry169 = Entry(Frame2, width=6)
+            entry169.place(in_=Frame2, x=70, y=190)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=170, y=190)
+            entry170 = Entry(Frame2, width=6)
+            entry170.place(in_=Frame2, x=170, y=190)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=220, y=190)
+            entry171 = Entry(Frame2, width=6)
+            entry171.place(in_=Frame2, x=220, y=190)
         
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=270, y=190)
+            entry172 = Entry(Frame2, width=6)
+            entry172.place(in_=Frame2, x=270, y=190)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=320, y=190)
+            entry173 = Entry(Frame2, width=6)
+            entry173.place(in_=Frame2, x=320, y=190)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=370, y=190)
+            entry174 = Entry(Frame2, width=6)
+            entry174.place(in_=Frame2, x=370, y=190)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=420, y=190)
+            entry175 = Entry(Frame2, width=6)
+            entry175.place(in_=Frame2, x=420, y=190)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=470, y=190)
+            entry176 = Entry(Frame2, width=6)
+            entry176.place(in_=Frame2, x=470, y=190)
             
-            output1 = ttk.Label(Frame2, text="dBc/Hz", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=520,y=190)
+            output177 = ttk.Label(Frame2, text="dBc/Hz", font="Arial 10 bold")
+            output177.place(in_=Frame2,x=520,y=190)
             
-            output1 = ttk.Label(Frame2, text="Mid:", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=10,y=220)
-            entry44 = Entry(Frame2, width=6)
+            output178 = ttk.Label(Frame2, text="Mid:", font="Arial 10 bold")
+            output178.place(in_=Frame2,x=10,y=220)
+            entry177 = Entry(Frame2, width=6)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=70, y=220)
+            entry178 = Entry(Frame2, width=6)
+            entry178.place(in_=Frame2, x=70, y=220)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=170, y=220)
+            entry179 = Entry(Frame2, width=6)
+            entry179.place(in_=Frame2, x=170, y=220)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=220, y=220)
+            entry180 = Entry(Frame2, width=6)
+            entry180.place(in_=Frame2, x=220, y=220)
         
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=270, y=220)
+            entry181 = Entry(Frame2, width=6)
+            entry181.place(in_=Frame2, x=270, y=220)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=320, y=220)
+            entry182 = Entry(Frame2, width=6)
+            entry182.place(in_=Frame2, x=320, y=220)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=370, y=220)
+            entry183 = Entry(Frame2, width=6)
+            entry183.place(in_=Frame2, x=370, y=220)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=420, y=220)
+            entry184 = Entry(Frame2, width=6)
+            entry184.place(in_=Frame2, x=420, y=220)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=470, y=220)
+            entry185 = Entry(Frame2, width=6)
+            entry185.place(in_=Frame2, x=470, y=220)
             
-            output1 = ttk.Label(Frame2, text="dBc/Hz", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=520,y=220)
+            output185 = ttk.Label(Frame2, text="dBc/Hz", font="Arial 10 bold")
+            output185.place(in_=Frame2,x=520,y=220)
             
-            output1 = ttk.Label(Frame2, text="Max:", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=10,y=250)
-            entry44 = Entry(Frame2, width=6)
+            output186 = ttk.Label(Frame2, text="Max:", font="Arial 10 bold")
+            output186.place(in_=Frame2,x=10,y=250)
+            entry186 = Entry(Frame2, width=6)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=70, y=250)
+            entry187 = Entry(Frame2, width=6)
+            entry187.place(in_=Frame2, x=70, y=250)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=170, y=250)
+            entry188 = Entry(Frame2, width=6)
+            entry188.place(in_=Frame2, x=170, y=250)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=220, y=250)
+            entry189 = Entry(Frame2, width=6)
+            entry189.place(in_=Frame2, x=220, y=250)
         
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=270, y=250)
+            entry190 = Entry(Frame2, width=6)
+            entry190.place(in_=Frame2, x=270, y=250)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=320, y=250)
+            entry191 = Entry(Frame2, width=6)
+            entry191.place(in_=Frame2, x=320, y=250)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=370, y=250)
+            entry192 = Entry(Frame2, width=6)
+            entry192.place(in_=Frame2, x=370, y=250)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=420, y=250)
+            entry193 = Entry(Frame2, width=6)
+            entry193.place(in_=Frame2, x=420, y=250)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=470, y=250)
+            entry194 = Entry(Frame2, width=6)
+            entry194.place(in_=Frame2, x=470, y=250)
             
-            output1 = ttk.Label(Frame2, text="dBc/Hz", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=520,y=250)
+            output194 = ttk.Label(Frame2, text="dBc/Hz", font="Arial 10 bold")
+            output194.place(in_=Frame2,x=520,y=250)
             
-            output1 = ttk.Label(Frame2, text="Phase Detector Noise Offset For Frac-N Mode", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=10,y=280)
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=470, y=280)
-            output1 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=520,y=280)
+            output195 = ttk.Label(Frame2, text="Phase Detector Noise Offset For Frac-N Mode", font="Arial 10 bold")
+            output195.place(in_=Frame2,x=10,y=280)
+            entry195 = Entry(Frame2, width=6)
+            entry195.place(in_=Frame2, x=470, y=280)
+            output196 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
+            output196.place(in_=Frame2,x=520,y=280)
             
-            output1 = ttk.Label(Frame2, text="Add Subtract From Phase Detector Noise", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=10,y=310)
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=470, y=310)
-            output1 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=520,y=310)
+            output197 = ttk.Label(Frame2, text="Add Subtract From Phase Detector Noise", font="Arial 10 bold")
+            output197.place(in_=Frame2,x=10,y=310)
+            entry196 = Entry(Frame2, width=6)
+            entry196.place(in_=Frame2, x=470, y=310)
+            output198 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
+            output198.place(in_=Frame2,x=520,y=310)
             
         def change_noise4():
             
@@ -982,242 +1458,242 @@ class MainGUI(Frame):
             Frame2 = Frame(root, highlightbackground="black", highlightcolor="black", highlightthickness=2, width=600, height=450, bd=0)
             Frame2.grid(row = 2, column =5, rowspan = 2, columnspan = 2, sticky = W+E+N+S)
             
-            output1 = ttk.Label(Frame2, text="Use Simple VCO Model?", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=10,y=10)   
+            output199 = ttk.Label(Frame2, text="Use Simple VCO Model?", font="Arial 10 bold")
+            output199.place(in_=Frame2,x=10,y=10)   
             check_var = IntVar()
             Checkbutton(root, variable=check_var).place(in_=Frame2, x=490, y=10)
             
-            output1 = ttk.Label(Frame2, text="VCO Noise Specification Frequency", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=10,y=40)
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=470, y=40)
-            output1 = ttk.Label(Frame2, text="Hz", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=520,y=40)
+            output200 = ttk.Label(Frame2, text="VCO Noise Specification Frequency", font="Arial 10 bold")
+            output200.place(in_=Frame2,x=10,y=40)
+            entry197 = Entry(Frame2, width=6)
+            entry197.place(in_=Frame2, x=470, y=40)
+            output201 = ttk.Label(Frame2, text="Hz", font="Arial 10 bold")
+            output201.place(in_=Frame2,x=520,y=40)
             
-            output1 = ttk.Label(Frame2, text="Tuning Voltage", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=10,y=70)
-            entry44 = Entry(Frame2, width=6)
+            output202 = ttk.Label(Frame2, text="Tuning Voltage", font="Arial 10 bold")
+            output202.place(in_=Frame2,x=10,y=70)
+       #     entry198 = Entry(Frame2, width=6)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=170, y=70)
+            entry199 = Entry(Frame2, width=6)
+            entry199.place(in_=Frame2, x=170, y=70)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=220, y=70)
+            entry200 = Entry(Frame2, width=6)
+            entry200.place(in_=Frame2, x=220, y=70)
         
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=270, y=70)
+            entry201 = Entry(Frame2, width=6)
+            entry201.place(in_=Frame2, x=270, y=70)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=320, y=70)
+            entry202 = Entry(Frame2, width=6)
+            entry202.place(in_=Frame2, x=320, y=70)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=370, y=70)
+            entry203 = Entry(Frame2, width=6)
+            entry203.place(in_=Frame2, x=370, y=70)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=420, y=70)
+            entry204 = Entry(Frame2, width=6)
+            entry204.place(in_=Frame2, x=420, y=70)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=470, y=70)
+            entry205 = Entry(Frame2, width=6)
+            entry205.place(in_=Frame2, x=470, y=70)
             
-            output1 = ttk.Label(Frame2, text="Volts", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=520,y=70)
+            output205 = ttk.Label(Frame2, text="Volts", font="Arial 10 bold")
+            output205.place(in_=Frame2,x=520,y=70)
             
-            output1 = ttk.Label(Frame2, text="VCO Frequency", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=10,y=100)
-            entry44 = Entry(Frame2, width=6)
+            output206 = ttk.Label(Frame2, text="VCO Frequency", font="Arial 10 bold")
+            output206.place(in_=Frame2,x=10,y=100)
+      #      entry206 = Entry(Frame2, width=6)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=170, y=100)
+            entry207 = Entry(Frame2, width=6)
+            entry207.place(in_=Frame2, x=170, y=100)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=220, y=100)
+            entry208 = Entry(Frame2, width=6)
+            entry208.place(in_=Frame2, x=220, y=100)
         
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=270, y=100)
+            entry209 = Entry(Frame2, width=6)
+            entry209.place(in_=Frame2, x=270, y=100)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=320, y=100)
+            entry210 = Entry(Frame2, width=6)
+            entry210.place(in_=Frame2, x=320, y=100)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=370, y=100)
+            entry211 = Entry(Frame2, width=6)
+            entry211.place(in_=Frame2, x=370, y=100)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=420, y=100)
+            entry212 = Entry(Frame2, width=6)
+            entry212.place(in_=Frame2, x=420, y=100)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=470, y=100)
+            entry213 = Entry(Frame2, width=6)
+            entry213.place(in_=Frame2, x=470, y=100)
             
-            output1 = ttk.Label(Frame2, text="Hz", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=520,y=100)
+            output213 = ttk.Label(Frame2, text="Hz", font="Arial 10 bold")
+            output213.place(in_=Frame2,x=520,y=100)
             
-            output1 = ttk.Label(Frame2, text="VCO Gain (Kvco)", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=10,y=130)
-            entry44 = Entry(Frame2, width=6)
+            output214 = ttk.Label(Frame2, text="VCO Gain (Kvco)", font="Arial 10 bold")
+            output214.place(in_=Frame2,x=10,y=130)
+         #   entry214 = Entry(Frame2, width=6)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=170, y=130)
+            entry215 = Entry(Frame2, width=6)
+            entry215.place(in_=Frame2, x=170, y=130)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=220, y=130)
+            entry216 = Entry(Frame2, width=6)
+            entry216.place(in_=Frame2, x=220, y=130)
         
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=270, y=130)
+            entry217 = Entry(Frame2, width=6)
+            entry217.place(in_=Frame2, x=270, y=130)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=320, y=130)
+            entry218 = Entry(Frame2, width=6)
+            entry218.place(in_=Frame2, x=320, y=130)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=370, y=130)
+            entry219 = Entry(Frame2, width=6)
+            entry219.place(in_=Frame2, x=370, y=130)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=420, y=130)
+            entry220 = Entry(Frame2, width=6)
+            entry220.place(in_=Frame2, x=420, y=130)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=470, y=130)
+            entry221 = Entry(Frame2, width=6)
+            entry221.place(in_=Frame2, x=470, y=130)
             
-            output1 = ttk.Label(Frame2, text="MHz", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=520,y=130)
+            output221 = ttk.Label(Frame2, text="MHz", font="Arial 10 bold")
+            output221.place(in_=Frame2,x=520,y=130)
             
-            output1 = ttk.Label(Frame2, text="VCO Supply Noise", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=10,y=160)
-            entry44 = Entry(Frame2, width=6)
+            output222 = ttk.Label(Frame2, text="VCO Supply Noise", font="Arial 10 bold")
+            output222.place(in_=Frame2,x=10,y=160)
+         #   entry222 = Entry(Frame2, width=6)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=170, y=160)
+            entry223 = Entry(Frame2, width=6)
+            entry223.place(in_=Frame2, x=170, y=160)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=220, y=160)
+            entry224 = Entry(Frame2, width=6)
+            entry224.place(in_=Frame2, x=220, y=160)
         
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=270, y=160)
+            entry225 = Entry(Frame2, width=6)
+            entry225.place(in_=Frame2, x=270, y=160)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=320, y=160)
+            entry226 = Entry(Frame2, width=6)
+            entry226.place(in_=Frame2, x=320, y=160)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=370, y=160)
+            entry227 = Entry(Frame2, width=6)
+            entry227.place(in_=Frame2, x=370, y=160)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=420, y=160)
+            entry228 = Entry(Frame2, width=6)
+            entry228.place(in_=Frame2, x=420, y=160)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=470, y=160)
+            entry229 = Entry(Frame2, width=6)
+            entry229.place(in_=Frame2, x=470, y=160)
             
-            output1 = ttk.Label(Frame2, text="dBV^2/Hz", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=520,y=160)
+            output229 = ttk.Label(Frame2, text="dBV^2/Hz", font="Arial 10 bold")
+            output229.place(in_=Frame2,x=520,y=160)
             
-            output1 = ttk.Label(Frame2, text="Frequency", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=50,y=200)
+            output230 = ttk.Label(Frame2, text="Frequency", font="Arial 10 bold")
+            output230.place(in_=Frame2,x=50,y=200)
             
-            output1 = ttk.Label(Frame2, text="Open Loop VCO Phase Noise", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=200,y=200)
+            output231 = ttk.Label(Frame2, text="Open Loop VCO Phase Noise", font="Arial 10 bold")
+            output231.place(in_=Frame2,x=200,y=200)
             
-            output1 = ttk.Label(Frame2, text="Min:", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=10,y=220)
-            entry44 = Entry(Frame2, width=6)
+            output232 = ttk.Label(Frame2, text="Min:", font="Arial 10 bold")
+            output232.place(in_=Frame2,x=10,y=220)
+       #     entry230 = Entry(Frame2, width=6)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=70, y=220)
+            entry230 = Entry(Frame2, width=6)
+            entry230.place(in_=Frame2, x=70, y=220)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=170, y=220)
+            entry231 = Entry(Frame2, width=6)
+            entry231.place(in_=Frame2, x=170, y=220)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=220, y=220)
+            entry232 = Entry(Frame2, width=6)
+            entry232.place(in_=Frame2, x=220, y=220)
         
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=270, y=220)
+            entry233 = Entry(Frame2, width=6)
+            entry233.place(in_=Frame2, x=270, y=220)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=320, y=220)
+            entry234 = Entry(Frame2, width=6)
+            entry234.place(in_=Frame2, x=320, y=220)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=370, y=220)
+            entry235 = Entry(Frame2, width=6)
+            entry235.place(in_=Frame2, x=370, y=220)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=420, y=220)
+            entry236 = Entry(Frame2, width=6)
+            entry236.place(in_=Frame2, x=420, y=220)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=470, y=220)
+            entry237 = Entry(Frame2, width=6)
+            entry237.place(in_=Frame2, x=470, y=220)
             
-            output1 = ttk.Label(Frame2, text="dBc/Hz", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=520,y=220)
+            output237 = ttk.Label(Frame2, text="dBc/Hz", font="Arial 10 bold")
+            output237.place(in_=Frame2,x=520,y=220)
             
-            output1 = ttk.Label(Frame2, text="Mid:", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=10,y=250)
-            entry44 = Entry(Frame2, width=6)
+            output238 = ttk.Label(Frame2, text="Mid:", font="Arial 10 bold")
+            output238.place(in_=Frame2,x=10,y=250)
+         #   entry238 = Entry(Frame2, width=6)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=70, y=250)
+            entry238 = Entry(Frame2, width=6)
+            entry238.place(in_=Frame2, x=70, y=250)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=170, y=250)
+            entry239 = Entry(Frame2, width=6)
+            entry239.place(in_=Frame2, x=170, y=250)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=220, y=250)
+            entry240 = Entry(Frame2, width=6)
+            entry240.place(in_=Frame2, x=220, y=250)
         
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=270, y=250)
+            entry241 = Entry(Frame2, width=6)
+            entry241.place(in_=Frame2, x=270, y=250)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=320, y=250)
+            entry242 = Entry(Frame2, width=6)
+            entry242.place(in_=Frame2, x=320, y=250)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=370, y=250)
+            entry243 = Entry(Frame2, width=6)
+            entry243.place(in_=Frame2, x=370, y=250)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=420, y=250)
+            entry244 = Entry(Frame2, width=6)
+            entry244.place(in_=Frame2, x=420, y=250)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=470, y=250)
+            entry245 = Entry(Frame2, width=6)
+            entry245.place(in_=Frame2, x=470, y=250)
             
-            output1 = ttk.Label(Frame2, text="dBc/Hz", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=520,y=250)
+            output245 = ttk.Label(Frame2, text="dBc/Hz", font="Arial 10 bold")
+            output245.place(in_=Frame2,x=520,y=250)
             
-            output1 = ttk.Label(Frame2, text="Max:", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=10,y=280)
-            entry44 = Entry(Frame2, width=6)
+            output246 = ttk.Label(Frame2, text="Max:", font="Arial 10 bold")
+            output246.place(in_=Frame2,x=10,y=280)
+          #  entry24 = Entry(Frame2, width=6)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=70, y=280)
+            entry246 = Entry(Frame2, width=6)
+            entry246.place(in_=Frame2, x=70, y=280)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=170, y=280)
+            entry247 = Entry(Frame2, width=6)
+            entry247.place(in_=Frame2, x=170, y=280)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=220, y=280)
+            entry248 = Entry(Frame2, width=6)
+            entry248.place(in_=Frame2, x=220, y=280)
         
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=270, y=280)
+            entry249 = Entry(Frame2, width=6)
+            entry249.place(in_=Frame2, x=270, y=280)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=320, y=280)
+            entry250 = Entry(Frame2, width=6)
+            entry250.place(in_=Frame2, x=320, y=280)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=370, y=280)
+            entry251 = Entry(Frame2, width=6)
+            entry251.place(in_=Frame2, x=370, y=280)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=420, y=280)
+            entry252 = Entry(Frame2, width=6)
+            entry252.place(in_=Frame2, x=420, y=280)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=470, y=280)
+            entry253 = Entry(Frame2, width=6)
+            entry253.place(in_=Frame2, x=470, y=280)
             
-            output1 = ttk.Label(Frame2, text="dBc/Hz", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=520,y=280)
+            output253 = ttk.Label(Frame2, text="dBc/Hz", font="Arial 10 bold")
+            output253.place(in_=Frame2,x=520,y=280)
             
-            output1 = ttk.Label(Frame2, text="Offset [dB]", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=10,y=310)
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=470, y=310)
-            output1 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=520,y=310)
+            output254 = ttk.Label(Frame2, text="Offset [dB]", font="Arial 10 bold")
+            output254.place(in_=Frame2,x=10,y=310)
+            entry254 = Entry(Frame2, width=6)
+            entry254.place(in_=Frame2, x=470, y=310)
+            output255 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
+            output255.place(in_=Frame2,x=520,y=310)
             
-            output1 = ttk.Label(Frame2, text="Pushing Figure", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=10,y=340)
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=470, y=340)
-            output1 = ttk.Label(Frame2, text="Hz/Volts", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=520,y=340)
+            output256 = ttk.Label(Frame2, text="Pushing Figure", font="Arial 10 bold")
+            output256.place(in_=Frame2,x=10,y=340)
+            entry255 = Entry(Frame2, width=6)
+            entry255.place(in_=Frame2, x=470, y=340)
+            output257 = ttk.Label(Frame2, text="Hz/Volts", font="Arial 10 bold")
+            output257.place(in_=Frame2,x=520,y=340)
             
         def change_noise5():
             
@@ -1236,75 +1712,75 @@ class MainGUI(Frame):
             Frame2 = Frame(root, highlightbackground="black", highlightcolor="black", highlightthickness=2, width=600, height=450, bd=0)
             Frame2.grid(row = 2, column =5, rowspan = 2, columnspan = 2, sticky = W+E+N+S)
             
-            output1 = ttk.Label(Frame2, text="Divider Noise Specification Frequency", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=10,y=10)
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=470, y=10)
-            output1 = ttk.Label(Frame2, text="Hz", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=520,y=10)
+            output258 = ttk.Label(Frame2, text="Divider Noise Specification Frequency", font="Arial 10 bold")
+            output258.place(in_=Frame2,x=10,y=10)
+            entry256 = Entry(Frame2, width=6)
+            entry256.place(in_=Frame2, x=470, y=10)
+            output259 = ttk.Label(Frame2, text="Hz", font="Arial 10 bold")
+            output259.place(in_=Frame2,x=520,y=10)
             
-            output1 = ttk.Label(Frame2, text="Frequency Offset", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=10,y=40)
-            entry44 = Entry(Frame2, width=6)
+            output260 = ttk.Label(Frame2, text="Frequency Offset", font="Arial 10 bold")
+            output260.place(in_=Frame2,x=10,y=40)
+           # entry33 = Entry(Frame2, width=6)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=170, y=40)
+            entry257 = Entry(Frame2, width=6)
+            entry257.place(in_=Frame2, x=170, y=40)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=220, y=40)
+            entry258 = Entry(Frame2, width=6)
+            entry258.place(in_=Frame2, x=220, y=40)
         
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=270, y=40)
+            entry259 = Entry(Frame2, width=6)
+            entry259.place(in_=Frame2, x=270, y=40)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=320, y=40)
+            entry260 = Entry(Frame2, width=6)
+            entry260.place(in_=Frame2, x=320, y=40)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=370, y=40)
+            entry261 = Entry(Frame2, width=6)
+            entry261.place(in_=Frame2, x=370, y=40)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=420, y=40)
+            entry262 = Entry(Frame2, width=6)
+            entry262.place(in_=Frame2, x=420, y=40)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=470, y=40)
+            entry263 = Entry(Frame2, width=6)
+            entry263.place(in_=Frame2, x=470, y=40)
             
-            output1 = ttk.Label(Frame2, text="Hz", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=520,y=40)
+            output263 = ttk.Label(Frame2, text="Hz", font="Arial 10 bold")
+            output263.place(in_=Frame2,x=520,y=40)
             
-            output1 = ttk.Label(Frame2, text="Feedback Divider Noise", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=10,y=70)
-            entry44 = Entry(Frame2, width=6)
+            output264 = ttk.Label(Frame2, text="Feedback Divider Noise", font="Arial 10 bold")
+            output264.place(in_=Frame2,x=10,y=70)
+          #  entry264 = Entry(Frame2, width=6)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=170, y=70)
+            entry264 = Entry(Frame2, width=6)
+            entry264.place(in_=Frame2, x=170, y=70)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=220, y=70)
+            entry265 = Entry(Frame2, width=6)
+            entry265.place(in_=Frame2, x=220, y=70)
         
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=270, y=70)
+            entry266 = Entry(Frame2, width=6)
+            entry266.place(in_=Frame2, x=270, y=70)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=320, y=70)
+            entry267 = Entry(Frame2, width=6)
+            entry267.place(in_=Frame2, x=320, y=70)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=370, y=70)
+            entry268 = Entry(Frame2, width=6)
+            entry268.place(in_=Frame2, x=370, y=70)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=420, y=70)
+            entry269 = Entry(Frame2, width=6)
+            entry269.place(in_=Frame2, x=420, y=70)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=470, y=70)
+            entry270 = Entry(Frame2, width=6)
+            entry270.place(in_=Frame2, x=470, y=70)
             
-            output1 = ttk.Label(Frame2, text="dBc/Hz", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=520,y=70)
+            output270 = ttk.Label(Frame2, text="dBc/Hz", font="Arial 10 bold")
+            output270.place(in_=Frame2,x=520,y=70)
             
-            output1 = ttk.Label(Frame2, text="Offset [dB]", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=10,y=100)
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=470, y=100)
-            output1 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=520,y=100)
+            output271 = ttk.Label(Frame2, text="Offset [dB]", font="Arial 10 bold")
+            output271.place(in_=Frame2,x=10,y=100)
+            entry271 = Entry(Frame2, width=6)
+            entry271.place(in_=Frame2, x=470, y=100)
+            output272 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
+            output272.place(in_=Frame2,x=520,y=100)
             
         def change_noise6():
             
@@ -1323,173 +1799,173 @@ class MainGUI(Frame):
             Frame2 = Frame(root, highlightbackground="black", highlightcolor="black", highlightthickness=2, width=600, height=450, bd=0)
             Frame2.grid(row = 2, column =5, rowspan = 2, columnspan = 2, sticky = W+E+N+S)
             
-            output1 = ttk.Label(Frame2, text="Frequency Offset", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=10,y=10)
-            entry44 = Entry(Frame2, width=6)
+            output273 = ttk.Label(Frame2, text="Frequency Offset", font="Arial 10 bold")
+            output273.place(in_=Frame2,x=10,y=10)
+            #entry44 = Entry(Frame2, width=6)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=170, y=10)
+            entry272 = Entry(Frame2, width=6)
+            entry272.place(in_=Frame2, x=170, y=10)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=220, y=10)
+            entry273 = Entry(Frame2, width=6)
+            entry273.place(in_=Frame2, x=220, y=10)
         
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=270, y=10)
+            entry274 = Entry(Frame2, width=6)
+            entry274.place(in_=Frame2, x=270, y=10)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=320, y=10)
+            entry275 = Entry(Frame2, width=6)
+            entry275.place(in_=Frame2, x=320, y=10)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=370, y=10)
+            entry276 = Entry(Frame2, width=6)
+            entry276.place(in_=Frame2, x=370, y=10)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=420, y=10)
+            entry277 = Entry(Frame2, width=6)
+            entry277.place(in_=Frame2, x=420, y=10)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=470, y=10)
+            entry278 = Entry(Frame2, width=6)
+            entry278.place(in_=Frame2, x=470, y=10)
             
-            output1 = ttk.Label(Frame2, text="Hz", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=520,y=10)
+            output278 = ttk.Label(Frame2, text="Hz", font="Arial 10 bold")
+            output278.place(in_=Frame2,x=520,y=10)
             
-            output1 = ttk.Label(Frame2, text="OpAmp Supply Noise", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=10,y=40)
-            entry44 = Entry(Frame2, width=6)
+            output279 = ttk.Label(Frame2, text="OpAmp Supply Noise", font="Arial 10 bold")
+            output279.place(in_=Frame2,x=10,y=40)
+            #entry44 = Entry(Frame2, width=6)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=170, y=40)
+            entry279 = Entry(Frame2, width=6)
+            entry279.place(in_=Frame2, x=170, y=40)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=220, y=40)
+            entry280 = Entry(Frame2, width=6)
+            entry280.place(in_=Frame2, x=220, y=40)
         
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=270, y=40)
+            entry281 = Entry(Frame2, width=6)
+            entry281.place(in_=Frame2, x=270, y=40)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=320, y=40)
+            entry282 = Entry(Frame2, width=6)
+            entry282.place(in_=Frame2, x=320, y=40)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=370, y=40)
+            entry283 = Entry(Frame2, width=6)
+            entry283.place(in_=Frame2, x=370, y=40)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=420, y=40)
+            entry284 = Entry(Frame2, width=6)
+            entry284.place(in_=Frame2, x=420, y=40)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=470, y=40)
+            entry285 = Entry(Frame2, width=6)
+            entry285.place(in_=Frame2, x=470, y=40)
             
-            output1 = ttk.Label(Frame2, text="dBcV^2/Hz", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=520,y=40)
+            output285 = ttk.Label(Frame2, text="dBcV^2/Hz", font="Arial 10 bold")
+            output285.place(in_=Frame2,x=520,y=40)
 
-            output1 = ttk.Label(Frame2, text="PSRR", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=10,y=70)
-            entry44 = Entry(Frame2, width=6)
+            output286 = ttk.Label(Frame2, text="PSRR", font="Arial 10 bold")
+            output286.place(in_=Frame2,x=10,y=70)
+            #entry286 = Entry(Frame2, width=6)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=170, y=70)
+            entry286 = Entry(Frame2, width=6)
+            entry286.place(in_=Frame2, x=170, y=70)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=220, y=70)
+            entry287 = Entry(Frame2, width=6)
+            entry287.place(in_=Frame2, x=220, y=70)
         
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=270, y=70)
+            entry288 = Entry(Frame2, width=6)
+            entry288.place(in_=Frame2, x=270, y=70)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=320, y=70)
+            entry289 = Entry(Frame2, width=6)
+            entry289.place(in_=Frame2, x=320, y=70)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=370, y=70)
+            entry290 = Entry(Frame2, width=6)
+            entry290.place(in_=Frame2, x=370, y=70)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=420, y=70)
+            entry291 = Entry(Frame2, width=6)
+            entry291.place(in_=Frame2, x=420, y=70)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=470, y=70)
+            entry292 = Entry(Frame2, width=6)
+            entry292.place(in_=Frame2, x=470, y=70)
             
-            output1 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=520,y=70)
+            output292 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
+            output292.place(in_=Frame2,x=520,y=70)
             
-            output1 = ttk.Label(Frame2, text="Vn", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=10,y=100)
-            entry44 = Entry(Frame2, width=6)
+            output293 = ttk.Label(Frame2, text="Vn", font="Arial 10 bold")
+            output293.place(in_=Frame2,x=10,y=100)
+            #entry293 = Entry(Frame2, width=6)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=170, y=100)
+            entry293 = Entry(Frame2, width=6)
+            entry293.place(in_=Frame2, x=170, y=100)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=220, y=100)
+            entry294 = Entry(Frame2, width=6)
+            entry294.place(in_=Frame2, x=220, y=100)
         
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=270, y=100)
+            entry295 = Entry(Frame2, width=6)
+            entry295.place(in_=Frame2, x=270, y=100)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=320, y=100)
+            entry296 = Entry(Frame2, width=6)
+            entry296.place(in_=Frame2, x=320, y=100)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=370, y=100)
+            entry297 = Entry(Frame2, width=6)
+            entry297.place(in_=Frame2, x=370, y=100)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=420, y=100)
+            entry298 = Entry(Frame2, width=6)
+            entry298.place(in_=Frame2, x=420, y=100)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=470, y=100)
+            entry299 = Entry(Frame2, width=6)
+            entry299.place(in_=Frame2, x=470, y=100)
             
-            output1 = ttk.Label(Frame2, text="dB V^2/Hz", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=520,y=100)
+            output299 = ttk.Label(Frame2, text="dB V^2/Hz", font="Arial 10 bold")
+            output299.place(in_=Frame2,x=520,y=100)
 
-            output1 = ttk.Label(Frame2, text="Inp", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=10,y=130)
-            entry44 = Entry(Frame2, width=6)
+            output300 = ttk.Label(Frame2, text="Inp", font="Arial 10 bold")
+            output300.place(in_=Frame2,x=10,y=130)
+            #entry300 = Entry(Frame2, width=6)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=170, y=130)
+            entry300 = Entry(Frame2, width=6)
+            entry300.place(in_=Frame2, x=170, y=130)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=220, y=130)
+            entry301 = Entry(Frame2, width=6)
+            entry301.place(in_=Frame2, x=220, y=130)
         
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=270, y=130)
+            entry302 = Entry(Frame2, width=6)
+            entry302.place(in_=Frame2, x=270, y=130)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=320, y=130)
+            entry303 = Entry(Frame2, width=6)
+            entry303.place(in_=Frame2, x=320, y=130)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=370, y=130)
+            entry304 = Entry(Frame2, width=6)
+            entry304.place(in_=Frame2, x=370, y=130)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=420, y=130)
+            entry305 = Entry(Frame2, width=6)
+            entry305.place(in_=Frame2, x=420, y=130)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=470, y=130)
+            entry306 = Entry(Frame2, width=6)
+            entry306.place(in_=Frame2, x=470, y=130)
             
-            output1 = ttk.Label(Frame2, text="dB V^2/Hz", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=520,y=130)
+            output306 = ttk.Label(Frame2, text="dB V^2/Hz", font="Arial 10 bold")
+            output306.place(in_=Frame2,x=520,y=130)
             
-            output1 = ttk.Label(Frame2, text="Inn", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=10,y=160)
-            entry44 = Entry(Frame2, width=6)
+            output307 = ttk.Label(Frame2, text="Inn", font="Arial 10 bold")
+            output307.place(in_=Frame2,x=10,y=160)
+            #entry4 = Entry(Frame2, width=6)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=170, y=160)
+            entry307 = Entry(Frame2, width=6)
+            entry307.place(in_=Frame2, x=170, y=160)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=220, y=160)
+            entry308 = Entry(Frame2, width=6)
+            entry308.place(in_=Frame2, x=220, y=160)
         
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=270, y=160)
+            entry309 = Entry(Frame2, width=6)
+            entry309.place(in_=Frame2, x=270, y=160)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=320, y=160)
+            entry310 = Entry(Frame2, width=6)
+            entry310.place(in_=Frame2, x=320, y=160)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=370, y=160)
+            entry311 = Entry(Frame2, width=6)
+            entry311.place(in_=Frame2, x=370, y=160)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=420, y=160)
+            entry312 = Entry(Frame2, width=6)
+            entry312.place(in_=Frame2, x=420, y=160)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=470, y=160)
+            entry313 = Entry(Frame2, width=6)
+            entry313.place(in_=Frame2, x=470, y=160)
             
-            output1 = ttk.Label(Frame2, text="dB V^2/Hz", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=520,y=160)            
+            output313 = ttk.Label(Frame2, text="dB V^2/Hz", font="Arial 10 bold")
+            output313.place(in_=Frame2,x=520,y=160)            
             
         def change_noise7():
             
@@ -1508,9 +1984,9 @@ class MainGUI(Frame):
             Frame2 = Frame(root, highlightbackground="black", highlightcolor="black", highlightthickness=2, width=600, height=450, bd=0)
             Frame2.grid(row = 2, column =5, rowspan = 2, columnspan = 2, sticky = W+E+N+S)
             
-            output1 = ttk.Label(Frame2, text="Delta Sigma Type", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=10,y=10)
-            entry44 = Entry(Frame2, width=6)
+            output314 = ttk.Label(Frame2, text="Delta Sigma Type", font="Arial 10 bold")
+            output314.place(in_=Frame2,x=10,y=10)
+            #entry314 = Entry(Frame2, width=6)
             
             paramMenu=['nth Order Mode B','nth Order Mode B','nth Order Mode B']
             option_select=StringVar(root)
@@ -1520,9 +1996,9 @@ class MainGUI(Frame):
             drop5.config(font=('Arial 7 bold'),bg='white',width=14)
             drop5['menu'].config(font=('Arial 7 bold'),bg='white')
             
-            output1 = ttk.Label(Frame2, text="Delta Sigma Order", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=10,y=40)
-            entry44 = Entry(Frame2, width=6)
+            output315 = ttk.Label(Frame2, text="Delta Sigma Order", font="Arial 10 bold")
+            output315.place(in_=Frame2,x=10,y=40)
+            #entry315 = Entry(Frame2, width=6)
             
             paramMenu=['1','2','3']
             option_select=StringVar(root)
@@ -1532,12 +2008,12 @@ class MainGUI(Frame):
             drop5.config(font=('Arial 7 bold'),bg='white',width=8)
             drop5['menu'].config(font=('Arial 7 bold'),bg='white')
             
-            output1 = ttk.Label(Frame2, text="Offset [dB]", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=10,y=70)
-            entry44 = Entry(Frame2, width=6)           
+            output316 = ttk.Label(Frame2, text="Offset [dB]", font="Arial 10 bold")
+            output316.place(in_=Frame2,x=10,y=70)
+            #entry316 = Entry(Frame2, width=6)           
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=470, y=70)
+            entry314 = Entry(Frame2, width=6)
+            entry314.place(in_=Frame2, x=470, y=70)
             
         def change_noise8():
             
@@ -1565,76 +2041,76 @@ class MainGUI(Frame):
             Frame3 = Frame(Frame2, highlightbackground="black", highlightcolor="black", highlightthickness=2, width=580, height=290, bd=0)
             Frame3.grid(row = 5, column =2, rowspan = 2, columnspan = 2, sticky = W+E+N+S)
             
-            output1 = ttk.Label(Frame2, text="Frequency Offset", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=10,y=10)
-            entry44 = Entry(Frame2, width=6)
+            output317 = ttk.Label(Frame2, text="Frequency Offset", font="Arial 10 bold")
+            output317.place(in_=Frame2,x=10,y=10)
+            #entry44 = Entry(Frame2, width=6)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=170, y=10)
+            entry315 = Entry(Frame2, width=6)
+            entry315.place(in_=Frame2, x=170, y=10)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=220, y=10)
+            entry316 = Entry(Frame2, width=6)
+            entry316.place(in_=Frame2, x=220, y=10)
         
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=270, y=10)
+            entry317 = Entry(Frame2, width=6)
+            entry317.place(in_=Frame2, x=270, y=10)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=320, y=10)
+            entry318 = Entry(Frame2, width=6)
+            entry318.place(in_=Frame2, x=320, y=10)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=370, y=10)
+            entry319 = Entry(Frame2, width=6)
+            entry319.place(in_=Frame2, x=370, y=10)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=420, y=10)
+            entry320 = Entry(Frame2, width=6)
+            entry320.place(in_=Frame2, x=420, y=10)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=470, y=10)
+            entry321 = Entry(Frame2, width=6)
+            entry321.place(in_=Frame2, x=470, y=10)
             
-            output1 = ttk.Label(Frame2, text="Hz", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=520,y=10)
+            output321 = ttk.Label(Frame2, text="Hz", font="Arial 10 bold")
+            output321.place(in_=Frame2,x=520,y=10)
             
-            output1 = ttk.Label(Frame2, text="Phase Noise Mask", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=10,y=40)
-            entry44 = Entry(Frame2, width=6)
+            output322 = ttk.Label(Frame2, text="Phase Noise Mask", font="Arial 10 bold")
+            output322.place(in_=Frame2,x=10,y=40)
+            #entry44 = Entry(Frame2, width=6)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=170, y=40)
+            entry322 = Entry(Frame2, width=6)
+            entry322.place(in_=Frame2, x=170, y=40)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=220, y=40)
+            entry323 = Entry(Frame2, width=6)
+            entry323.place(in_=Frame2, x=220, y=40)
         
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=270, y=40)
+            entry324 = Entry(Frame2, width=6)
+            entry324.place(in_=Frame2, x=270, y=40)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=320, y=40)
+            entry325 = Entry(Frame2, width=6)
+            entry325.place(in_=Frame2, x=320, y=40)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=370, y=40)
+            entry326 = Entry(Frame2, width=6)
+            entry326.place(in_=Frame2, x=370, y=40)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=420, y=40)
+            entry327 = Entry(Frame2, width=6)
+            entry327.place(in_=Frame2, x=420, y=40)
             
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=470, y=40)
+            entry328 = Entry(Frame2, width=6)
+            entry328.place(in_=Frame2, x=470, y=40)
             
-            output1 = ttk.Label(Frame2, text="dBc/Hz", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=520,y=40)
+            output328 = ttk.Label(Frame2, text="dBc/Hz", font="Arial 10 bold")
+            output328.place(in_=Frame2,x=520,y=40)
             
-            output1 = ttk.Label(Frame2, text="Add Subtract From Composite Noise?", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=10,y=70)
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=470, y=70)
-            output1 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=520,y=70)
+            output329 = ttk.Label(Frame2, text="Add Subtract From Composite Noise?", font="Arial 10 bold")
+            output329.place(in_=Frame2,x=10,y=70)
+            entry329 = Entry(Frame2, width=6)
+            entry329.place(in_=Frame2, x=470, y=70)
+            output330 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
+            output330.place(in_=Frame2,x=520,y=70)
             
-            output1 = ttk.Label(Frame2, text="Refine Number of Points?", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=10,y=100)
+            output331 = ttk.Label(Frame2, text="Refine Number of Points?", font="Arial 10 bold")
+            output331.place(in_=Frame2,x=10,y=100)
             check_var = IntVar()
             Checkbutton(root, variable=check_var).place(in_=Frame2, x=490, y=100)
             
-            output1 = ttk.Label(Frame3, text="Enable", font="Arial 10 bold")
-            output1.place(in_=Frame3,x=30,y=10)
+            output332 = ttk.Label(Frame3, text="Enable", font="Arial 10 bold")
+            output332.place(in_=Frame3,x=30,y=10)
             check_var = IntVar()
             Checkbutton(root, variable=check_var).place(in_=Frame3, x=5, y=10)
             
@@ -1646,41 +2122,41 @@ class MainGUI(Frame):
             drop_menu.config(font=('Arial 7 bold'),bg='white',width=16)
             drop_menu['menu'].config(font=('Arial 7 bold'),bg='white')
             
-            output1 = ttk.Label(Frame3, text="Division Ratio", font="Arial 10 bold")
-            output1.place(in_=Frame3,x=10,y=40)
-            entry44 = Entry(Frame3, width=6)
-            entry44.place(in_=Frame3, x=480, y=40)
+            output333 = ttk.Label(Frame3, text="Division Ratio", font="Arial 10 bold")
+            output333.place(in_=Frame3,x=10,y=40)
+            entry330 = Entry(Frame3, width=6)
+            entry330.place(in_=Frame3, x=480, y=40)
             
-            output1 = ttk.Label(Frame3, text="Phase Noise Floor FOM", font="Arial 10 bold")
-            output1.place(in_=Frame3,x=10,y=70)
-            entry44 = Entry(Frame3, width=6)
-            entry44.place(in_=Frame3, x=180, y=70)
-            output1 = ttk.Label(Frame3, text="dB/Hz", font="Arial 10 bold")
-            output1.place(in_=Frame3,x=230,y=70)
+            output331 = ttk.Label(Frame3, text="Phase Noise Floor FOM", font="Arial 10 bold")
+            output331.place(in_=Frame3,x=10,y=70)
+            entry331 = Entry(Frame3, width=6)
+            entry331.place(in_=Frame3, x=180, y=70)
+            output331 = ttk.Label(Frame3, text="dB/Hz", font="Arial 10 bold")
+            output331.place(in_=Frame3,x=230,y=70)
             
-            output1 = ttk.Label(Frame3, text="Spec Frequency", font="Arial 10 bold")
-            output1.place(in_=Frame3,x=370,y=70)
-            entry44 = Entry(Frame3, width=6)
-            entry44.place(in_=Frame3, x=480, y=70)
+            output332 = ttk.Label(Frame3, text="Spec Frequency", font="Arial 10 bold")
+            output332.place(in_=Frame3,x=370,y=70)
+            entry332 = Entry(Frame3, width=6)
+            entry332.place(in_=Frame3, x=480, y=70)
             
-            output1 = ttk.Label(Frame3, text="Flicker Noise FOM", font="Arial 10 bold")
-            output1.place(in_=Frame3,x=10,y=100)
-            entry44 = Entry(Frame3, width=6)
-            entry44.place(in_=Frame3, x=480, y=100)
-            output1 = ttk.Label(Frame3, text="dBc/Hz", font="Arial 10 bold")
-            output1.place(in_=Frame3,x=525,y=100)
+            output333 = ttk.Label(Frame3, text="Flicker Noise FOM", font="Arial 10 bold")
+            output333.place(in_=Frame3,x=10,y=100)
+            entry333 = Entry(Frame3, width=6)
+            entry333.place(in_=Frame3, x=480, y=100)
+            output333 = ttk.Label(Frame3, text="dBc/Hz", font="Arial 10 bold")
+            output333.place(in_=Frame3,x=525,y=100)
             
-            output1 = ttk.Label(Frame3, text="Divider Output Power", font="Arial 10 bold")
-            output1.place(in_=Frame3,x=10,y=190)
-            entry44 = Entry(Frame3, width=6)
-            entry44.place(in_=Frame3, x=480, y=190)
-            output1 = ttk.Label(Frame3, text="dBm", font="Arial 10 bold")
-            output1.place(in_=Frame3,x=525,y=190)
+            output334 = ttk.Label(Frame3, text="Divider Output Power", font="Arial 10 bold")
+            output334.place(in_=Frame3,x=10,y=190)
+            entry334 = Entry(Frame3, width=6)
+            entry334.place(in_=Frame3, x=480, y=190)
+            output334 = ttk.Label(Frame3, text="dBm", font="Arial 10 bold")
+            output334.place(in_=Frame3,x=525,y=190)
             
-            output1 = ttk.Label(Frame3, text="Output Frequency", font="Arial 10 bold")
-            output1.place(in_=Frame3,x=10,y=220)
-            entry44 = Entry(Frame3, width=6)
-            entry44.place(in_=Frame3, x=480, y=220)
+            output335 = ttk.Label(Frame3, text="Output Frequency", font="Arial 10 bold")
+            output335.place(in_=Frame3,x=10,y=220)
+            entry335 = Entry(Frame3, width=6)
+            entry335.place(in_=Frame3, x=480, y=220)
             
         def change_noise9():
             
@@ -1699,15 +2175,15 @@ class MainGUI(Frame):
             Frame2 = Frame(root, highlightbackground="black", highlightcolor="black", highlightthickness=2, width=600, height=450, bd=0)
             Frame2.grid(row = 2, column =5, rowspan = 2, columnspan = 2, sticky = W+E+N+S)
             
-            output1 = ttk.Label(Frame2, text="High Pass Integration Cutoff Frequency", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=10,y=10)
-            entry44 = Entry(Frame2, width=6)
-            entry44.place(in_=Frame2, x=470, y=10)
-            output1 = ttk.Label(Frame2, text="Hz", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=520,y=10)
+            output336 = ttk.Label(Frame2, text="High Pass Integration Cutoff Frequency", font="Arial 10 bold")
+            output336.place(in_=Frame2,x=10,y=10)
+            entry336 = Entry(Frame2, width=6)
+            entry336.place(in_=Frame2, x=470, y=10)
+            output336 = ttk.Label(Frame2, text="Hz", font="Arial 10 bold")
+            output336.place(in_=Frame2,x=520,y=10)
             
-            output1 = ttk.Label(Frame2, text="High Pass Filter Order", font="Arial 10 bold")
-            output1.place(in_=Frame2,x=10,y=40)
+            output337 = ttk.Label(Frame2, text="High Pass Filter Order", font="Arial 10 bold")
+            output337.place(in_=Frame2,x=10,y=40)
             
             paramMenu=['1','2','3']
             option_select=StringVar(root)
@@ -1717,13 +2193,13 @@ class MainGUI(Frame):
             drop5.config(font=('Arial 7 bold'),bg='white',width=8)
             drop5['menu'].config(font=('Arial 7 bold'),bg='white')
         
-        output1 = ttk.Label(Frame1, text="Fractional N", font="Arial 10 bold")
-        output1.place(in_=Frame1,x=10,y=10)
+        output337 = ttk.Label(Frame1, text="Fractional N", font="Arial 10 bold")
+        output337.place(in_=Frame1,x=10,y=10)
         check_var = IntVar()
         Checkbutton(root, variable=check_var).place(in_=Frame1, x=250, y=10)
         
-        output1 = ttk.Label(Frame1, text="Enable Op-Amp Noise?", font="Arial 10 bold")
-        output1.place(in_=Frame1,x=10,y=40)
+        output337 = ttk.Label(Frame1, text="Enable Op-Amp Noise?", font="Arial 10 bold")
+        output337.place(in_=Frame1,x=10,y=40)
         check_var = IntVar()
         Checkbutton(root, variable=check_var).place(in_=Frame1, x=250, y=40)
         
@@ -1755,71 +2231,74 @@ class MainGUI(Frame):
         HighPass_button = Button(Frame1, text="High Pass Noise Integration", bg="white",font="Arial 10 bold", width=25, command=change_noise9)
         HighPass_button.place(in_=Frame1, x=40, y=390)
         
-        output1 = ttk.Label(Frame2, text="Frequency Offset", font="Arial 10 bold")
-        output1.place(in_=Frame2,x=10,y=10)
-        entry44 = Entry(Frame2, width=6)
-        entry44.place(in_=Frame2, x=170, y=10)
+        output102 = ttk.Label(Frame2, text="Frequency Offset", font="Arial 10 bold")
+        output102.place(in_=Frame2,x=10,y=10)
         
-        entry44 = Entry(Frame2, width=6)
-        entry44.place(in_=Frame2, x=220, y=10)
+        entry102 = Entry(Frame2, width=6)
+        entry102.place(in_=Frame2, x=170, y=10)
+        entry102.insert(1,"50")
         
-        entry44 = Entry(Frame2, width=6)
-        entry44.place(in_=Frame2, x=270, y=10)
+        entry103 = Entry(Frame2, width=6)
+        entry103.place(in_=Frame2, x=220, y=10)
         
-        entry44 = Entry(Frame2, width=6)
-        entry44.place(in_=Frame2, x=320, y=10)
+        entry104 = Entry(Frame2, width=6)
+        entry104.place(in_=Frame2, x=270, y=10)
         
-        entry44 = Entry(Frame2, width=6)
-        entry44.place(in_=Frame2, x=370, y=10)
+        entry105 = Entry(Frame2, width=6)
+        entry105.place(in_=Frame2, x=320, y=10)
         
-        entry44 = Entry(Frame2, width=6)
-        entry44.place(in_=Frame2, x=420, y=10)
+        entry106 = Entry(Frame2, width=6)
+        entry106.place(in_=Frame2, x=370, y=10)
         
-        entry44 = Entry(Frame2, width=6)
-        entry44.place(in_=Frame2, x=470, y=10)
+        entry107 = Entry(Frame2, width=6)
+        entry107.place(in_=Frame2, x=420, y=10)
         
-        output1 = ttk.Label(Frame2, text="Hz", font="Arial 10 bold")
-        output1.place(in_=Frame2,x=520,y=10)
+        entry108 = Entry(Frame2, width=6)
+        entry108.place(in_=Frame2, x=470, y=10)
         
-        output1 = ttk.Label(Frame2, text="Crystal Oscillator Noise", font="Arial 10 bold")
-        output1.place(in_=Frame2,x=10,y=40)
-        entry44 = Entry(Frame2, width=6)
-        entry44.place(in_=Frame2, x=170, y=40)
+        output108 = ttk.Label(Frame2, text="Hz", font="Arial 10 bold")
+        output108.place(in_=Frame2,x=520,y=10)
         
-        entry44 = Entry(Frame2, width=6)
-        entry44.place(in_=Frame2, x=220, y=40)
+        output109 = ttk.Label(Frame2, text="Crystal Oscillator Noise", font="Arial 10 bold")
+        output109.place(in_=Frame2,x=10,y=40)
         
-        entry44 = Entry(Frame2, width=6)
-        entry44.place(in_=Frame2, x=270, y=40)
+        entry110 = Entry(Frame2, width=6)
+        entry110.place(in_=Frame2, x=170, y=40)
         
-        entry44 = Entry(Frame2, width=6)
-        entry44.place(in_=Frame2, x=320, y=40)
+        entry111 = Entry(Frame2, width=6)
+        entry111.place(in_=Frame2, x=220, y=40)
         
-        entry44 = Entry(Frame2, width=6)
-        entry44.place(in_=Frame2, x=370, y=40)
+        entry112 = Entry(Frame2, width=6)
+        entry112.place(in_=Frame2, x=270, y=40)
         
-        entry44 = Entry(Frame2, width=6)
-        entry44.place(in_=Frame2, x=420, y=40)
+        entry113 = Entry(Frame2, width=6)
+        entry113.place(in_=Frame2, x=320, y=40)
         
-        entry44 = Entry(Frame2, width=6)
-        entry44.place(in_=Frame2, x=470, y=40)
+        entry114 = Entry(Frame2, width=6)
+        entry114.place(in_=Frame2, x=370, y=40)
         
-        output1 = ttk.Label(Frame2, text="dBc/Hz", font="Arial 10 bold")
-        output1.place(in_=Frame2,x=520,y=40)
+        entry115 = Entry(Frame2, width=6)
+        entry115.place(in_=Frame2, x=420, y=40)
         
-        output1 = ttk.Label(Frame2, text="Add / Subtract from Crystal Phase Noise?", font="Arial 10 bold")
-        output1.place(in_=Frame2,x=10,y=70)
-        entry44 = Entry(Frame2, width=6)
-        entry44.place(in_=Frame2, x=470, y=70)
+        entry116 = Entry(Frame2, width=6)
+        entry116.place(in_=Frame2, x=470, y=40)
         
-        output1 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
-        output1.place(in_=Frame2,x=520,y=70)
+        output116 = ttk.Label(Frame2, text="dBc/Hz", font="Arial 10 bold")
+        output116.place(in_=Frame2,x=520,y=40)
+        
+        output117 = ttk.Label(Frame2, text="Add / Subtract from Crystal Phase Noise?", font="Arial 10 bold")
+        output117.place(in_=Frame2,x=10,y=70)
+        entry118 = Entry(Frame2, width=6)
+        entry118.place(in_=Frame2, x=470, y=70)
+        
+        output118 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
+        output118.place(in_=Frame2,x=520,y=70)
         
         
         
-    def OptionsMenu_SelectionEvent(event):
-        label50 = ttk.Label(root, text="3rd and 4th Pole Calculations", font="Arial 12 bold")
-        label50.grid(row=10, column=1,columnspan=1, sticky=W)
+  #  def OptionsMenu_SelectionEvent(event):
+  #      label50 = ttk.Label(root, text="3rd and 4th Pole Calculations", font="Arial 12 bold")
+  #      label50.grid(row=10, column=1,columnspan=1, sticky=W)
         
     def filter_design(self):
         root = Toplevel(self.master)
@@ -1827,37 +2306,195 @@ class MainGUI(Frame):
         
         def apply_filter():
             
-            inputx = entry125.get()              #C1
-            self.entry25.delete(0, END)
-            self.entry25.insert(0, inputx)
+            global filtertype
+            global filterselect
+            global input412
+            #global input413
+            global input414
+            global input415
+            global input416
+            #global input417
+            #global input418
+            #global input419
+            #global input420
+            #global input421
+            #global input422
+            #global input423
+            #global input424
+            #global input425
+            #global input426
+            #global input427
+            #global input428
+            #global input429
+            #global input430
+            #global input431
+            #global input432
+            #global input433
+            #global input434
+            #global input435
+            #global input436
+            #global input437
+            #global input438
+            #global input439
             
-            inputx = entry126.get()              #C2
-            self.entry26.delete(0, END)
-            self.entry26.insert(0, inputx)
+            input412 = entry412.get()
+            #input413 = entry413.get()
+            input414 = entry414.get()
+            input415 = entry415.get()
+            input416 = entry416.get()
+            self.input417 = entry417.get()
+            self.input418 = entry418.get()
+            self.input419 = entry419.get()
+            self.input420 = entry420.get()
+            self.input421 = entry421.get()
+            self.input422 = entry422.get()
+            self.input423 = entry423.get()
+            self.input424 = entry424.get()
+            self.input425 = entry425.get()
+            self.input426 = entry426.get()
+            self.input427 = entry427.get()
+            self.input428 = entry428.get()
+            #input429 = entry429.get()
+            self.input430 = entry430.get()
+            self.input431 = entry431.get()
+            self.input432 = entry432.get()
+            #input433 = entry433.get()
+            #input434 = entry434.get()
+            self.input435 = entry435.get()
+            self.input436 = entry436.get()
+            self.input437 = entry437.get()
+            self.input438 = entry438.get()
+            self.input439 = entry439.get()
             
-            inputx = entry127.get()              #C3
-            self.entry27.delete(0, END)
-            self.entry27.insert(0, inputx)
+            filterbox()     #prepares the filter box for data being sent back
             
-            #inputx = entry128.get()              #C6
+            if filtertype == 1:  #C1, C2, R2
+                
+                self.entry25.config(state='normal')
+                self.input425 = entry425.get()              #C1
+                self.entry25.delete(0, END)
+                self.entry25.insert(0, self.input425)
+                self.entry25.config(state='disabled')
+                
+                self.entry26.config(state='normal')
+                self.input426 = entry426.get()              #C2
+                self.entry26.delete(0, END)
+                self.entry26.insert(0, self.input426)
+                self.entry26.config(state='disabled')
+                
+                self.entry31.config(state='normal')
+                self.input431 = entry431.get()              #R2
+                self.entry31.delete(0, END)
+                self.entry31.insert(0, self.input431)
+                self.entry31.config(state='disabled')
+                
+            elif filtertype == 2: #C1, R1, L1, C2 Butterworth
+
+                self.entry25.config(state='normal')
+                self.input425 = entry425.get()              #C1
+                self.entry25.delete(0, END)
+                self.entry25.insert(0, self.input425)
+                self.entry25.config(state='disabled')
+                
+                self.entry26.config(state='normal')
+                self.input426 = entry426.get()              #C2
+                self.entry26.delete(0, END)
+                self.entry26.insert(0, self.input426)
+                self.entry26.config(state='disabled')
+                
+                self.entry30.config(state='normal')
+                self.input430 = entry430.get()              #R1
+                self.entry30.delete(0, END)
+                self.entry30.insert(0, self.input430)
+                self.entry30.config(state='disabled')
+                
+                self.entry28.config(state='normal')
+                self.input428 = entry428.get()              #L1
+                self.entry28.delete(0, END)
+                self.entry28.insert(0, self.input428)
+                self.entry28.config(state='disabled') 
+                
+            else: #filtertype == 3:  #C1, C2, R2, C3, R3
+
+                self.entry25.config(state='normal')
+                self.input425 = entry425.get()              #C1
+                self.entry25.delete(0, END)
+                self.entry25.insert(0, self.input425)
+                self.entry25.config(state='disabled')
+                
+                self.entry26.config(state='normal')
+                self.input426 = entry426.get()              #C2
+                self.entry26.delete(0, END)
+                self.entry26.insert(0, self.input426)
+                self.entry26.config(state='disabled')
+                
+                self.entry31.config(state='normal')
+                self.input431 = entry431.get()              #R2
+                self.entry31.delete(0, END)
+                self.entry31.insert(0, self.input431)
+                self.entry31.config(state='disabled')
+                
+                self.entry27.config(state='normal')
+                self.input427 = entry427.get()              #C3
+                self.entry27.delete(0, END)
+                self.entry27.insert(0, self.input427)
+                self.entry27.config(state='disabled')
+                
+                self.entry32.config(state='normal')
+                self.input432 = entry432.get()              #R3
+                self.entry32.delete(0, END)
+                self.entry32.insert(0, self.input432)
+                self.entry32.config(state='disabled')
+                        
+            #else:
+
+
+                
+            #self.entry25.config(state='normal')
+            #input425 = entry425.get()              #C1
+            #self.entry25.delete(0, END)
+            #self.entry25.insert(0, input425)
+            #self.entry25.config(state='disabled')
+            
+            #self.entry26.config(state='normal')
+            #input426 = entry426.get()              #C2
+            #self.entry26.delete(0, END)
+            #self.entry26.insert(0, input426)
+            #self.entry26.config(state='disabled')
+            
+            #self.entry27.config(state='normal')
+            #input427 = entry427.get()              #C3
+            #self.entry27.delete(0, END)
+            #self.entry27.insert(0, input427)
+            #self.entry27.config(state='disabled')            
+            
+            #self.entry28.config(state='normal')
+            #input428 = entry428.get()              #L1
             #self.entry28.delete(0, END)
-            #self.entry28.insert(0, inputx)
+            #self.entry28.insert(0, input428)
+            #self.entry28.config(state='disabled') 
             
             #inputx = entry99.get()              #I1
             #self.entry29.delete(0, END)
             #self.entry29.insert(0, inputx)
             
-            inputx = entry130.get()              #R1
-            self.entry30.delete(0, END)
-            self.entry30.insert(0, inputx)
+            #self.entry30.config(state='normal')
+            #input430 = entry430.get()              #R1
+            #self.entry30.delete(0, END)
+            #self.entry30.insert(0, input430)
+            #self.entry30.config(state='disabled')
             
-            inputx = entry131.get()              #R2
-            self.entry31.delete(0, END)
-            self.entry31.insert(0, inputx)
+            #self.entry31.config(state='normal')
+            #input431 = entry431.get()              #R2
+            #self.entry31.delete(0, END)
+            #self.entry31.insert(0, input431)
+            #self.entry31.config(state='disabled')
             
-            inputx = entry132.get()              #R3
-            self.entry32.delete(0, END)
-            self.entry32.insert(0, inputx)
+            #self.entry32.config(state='normal')
+            #input432 = entry432.get()              #R3
+            #self.entry32.delete(0, END)
+            #self.entry32.insert(0, input432)
+            #self.entry32.config(state='disabled')
             
             #inputx = entry99.get()              #R4
             #self.entry33.delete(0, END)
@@ -1867,6 +2504,10 @@ class MainGUI(Frame):
             #self.entry34.delete(0, END)
             #self.entry34.insert(0, inputx)
             
+        def save_filter():
+            #global apply_filter           
+            apply_filter()
+            root.destroy()
         
         Frame1 = Frame(root, highlightbackground="black", highlightcolor="black", highlightthickness=2, width=400, height=100, bd= 0)
         Frame1.grid(row = 2, column =2, rowspan = 8, columnspan = 12, sticky = W+E+N+S)
@@ -1886,260 +2527,154 @@ class MainGUI(Frame):
         Frame6 = Frame(root, highlightbackground="black", highlightcolor="black", highlightthickness=2, width=400, height=80, bd=0)
         Frame6.grid(row = 22, column =2, rowspan = 4, columnspan = 10, sticky = W+E+N+S)
         
-        Filter_OK_button = Button(root, text="OK", bg="white",font="Arial 10 bold", width=10) #, command=root.destroy)
+        Filter_OK_button = Button(root, text="OK", bg="white",font="Arial 10 bold", width=10, command=save_filter)
         Filter_OK_button.place(x=200, y=550)
         
-        Filter_Apply_button = tk.Button(root, text="Apply", bg="white",font="Arial 10 bold", width=10, command=apply_filter) #, command=root.destroy)
+        Filter_Apply_button = tk.Button(root, text="Apply", bg="white",font="Arial 10 bold", width=10, command=apply_filter)
         Filter_Apply_button.place(x=320, y=550)
         
         Filter_Cancel_button = Button(root, text="Cancel", bg="white",font="Arial 10 bold", width=10, command=root.destroy)
         Filter_Cancel_button.place(x=440, y=550)
         
-        def change_input(event):
-        
+        def change_input(self):
+            global filterselect
+            global filtertype
             global chosen_option
-            chosen_option = option_filter.get()
+            chosen_option = option_filtertype.get()
             
             if chosen_option == 'Passive':
                 pic_option = pic1
                 pic.config(image=pic_option)
-                     
-                entry28 = Entry(Frame3, width=5)
-                entry28.place(in_=Frame3, x=80, y=260)
-                entry28.config(state='disabled')
+                
+                filterselect = "Passive"
+                filtertype = 1
+                
+                entry418.config(state='disabled')        #C3/Cvco
                        
-                entry28 = Entry(Frame3, width=5)
-                entry28.place(in_=Frame3, x=80, y=280)
-                entry28.config(state='disabled')
+                entry419.config(state='disabled')        #Rg
               
-                entry28 = Entry(Frame3, width=5)
-                entry28.place(in_=Frame3, x=80, y=300)
-                entry28.config(state='disabled')
+                entry420.config(state='disabled')        #Rf
                 
-                entry28 = Entry(Frame3, width=5)
-                entry28.place(in_=Frame3, x=80, y=320)
-                entry28.config(state='disabled')
+                entry421.config(state='disabled')        #Cb
                 
-                entry28 = Entry(Frame3, width=5)
-                entry28.place(in_=Frame3, x=80, y=340)
-                entry28.config(state='disabled')
+                entry422.config(state='disabled')        #Rb1
                 
-                entry28 = Entry(Frame3, width=5)
-                entry28.place(in_=Frame3, x=80, y=360)
-                entry28.config(state='disabled')
+                entry423.config(state='disabled')        #Rb2
 
-                entry28 = Entry(Frame3, width=5)
-                entry28.place(in_=Frame3, x=80, y=380)
-                entry28.config(state='disabled')
+                entry424.config(state='disabled')        #RL
                 
-                #entry125 = Entry(Frame3, width=5)
-                #entry125.place(in_=Frame3, x=180, y=240)
-                entry125.config(state='normal')             #C1
+                entry425.config(state='normal')         #C1
                 
-                #entry130 = Entry(Frame3, width=5)            #R1
-                #entry130.place(in_=Frame3, x=180, y=260)
-                entry130.config(state='disabled')
+                entry430.config(state='disabled')       #R1
                 
-                entry28 = Entry(Frame3, width=5)            #L1
-                entry28.place(in_=Frame3, x=180, y=280)
-                entry28.config(state='disabled')
+                entry428.config(state='disabled')       #L1
                 
-                #entry126 = Entry(Frame3, width=5)            #C2
-                #entry126.place(in_=Frame3, x=180, y=300)
-                entry126.config(state='normal')
+                entry426.config(state='normal')         #C2
                 
-                #entry131 = Entry(Frame3, width=5)            #R2
-                #entry131.place(in_=Frame3, x=180, y=320)
-                entry131.config(state='normal')
+                entry431.config(state='normal')         #R2
                 
-                #entry127 = Entry(Frame3, width=5)
-                #entry127.place(in_=Frame3, x=180, y=340)
-                entry127.config(state='disabled')              #C3
+                entry427.config(state='disabled')       #C3
                 
-                #entry132 = Entry(Frame3, width=5)
-                #entry132.place(in_=Frame3, x=180, y=360)
-                entry132.config(state='disabled')              #R3
+                entry432.config(state='disabled')       #R3
                 
-                entry28 = Entry(Frame3, width=5)            #L3
-                entry28.place(in_=Frame3, x=180, y=380)
-                entry28.config(state='disabled')
+                entry435.config(state='disabled')        #L3
                 
-                #entry128 = Entry(Frame3, width=5)
-                #entry128.place(in_=Frame3, x=180, y=400)
-                entry128.config(state='disabled')            #C4
+                entry436.config(state='disabled')        #C4
                 
-                entry28 = Entry(Frame3, width=5)
-                entry28.place(in_=Frame3, x=180, y=420)
-                entry28.config(state='disabled')            #L5
+                entry437.config(state='disabled')        #L5
                 
-                #entry128 = Entry(Frame3, width=5)
-                #entry128.place(in_=Frame3, x=180, y=440)
-                entry128.config(state='disabled')            #C6
+                entry438.config(state='disabled')        #C6
                
-                entry28 = Entry(Frame3, width=5)
-                entry28.place(in_=Frame3, x=180, y=460)
-                entry28.config(state='disabled')            #L7
+                entry439.config(state='disabled')        #L7
                 
             elif chosen_option =='Butterworth':
                 pic_option = pic2
                 pic.config(image=pic_option)
                 
-                entry28 = Entry(Frame3, width=5)
-                entry28.place(in_=Frame3, x=180, y=320)
-                entry28.config(state='disabled')
+                filtertype = 2
+                filterselect = "Butterworth"
+
+                entry431.config(state='disabled')       #R2
                 
-                #entry127 = Entry(Frame3, width=5)
-                #entry127.place(in_=Frame3, x=180, y=340)
-                entry127.config(state='disabled')              #C3
+                entry427.config(state='disabled')       #C3
                 
-                #entry132 = Entry(Frame3, width=5)
-                #entry132.place(in_=Frame3, x=180, y=360)
-                entry132.config(state='disabled')              #R3
+                entry432.config(state='disabled')       #R3
                 
-                entry28 = Entry(Frame3, width=5)
-                entry28.place(in_=Frame3, x=80, y=320)
-                entry28.config(state='normal')
+                entry421.config(state='normal')          #Cb
              
-                entry28 = Entry(Frame3, width=5)
-                entry28.place(in_=Frame3, x=80, y=340)
-                entry28.config(state='normal')
+                entry422.config(state='normal')          #Rb1
                 
-                entry28 = Entry(Frame3, width=5)
-                entry28.place(in_=Frame3, x=80, y=360)
-                entry28.config(state='normal')
+                entry423.config(state='normal')          #Rb2
                
-                entry28 = Entry(Frame3, width=5)
-                entry28.place(in_=Frame3, x=80, y=380)
-                entry28.config(state='normal')
+                entry424.config(state='normal')          #RL
                 
-                #entry125 = Entry(Frame3, width=5)            #C1
-                #entry125.place(in_=Frame3, x=180, y=240)
-                entry125.config(state='normal')
+                entry425.config(state='normal')             #C1
                 
-                #entry130 = Entry(Frame3, width=5)
-                #entry130.place(in_=Frame3, x=180, y=260)
-                entry130.config(state='normal')              #R1
+                entry430.config(state='normal')             #R1
                 
-                entry28 = Entry(Frame3, width=5)
-                entry28.place(in_=Frame3, x=180, y=280)
-                entry28.config(state='normal')              #L1
+                entry428.config(state='normal')             #L1
                 
-                #entry126 = Entry(Frame3, width=5)
-                #entry126.place(in_=Frame3, x=180, y=300)
-                entry126.config(state='normal')              #C2
+                entry426.config(state='normal')             #C2
                 
-                #entry131 = Entry(Frame3, width=5)
-                #entry131.place(in_=Frame3, x=180, y=320)
-                entry131.config(state='disabled')              #R2
+                entry431.config(state='disabled')           #R2
                 
-                #entry127 = Entry(Frame3, width=5)
-                #entry127.place(in_=Frame3, x=180, y=340)
-                entry127.config(state='disabled')              #C3
+                entry427.config(state='disabled')           #C3
                 
-                #entry132 = Entry(Frame3, width=5)
-                #entry132.place(in_=Frame3, x=180, y=360)
-                entry132.config(state='disabled')              #R3
+                entry432.config(state='disabled')           #R3
                 
-                entry28 = Entry(Frame3, width=5)
-                entry28.place(in_=Frame3, x=180, y=380)
-                entry28.config(state='disabled')              #L3
+                entry435.config(state='disabled')            #L3
                 
-                #entry128 = Entry(Frame3, width=5)
-                #entry128.place(in_=Frame3, x=180, y=400)
-                entry128.config(state='disabled')             #C4
+                entry436.config(state='disabled')            #C4
                 
-                entry28 = Entry(Frame3, width=5)
-                entry28.place(in_=Frame3, x=180, y=420)
-                entry28.config(state='disabled')             #L5 
+                entry437.config(state='disabled')            #L5 
                 
-                #entry128 = Entry(Frame3, width=5)
-                #entry128.place(in_=Frame3, x=180, y=440)
-                entry128.config(state='disabled')              #C6
+                entry438.config(state='disabled')            #C6
                
-                entry28 = Entry(Frame3, width=5)
-                entry28.place(in_=Frame3, x=180, y=460)
-                entry28.config(state='disabled')              #L7
+                entry439.config(state='disabled')            #L7
                 
             else:
                 pic_option = pic3
                 pic.config(image=pic_option)
-                
-                entry28 = Entry(Frame3, width=5)
-                entry28.place(in_=Frame3, x=80, y=260)
-                entry28.config(state='normal')
-                       
-                entry28 = Entry(Frame3, width=5)
-                entry28.place(in_=Frame3, x=80, y=280)
-                entry28.config(state='disabled')
-              
-                entry28 = Entry(Frame3, width=5)
-                entry28.place(in_=Frame3, x=80, y=300)
-                entry28.config(state='disabled')
-                
-                entry28 = Entry(Frame3, width=5)
-                entry28.place(in_=Frame3, x=80, y=320)
-                entry28.config(state='normal')
-                
-                entry28 = Entry(Frame3, width=5)
-                entry28.place(in_=Frame3, x=80, y=340)
-                entry28.config(state='normal')
-                
-                entry28 = Entry(Frame3, width=5)
-                entry28.place(in_=Frame3, x=80, y=360)
-                entry28.config(state='normal')
+                filtertype = 3
+                filterselect = "activeC"
 
-                entry28 = Entry(Frame3, width=5)
-                entry28.place(in_=Frame3, x=80, y=380)
-                entry28.config(state='disabled')              #RL
+                entry418.config(state='normal')          #C3/Cvco
+                       
+                entry419.config(state='disabled')        #Rg
+              
+                entry420.config(state='disabled')        #Rf
                 
-                #entry125 = Entry(Frame3, width=5)            #C1
-                #entry125.place(in_=Frame3, x=180, y=240)
-                entry125.config(state='normal')
+                entry421.config(state='normal')          #Cb
                 
-                #entry130 = Entry(Frame3, width=5)
-                #entry130.place(in_=Frame3, x=180, y=260)
-                entry130.config(state='disabled')              #R1
+                entry422.config(state='normal')          #Rb1
                 
-                entry28 = Entry(Frame3, width=5)
-                entry28.place(in_=Frame3, x=180, y=280)
-                entry28.config(state='disabled')              #L1
+                entry423.config(state='normal')          #Rb2
+
+                entry424.config(state='disabled')            #RL
                 
-                #entry126 = Entry(Frame3, width=5)
-                #entry126.place(in_=Frame3, x=180, y=300)
-                entry126.config(state='normal')              #C2
+                entry425.config(state='normal')             #C1
                 
-                #entry131 = Entry(Frame3, width=5)
-                #entry131.place(in_=Frame3, x=180, y=320)
-                entry131.config(state='normal')              #R2
+                entry430.config(state='disabled')           #R1
                 
-                #entry127 = Entry(Frame3, width=5)
-                #entry127.place(in_=Frame3, x=180, y=340)
-                entry127.config(state='normal')              #C3
+                entry428.config(state='disabled')           #L1
                 
-                #entry132 = Entry(Frame3, width=5)
-                #entry132.place(in_=Frame3, x=180, y=360)
-                entry132.config(state='normal')              #R3
+                entry426.config(state='normal')             #C2
                 
-                entry28 = Entry(Frame3, width=5)
-                entry28.place(in_=Frame3, x=180, y=380)
-                entry28.config(state='disabled')              #L3
+                entry431.config(state='normal')             #R2
                 
-                #entry128 = Entry(Frame3, width=5)
-                #entry128.place(in_=Frame3, x=180, y=400)
-                entry128.config(state='disabled')             #C4
+                entry427.config(state='normal')             #C3
                 
-                entry28 = Entry(Frame3, width=5)
-                entry28.place(in_=Frame3, x=180, y=420)
-                entry28.config(state='disabled')             #L5 
+                entry432.config(state='normal')             #R3
                 
-                #entry128 = Entry(Frame3, width=5)
-                #entry128.place(in_=Frame3, x=180, y=440)
-                entry128.config(state='disabled')              #C6
+                entry435.config(state='disabled')            #L3
+                
+                entry436.config(state='disabled')            #C4
+                
+                entry437.config(state='disabled')            #L5 
+                
+                entry438.config(state='disabled')            #C6
                
-                entry28 = Entry(Frame3, width=5)
-                entry28.place(in_=Frame3, x=180, y=460)
-                entry28.config(state='disabled')              #L7
-                
+                entry439.config(state='disabled')            #L7
         
         pic1 = PhotoImage(file='C:/Users/Eric/Desktop/Senior D/RC.gif')
         pic2 = PhotoImage(file='C:/Users/Eric/Desktop/Senior D/Butter.gif')
@@ -2154,10 +2689,11 @@ class MainGUI(Frame):
         output1 = ttk.Label(Frame1, text="Select Filter Type", font="Arial 10 bold")
         output1.place(in_=Frame1,x=10,y=30)
         
-        option_filter=StringVar(root)
-        option_filter.set("Passive")    
+        option_filtertype=StringVar(root)
+        option_filtertype.set(filterselect)
+        #option_filter.set("Passive")
         myoptions=['Passive','Butterworth','activeC']
-        drop_menu = OptionMenu(root, option_filter, *myoptions, command=change_input)
+        drop_menu = OptionMenu(root, option_filtertype, *myoptions, command=change_input)
         drop_menu.place(in_=Frame1, x=250, y=30)
         drop_menu.config(font=('Arial 7 bold'),bg='white',width=14)
         drop_menu['menu'].config(font=('Arial 7 bold'),bg='white')
@@ -2186,157 +2722,158 @@ class MainGUI(Frame):
         
         output1 = ttk.Label(Frame1, text="Damping Factor For Approximate Method", font="Arial 10 bold")
         output1.place(in_=Frame1,x=10,y=120)
-        entry44 = Entry(Frame1, width=8)
-        entry44.place(in_=Frame1, x=300, y=120)
+        entry412 = Entry(Frame1, width=8)
+        entry412.place(in_=Frame1, x=300, y=120)
         
         output1 = ttk.Label(Frame2, text="Third and Fourth Pole Calculation", font="Arial 10 bold")
         output1.place(in_=Frame2,x=100,y=0)
         
         output1 = ttk.Label(Frame2, text="3rd Pole", font="Arial 10 bold")
         output1.place(in_=Frame2,x=10,y=30)        
-        entry28 = Entry(Frame2, width=5)
-        entry28.place(in_=Frame2, x=350, y=30)
+        entry414 = Entry(Frame2, width=5)
+        entry414.place(in_=Frame2, x=350, y=30)
         
         output1 = ttk.Label(Frame2, text="4rd Pole", font="Arial 10 bold")
         output1.place(in_=Frame2,x=10,y=60)        
-        entry28 = Entry(Frame2, width=5)
-        entry28.place(in_=Frame2, x=350, y=60)
+        entry415 = Entry(Frame2, width=5)
+        entry415.place(in_=Frame2, x=350, y=60)
         
         output1 = ttk.Label(Frame2, text="Optimization Parameter", font="Arial 10 bold")
         output1.place(in_=Frame2,x=10,y=90)        
-        entry28 = Entry(Frame2, width=5)
-        entry28.place(in_=Frame2, x=350, y=90)
+        entry416 = Entry(Frame2, width=5)
+        entry416.place(in_=Frame2, x=350, y=90)
         
         output1 = ttk.Label(Frame3, text="VCO Input", font="Arial 10 bold")
         output1.place(in_=Frame3,x=0,y=240)        
-        entry28 = Entry(Frame3, width=5)
-        entry28.place(in_=Frame3, x=80, y=240)
+        entry417 = Entry(Frame3, width=5)
+        entry417.place(in_=Frame3, x=80, y=240)
 
         output1 = ttk.Label(Frame3, text="C3/Cvco", font="Arial 10 bold")
         output1.place(in_=Frame3,x=0,y=260)        
-        entry28 = Entry(Frame3, width=5)
-        entry28.place(in_=Frame3, x=80, y=260)
-        entry28.config(state='disabled')
+        entry418 = Entry(Frame3, width=5)
+        entry418.place(in_=Frame3, x=80, y=260)
+        #entry418.config(state='disabled')
         
         output1 = ttk.Label(Frame3, text="Rg", font="Arial 10 bold")
         output1.place(in_=Frame3,x=0,y=280)        
-        entry28 = Entry(Frame3, width=5)
-        entry28.place(in_=Frame3, x=80, y=280)
-        entry28.config(state='disabled')
+        entry419 = Entry(Frame3, width=5)
+        entry419.place(in_=Frame3, x=80, y=280)
+        #entry419.config(state='disabled')
         
         output1 = ttk.Label(Frame3, text="Rf", font="Arial 10 bold")
         output1.place(in_=Frame3,x=0,y=300)        
-        entry28 = Entry(Frame3, width=5)
-        entry28.place(in_=Frame3, x=80, y=300)
-        entry28.config(state='disabled')
+        entry420 = Entry(Frame3, width=5)
+        entry420.place(in_=Frame3, x=80, y=300)
+        #entry420.config(state='disabled')
         
         output1 = ttk.Label(Frame3, text="Cb", font="Arial 10 bold")
         output1.place(in_=Frame3,x=0,y=320)        
-        entry28 = Entry(Frame3, width=5)
-        entry28.place(in_=Frame3, x=80, y=320)
-        entry28.config(state='disabled')
+        entry421 = Entry(Frame3, width=5)
+        entry421.place(in_=Frame3, x=80, y=320)
+        #entry421.config(state='disabled')
         
         output1 = ttk.Label(Frame3, text="Rb1", font="Arial 10 bold")
         output1.place(in_=Frame3,x=0,y=340)        
-        entry28 = Entry(Frame3, width=5)
-        entry28.place(in_=Frame3, x=80, y=340)
-        entry28.config(state='disabled')
+        entry422 = Entry(Frame3, width=5)
+        entry422.place(in_=Frame3, x=80, y=340)
+        #entry422.config(state='disabled')
         
         output1 = ttk.Label(Frame3, text="Rb2", font="Arial 10 bold")
         output1.place(in_=Frame3,x=0,y=360)        
-        entry28 = Entry(Frame3, width=5)
-        entry28.place(in_=Frame3, x=80, y=360)
-        entry28.config(state='disabled')
+        entry423 = Entry(Frame3, width=5)
+        entry423.place(in_=Frame3, x=80, y=360)
+        #entry423.config(state='disabled')
         
         output1 = ttk.Label(Frame3, text="RL", font="Arial 10 bold")
         output1.place(in_=Frame3,x=0,y=380)        
-        entry28 = Entry(Frame3, width=5)
-        entry28.place(in_=Frame3, x=80, y=380)
-        entry28.config(state='disabled')
+        entry424 = Entry(Frame3, width=5)
+        entry424.place(in_=Frame3, x=80, y=380)
+        #entry424.config(state='disabled')
         
         output1 = ttk.Label(Frame3, text="C1", font="Arial 10 bold")
         output1.place(in_=Frame3,x=140,y=240)        
-        entry125 = Entry(Frame3, width=5)
-        entry125.place(in_=Frame3, x=180, y=240)
+        entry425 = Entry(Frame3, width=5)
+        entry425.place(in_=Frame3, x=180, y=240)
         
         output1 = ttk.Label(Frame3, text="R1", font="Arial 10 bold")
         output1.place(in_=Frame3,x=140,y=260)        
-        entry130 = Entry(Frame3, width=5)
-        entry130.place(in_=Frame3, x=180, y=260)
-        entry130.config(state='disabled')
+        entry430 = Entry(Frame3, width=5)
+        entry430.place(in_=Frame3, x=180, y=260)
+        #entry430.config(state='disabled')
         
         output1 = ttk.Label(Frame3, text="L1", font="Arial 10 bold")
         output1.place(in_=Frame3,x=140,y=280)        
-        entry28 = Entry(Frame3, width=5)
-        entry28.place(in_=Frame3, x=180, y=280)
-        entry28.config(state='disabled')
+        entry428 = Entry(Frame3, width=5)
+        entry428.place(in_=Frame3, x=180, y=280)
+        #entry428.config(state='disabled')
         
         output1 = ttk.Label(Frame3, text="C2", font="Arial 10 bold")
         output1.place(in_=Frame3,x=140,y=300)        
-        entry126 = Entry(Frame3, width=5)
-        entry126.place(in_=Frame3, x=180, y=300)
+        entry426 = Entry(Frame3, width=5)
+        entry426.place(in_=Frame3, x=180, y=300)
         
         output1 = ttk.Label(Frame3, text="R2", font="Arial 10 bold")
         output1.place(in_=Frame3,x=140,y=320)        
-        entry131 = Entry(Frame3, width=5)
-        entry131.place(in_=Frame3, x=180, y=320)
+        entry431 = Entry(Frame3, width=5)
+        entry431.place(in_=Frame3, x=180, y=320)
+        #entry431.config(state='normal')
         
         output1 = ttk.Label(Frame3, text="C3", font="Arial 10 bold")
         output1.place(in_=Frame3,x=140,y=340)        
-        entry127 = Entry(Frame3, width=5)
-        entry127.place(in_=Frame3, x=180, y=340)
-        entry127.config(state='disabled')        
+        entry427 = Entry(Frame3, width=5)
+        entry427.place(in_=Frame3, x=180, y=340)
+        #entry427.config(state='disabled')        
         
         output1 = ttk.Label(Frame3, text="R3", font="Arial 10 bold")
         output1.place(in_=Frame3,x=140,y=360)        
-        entry132 = Entry(Frame3, width=5)
-        entry132.place(in_=Frame3, x=180, y=360)
-        entry132.config(state='disabled')
+        entry432 = Entry(Frame3, width=5)
+        entry432.place(in_=Frame3, x=180, y=360)
+        #entry432.config(state='disabled')
         
         output1 = ttk.Label(Frame3, text="L3", font="Arial 10 bold")
         output1.place(in_=Frame3,x=140,y=380)        
-        entry28 = Entry(Frame3, width=5)
-        entry28.place(in_=Frame3, x=180, y=380)
-        entry28.config(state='disabled')
+        entry435 = Entry(Frame3, width=5)
+        entry435.place(in_=Frame3, x=180, y=380)
+        #entry435.config(state='disabled')
         
         output1 = ttk.Label(Frame3, text="C4", font="Arial 10 bold")
         output1.place(in_=Frame3,x=140,y=400)        
-        entry128 = Entry(Frame3, width=5)
-        entry128.place(in_=Frame3, x=180, y=400)
-        entry128.config(state='disabled')
+        entry436 = Entry(Frame3, width=5)
+        entry436.place(in_=Frame3, x=180, y=400)
+        #entry436.config(state='disabled')
         
         output1 = ttk.Label(Frame3, text="L5", font="Arial 10 bold")
         output1.place(in_=Frame3,x=140,y=420)        
-        entry28 = Entry(Frame3, width=5)
-        entry28.place(in_=Frame3, x=180, y=420)
-        entry28.config(state='disabled')
+        entry437 = Entry(Frame3, width=5)
+        entry437.place(in_=Frame3, x=180, y=420)
+        #entry437.config(state='disabled')
         
         output1 = ttk.Label(Frame3, text="C6", font="Arial 10 bold")
         output1.place(in_=Frame3,x=140,y=440)        
-        entry128 = Entry(Frame3, width=5)
-        entry128.place(in_=Frame3, x=180, y=440)
-        entry128.config(state='disabled')
+        entry438 = Entry(Frame3, width=5)
+        entry438.place(in_=Frame3, x=180, y=440)
+        #entry438.config(state='disabled')
         
         output1 = ttk.Label(Frame3, text="L7", font="Arial 10 bold")
         output1.place(in_=Frame3,x=140,y=460)        
-        entry28 = Entry(Frame3, width=5)
-        entry28.place(in_=Frame3, x=180, y=460)
-        entry28.config(state='disabled')
+        entry439 = Entry(Frame3, width=5)
+        entry439.place(in_=Frame3, x=180, y=460)
+        #entry439.config(state='disabled')
         
         output1 = ttk.Label(Frame4, text="Filter Capacitor Ratio To C2", font="Arial 10 bold")
         output1.place(in_=Frame4,x=30,y=0) 
         
         output1 = ttk.Label(Frame4, text="Apply Ratio C2/C3", font="Arial 10 bold")
         output1.place(in_=Frame4,x=40,y=30)        
-        entry28 = Entry(Frame4, width=5)
-        entry28.place(in_=Frame4, x=190, y=30)
+        entry440 = Entry(Frame4, width=5)
+        entry440.place(in_=Frame4, x=190, y=30)
         check_var = IntVar()
         Checkbutton(root, variable=check_var).place(in_=Frame4, x=10, y=30)
         
         output1 = ttk.Label(Frame4, text="Apply Ratio C2/C4", font="Arial 10 bold")
         output1.place(in_=Frame4,x=40,y=60)        
-        entry28 = Entry(Frame4, width=5)
-        entry28.place(in_=Frame4, x=190, y=60)
+        entry441 = Entry(Frame4, width=5)
+        entry441.place(in_=Frame4, x=190, y=60)
         check_var = IntVar()
         Checkbutton(root, variable=check_var).place(in_=Frame4, x=10, y=60)
         
@@ -2348,23 +2885,160 @@ class MainGUI(Frame):
         
         output1 = ttk.Label(Frame6, text="Corner Frequency", font="Arial 10 bold")
         output1.place(in_=Frame6,x=0,y=20)        
-        entry28 = Entry(Frame6, width=5)
-        entry28.place(in_=Frame6, x=150, y=20)
+        entry442 = Entry(Frame6, width=5)
+        entry442.place(in_=Frame6, x=150, y=20)
         
         output1 = ttk.Label(Frame6, text="Stop Frequency", font="Arial 10 bold")
         output1.place(in_=Frame6,x=200,y=20)        
-        entry28 = Entry(Frame6, width=5)
-        entry28.place(in_=Frame6, x=350, y=20)
+        entry443 = Entry(Frame6, width=5)
+        entry443.place(in_=Frame6, x=350, y=20)
         
         output1 = ttk.Label(Frame6, text="Passband Attenuation", font="Arial 10 bold")
         output1.place(in_=Frame6,x=0,y=50)        
-        entry28 = Entry(Frame6, width=5)
-        entry28.place(in_=Frame6, x=150, y=50)
+        entry444 = Entry(Frame6, width=5)
+        entry444.place(in_=Frame6, x=150, y=50)
         
         output1 = ttk.Label(Frame6, text="Stopband Attenuation", font="Arial 10 bold")
         output1.place(in_=Frame6,x=200,y=50)        
-        entry28 = Entry(Frame6, width=5)
-        entry28.place(in_=Frame6, x=350, y=50)
+        entry445 = Entry(Frame6, width=5)
+        entry445.place(in_=Frame6, x=350, y=50)
+        
+        change_input(self)
+        
+        entry412.delete(0, END)
+        entry412.insert(0, input412)
+        entry414.delete(0, END)
+        entry414.insert(0, input414)        
+        entry415.delete(0, END)
+        entry415.insert(0, input415)        
+        entry416.delete(0, END)
+        entry416.insert(0, input416)
+        entry417.delete(0, END)
+        entry417.insert(0, self.input417)
+        entry418.delete(0, END)
+        entry418.insert(0, self.input418)
+        entry419.delete(0, END)
+        entry419.insert(0, self.input419)
+        entry420.delete(0, END)
+        entry420.insert(0, self.input420)
+        entry421.delete(0, END)
+        entry421.insert(0, self.input421)
+        entry422.delete(0, END)
+        entry422.insert(0, self.input422)
+        entry423.delete(0, END)
+        entry423.insert(0, self.input423)
+        entry424.delete(0, END)
+        entry424.insert(0, self.input424)
+        entry425.delete(0, END)
+        entry425.insert(0, self.input425)
+        entry426.delete(0, END)
+        entry426.insert(0, self.input426)
+        entry427.delete(0, END)
+        entry427.insert(0, self.input427)
+        entry428.delete(0, END)
+        entry428.insert(0, self.input428)
+        #entry429.delete(0, END)
+        #entry429.insert(0, input429)
+        entry430.delete(0, END)
+        entry430.insert(0, self.input430)
+        entry431.delete(0, END)
+        entry431.insert(0, self.input431)
+        entry432.delete(0, END)
+        entry432.insert(0, self.input432)
+        #entry433.delete(0, END)
+        #entry433.insert(0, input433)
+        #entry434.delete(0, END)
+        #entry434.insert(0, input434)
+        entry435.delete(0, END)
+        entry435.insert(0, self.input435)
+        entry436.delete(0, END)
+        entry436.insert(0, self.input436)
+        entry437.delete(0, END)
+        entry437.insert(0, self.input437)
+        entry438.delete(0, END)
+        entry438.insert(0, self.input438)
+        entry439.delete(0, END)
+        entry439.insert(0, self.input439)
+    
+    input417 = 0
+    input418 = 0
+    input419 = 0
+    input420 = 0
+    input421 = 0
+    input422 = 0
+    input423 = 0
+    input424 = 0
+    input425 = 0
+    input426 = 0
+    input427 = 0
+    input428 = 0
+    input429 = 0
+    input430 = 0
+    input431 = 0
+    input432 = 0
+    input433 = 0
+    input434 = 0
+    input435 = 0
+    input436 = 0
+    input437 = 0
+    input438 = 0
+    input439 = 0
+    
+global filtertype
+global filterselect
+global input412
+#global apply_filter
+#global input413
+#global input414
+#global input415
+#global input416
+#global input417
+#global input418
+#global input419
+#global input420
+#global input421
+#global input422
+#global input423
+#global input424
+#global input425
+#global input426
+#global input427
+#global input428
+#global input429
+#global input430
+#global input431
+#global input432
+#global input433
+#global input434
+#global input435
+#global input436
+#global input437
+#global input438
+#global input439
+global VCO_Freq_Hz
+global PFD_Freq_Hz
+global TCXO_Freq_Hz
+global Desired_Band_Hz
+global Start_Freq_Hz
+
+VCO_Freq_Hz = "MHz"
+PFD_Freq_Hz = "GHz"
+TCXO_Freq_Hz = "GHz"
+Desired_Band_Hz = "GHz"
+Start_Freq_Hz = "GHz"
+Stop_Freq_Hz = "Ghz"
+    
+array = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+loadedvalues = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1] #52
+
+filtertype = 0
+filterselect = "Passive"
+input412 = 0
+#input413 = 0
+input414 = 0
+input415 = 0
+input416 = 0
+
 
 if __name__ == '__main__':
     root = tk.Tk()
