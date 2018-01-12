@@ -657,7 +657,7 @@ class MainGUI(Frame):
                 
         def load_from_csv(self, name='test'):  #Not sure how to make this load the value selected
             string = "%s.csv" % name
-            my_data = genfromtxt(string, delimiter=',')
+            my_data = genfromtxt(string, delimiter=',') #dtype=str
             return my_data
         
         def loadbutton():
@@ -954,14 +954,25 @@ class MainGUI(Frame):
         root.geometry("1000x550")
         global noise
         global last_noise
+        global noise_array
+        global temp_noise_array
+        global change_noise
         
+        def apply_noise():
+            change_noise()
+            noise_array[:] = temp_noise_array[:]
+            
+        def save_noise():
+            apply_noise()
+            root.destroy()
+        
+        temp_noise_array[:] = noise_array[:]
         noise = 1
-        l_noise = 1
         
-        Noise_OK_button = Button(root, text="OK", bg="white",font="Arial 10 bold", width=10) #, command=root.destroy)
+        Noise_OK_button = Button(root, text="OK", bg="white",font="Arial 10 bold", width=10, command=save_noise)
         Noise_OK_button.place(x=350, y=500)
         
-        Noise_Apply_button = tk.Button(root, text="Apply", bg="white",font="Arial 10 bold", width=10)#, command=return_filter) #, command=root.destroy)
+        Noise_Apply_button = tk.Button(root, text="Apply", bg="white",font="Arial 10 bold", width=10, command=apply_noise)#, command=return_filter) #, command=root.destroy)
         Noise_Apply_button.place(x=470, y=500)
         
         Noise_Cancel_button = Button(root, text="Cancel", bg="white",font="Arial 10 bold", width=10, command=root.destroy)
@@ -981,10 +992,26 @@ class MainGUI(Frame):
         Frame2.grid(row = 2, column =5, rowspan = 2, columnspan = 2, sticky = W+E+N+S) 
         
         def change_noise():
+            global noise
+            global temp_noise_array
         
             if noise == 1:
-                self.entry102 = entry102.get()
-                #Frame2.destroy()
+                temp_noise_array[0] = self.entry102.get()
+                temp_noise_array[1] = self.entry103.get()
+                temp_noise_array[2] = self.entry104.get()
+                temp_noise_array[3] = self.entry105.get()
+                temp_noise_array[4] = self.entry106.get()
+                temp_noise_array[5] = self.entry107.get()
+                temp_noise_array[6] = self.entry108.get()
+                temp_noise_array[7] = self.entry110.get()
+                temp_noise_array[8] = self.entry111.get()
+                temp_noise_array[9] = self.entry112.get()
+                temp_noise_array[10] = self.entry113.get()
+                temp_noise_array[11] = self.entry114.get()
+                temp_noise_array[12] = self.entry115.get()
+                temp_noise_array[13] = self.entry116.get()
+                temp_noise_array[14] = self.entry118.get()
+                
             elif noise == 2:
                 Frame2.destroy()
             elif noise == 3:
@@ -1001,33 +1028,12 @@ class MainGUI(Frame):
                 Frame2.destroy()
             else:
                 Frame2.destroy()
-                
-        def load_noise():
-        
-            if l_noise == 1:
-                entry102.insert(entry102)
-            elif l_noise == 2:
-                entry102=entry102.get()
-            elif l_noise == 3:
-                entry102=entry102.get()
-            elif l_noise == 4:
-                entry102=entry102.get()
-            elif l_noise == 5:
-                entry102=entry102.get()
-            elif l_noise == 6:
-                entry102=entry102.get()
-            elif l_noise == 7:
-                entry102=entry102.get()
-            elif l_noise == 8:
-                entry102=entry102.get()
-            else:
-                entry102=entry102.get()
         
         def change_noise1():
-            
+            global change_noise
+            global temp_noise_array
             #global noise
-            #global last_noise
-           # last_noise = noise
+            change_noise()    
             
             Crystal_button.config(relief=SUNKEN)
             Reference_button.config(relief=RAISED)
@@ -1039,7 +1045,6 @@ class MainGUI(Frame):
             Composite_button.config(relief=RAISED)
             HighPass_button.config(relief=RAISED)
             
-            command=change_noise
             noise = 1
             
             Frame2 = Frame(root, highlightbackground="black", highlightcolor="black", highlightthickness=2, width=600, height=450, bd=0)
@@ -1047,72 +1052,101 @@ class MainGUI(Frame):
             
             output101 = ttk.Label(Frame2, text="Frequency Offset", font="Arial 10 bold")
             output101.place(in_=Frame2,x=10,y=10)
+
             self.entry102 = Entry(Frame2, width=6)
             self.entry102.place(in_=Frame2, x=170, y=10)
             self.entry102.delete(0, END)
+            self.entry102.insert(0, temp_noise_array[0])
         
-            entry103 = Entry(Frame2, width=6)
-            entry103.place(in_=Frame2, x=220, y=10)
+            self.entry103 = Entry(Frame2, width=6)
+            self.entry103.place(in_=Frame2, x=220, y=10)
+            self.entry103.delete(0, END)
+            self.entry103.insert(0, temp_noise_array[1])
             
-            entry104 = Entry(Frame2, width=6)
-            entry104.place(in_=Frame2, x=270, y=10)
+            self.entry104 = Entry(Frame2, width=6)
+            self.entry104.place(in_=Frame2, x=270, y=10)
+            self.entry104.delete(0, END)
+            self.entry104.insert(0, temp_noise_array[2])
             
-            entry105 = Entry(Frame2, width=6)
-            entry105.place(in_=Frame2, x=320, y=10)
+            self.entry105 = Entry(Frame2, width=6)
+            self.entry105.place(in_=Frame2, x=320, y=10)
+            self.entry105.delete(0, END)
+            self.entry105.insert(0, temp_noise_array[3])
             
-            entry106 = Entry(Frame2, width=6)
-            entry106.place(in_=Frame2, x=370, y=10)
+            self.entry106 = Entry(Frame2, width=6)
+            self.entry106.place(in_=Frame2, x=370, y=10)
+            self.entry106.delete(0, END)
+            self.entry106.insert(0, temp_noise_array[4])
             
-            entry107 = Entry(Frame2, width=6)
-            entry107.place(in_=Frame2, x=420, y=10)
+            self.entry107 = Entry(Frame2, width=6)
+            self.entry107.place(in_=Frame2, x=420, y=10)
+            self.entry107.delete(0, END)
+            self.entry107.insert(0, temp_noise_array[5])
             
-            entry108 = Entry(Frame2, width=6)
-            entry108.place(in_=Frame2, x=470, y=10)
+            self.entry108 = Entry(Frame2, width=6)
+            self.entry108.place(in_=Frame2, x=470, y=10)
+            self.entry108.delete(0, END)
+            self.entry108.insert(0, temp_noise_array[6])
             
             output109 = ttk.Label(Frame2, text="Hz", font="Arial 10 bold")
             output109.place(in_=Frame2,x=520,y=10)
             
             output110 = ttk.Label(Frame2, text="Crystal Oscillator Noise", font="Arial 10 bold")
             output110.place(in_=Frame2,x=10,y=40)
-            entry110 = Entry(Frame2, width=6)
-            entry110.place(in_=Frame2, x=170, y=40)
             
-            entry111 = Entry(Frame2, width=6)
-            entry111.place(in_=Frame2, x=220, y=40)
+            self.entry110 = Entry(Frame2, width=6)
+            self.entry110.place(in_=Frame2, x=170, y=40)
+            self.entry110.delete(0, END)
+            self.entry110.insert(0, temp_noise_array[7])
+            
+            self.entry111 = Entry(Frame2, width=6)
+            self.entry111.place(in_=Frame2, x=220, y=40)
+            self.entry111.delete(0, END)
+            self.entry111.insert(0, temp_noise_array[8])
         
-            entry112 = Entry(Frame2, width=6)
-            entry112.place(in_=Frame2, x=270, y=40)
+            self.entry112 = Entry(Frame2, width=6)
+            self.entry112.place(in_=Frame2, x=270, y=40)
+            self.entry112.delete(0, END)
+            self.entry112.insert(0, temp_noise_array[9])
             
-            entry113 = Entry(Frame2, width=6)
-            entry113.place(in_=Frame2, x=320, y=40)
+            self.entry113 = Entry(Frame2, width=6)
+            self.entry113.place(in_=Frame2, x=320, y=40)
+            self.entry113.delete(0, END)
+            self.entry113.insert(0, temp_noise_array[10])
             
-            entry114 = Entry(Frame2, width=6)
-            entry114.place(in_=Frame2, x=370, y=40)
+            self.entry114 = Entry(Frame2, width=6)
+            self.entry114.place(in_=Frame2, x=370, y=40)
+            self.entry114.delete(0, END)
+            self.entry114.insert(0, temp_noise_array[11])
             
-            entry115 = Entry(Frame2, width=6)
-            entry115.place(in_=Frame2, x=420, y=40)
+            self.entry115 = Entry(Frame2, width=6)
+            self.entry115.place(in_=Frame2, x=420, y=40)
+            self.entry115.delete(0, END)
+            self.entry115.insert(0, temp_noise_array[12])
             
-            entry116 = Entry(Frame2, width=6)
-            entry116.place(in_=Frame2, x=470, y=40)
+            self.entry116 = Entry(Frame2, width=6)
+            self.entry116.place(in_=Frame2, x=470, y=40)
+            self.entry116.delete(0, END)
+            self.entry116.insert(0, temp_noise_array[13])
             
             output117 = ttk.Label(Frame2, text="dBc/Hz", font="Arial 10 bold")
             output117.place(in_=Frame2,x=520,y=40)
             
             output118 = ttk.Label(Frame2, text="Add / Subtract from Crystal Phase Noise?", font="Arial 10 bold")
             output118.place(in_=Frame2,x=10,y=70)
-            entry118 = Entry(Frame2, width=6)
-            entry118.place(in_=Frame2, x=470, y=70)
+            
+            self.entry118 = Entry(Frame2, width=6)
+            self.entry118.place(in_=Frame2, x=470, y=70)
+            self.entry118.delete(0, END)
+            self.entry118.insert(0, temp_noise_array[14])
             
             output119 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
-            output119.place(in_=Frame2,x=520,y=70)
-            
-            #command=load_noise
-            
-            #l_noise = 1
-            
-            self.entry102.insert(0, entry102)            
+            output119.place(in_=Frame2,x=520,y=70)          
             
         def change_noise2():
+            
+            change_noise()
+            noise = 2
             
             Crystal_button.config(relief=RAISED)
             Reference_button.config(relief=SUNKEN)
@@ -1124,98 +1158,103 @@ class MainGUI(Frame):
             Composite_button.config(relief=RAISED)
             HighPass_button.config(relief=RAISED)
             
-            command=change_noise
-            
             Frame2 = Frame(root, highlightbackground="black", highlightcolor="black", highlightthickness=2, width=600, height=450, bd=0)
             Frame2.grid(row = 2, column =5, rowspan = 2, columnspan = 2, sticky = W+E+N+S)
             
             output1 = ttk.Label(Frame2, text="Frequency Offset", font="Arial 10 bold")
             output1.place(in_=Frame2,x=10,y=10)
-            entry119 = Entry(Frame2, width=6)
-            entry119.place(in_=Frame2, x=170, y=10)
+            
+            self.entry119 = Entry(Frame2, width=6)
+            self.entry119.place(in_=Frame2, x=170, y=10)
         
-            entry120 = Entry(Frame2, width=6)
-            entry120.place(in_=Frame2, x=220, y=10)
+            self.entry120 = Entry(Frame2, width=6)
+            self.entry120.place(in_=Frame2, x=220, y=10)
             
-            entry121 = Entry(Frame2, width=6)
-            entry121.place(in_=Frame2, x=270, y=10)
+            self.entry121 = Entry(Frame2, width=6)
+            self.entry121.place(in_=Frame2, x=270, y=10)
             
-            entry122 = Entry(Frame2, width=6)
-            entry122.place(in_=Frame2, x=320, y=10)
+            self.entry122 = Entry(Frame2, width=6)
+            self.entry122.place(in_=Frame2, x=320, y=10)
             
-            entry123 = Entry(Frame2, width=6)
-            entry123.place(in_=Frame2, x=370, y=10)
+            self.entry123 = Entry(Frame2, width=6)
+            self.entry123.place(in_=Frame2, x=370, y=10)
             
-            entry124 = Entry(Frame2, width=6)
-            entry124.place(in_=Frame2, x=420, y=10)
+            self.entry124 = Entry(Frame2, width=6)
+            self.entry124.place(in_=Frame2, x=420, y=10)
             
-            entry425 = Entry(Frame2, width=6)
-            entry425.place(in_=Frame2, x=470, y=10)
+            self.entry425 = Entry(Frame2, width=6)
+            self.entry425.place(in_=Frame2, x=470, y=10)
             
             output126 = ttk.Label(Frame2, text="Hz", font="Arial 10 bold")
             output126.place(in_=Frame2,x=520,y=10)
             
             output127 = ttk.Label(Frame2, text="Reference Buffer Noise", font="Arial 10 bold")
             output127.place(in_=Frame2,x=10,y=40)
-            entry127 = Entry(Frame2, width=6)
-            entry127.place(in_=Frame2, x=170, y=40)
             
-            entry128 = Entry(Frame2, width=6)
-            entry128.place(in_=Frame2, x=220, y=40)
+            self.entry127 = Entry(Frame2, width=6)
+            self.entry127.place(in_=Frame2, x=170, y=40)
+            
+            self.entry128 = Entry(Frame2, width=6)
+            self.entry128.place(in_=Frame2, x=220, y=40)
         
-            entry129 = Entry(Frame2, width=6)
-            entry129.place(in_=Frame2, x=270, y=40)
+            self.entry129 = Entry(Frame2, width=6)
+            self.entry129.place(in_=Frame2, x=270, y=40)
             
-            entry130 = Entry(Frame2, width=6)
-            entry130.place(in_=Frame2, x=320, y=40)
+            self.entry130 = Entry(Frame2, width=6)
+            self.entry130.place(in_=Frame2, x=320, y=40)
             
-            entry131 = Entry(Frame2, width=6)
-            entry131.place(in_=Frame2, x=370, y=40)
+            self.entry131 = Entry(Frame2, width=6)
+            self.entry131.place(in_=Frame2, x=370, y=40)
             
-            entry132 = Entry(Frame2, width=6)
-            entry132.place(in_=Frame2, x=420, y=40)
+            self.entry132 = Entry(Frame2, width=6)
+            self.entry132.place(in_=Frame2, x=420, y=40)
             
-            entry133 = Entry(Frame2, width=6)
-            entry133.place(in_=Frame2, x=470, y=40)
+            self.entry133 = Entry(Frame2, width=6)
+            self.entry133.place(in_=Frame2, x=470, y=40)
             
             output134 = ttk.Label(Frame2, text="dBc/Hz", font="Arial 10 bold")
             output134.place(in_=Frame2,x=520,y=40)
             
             output135 = ttk.Label(Frame2, text="Referance Buffer Gain", font="Arial 10 bold")
             output135.place(in_=Frame2,x=10,y=70)
-            entry135 = Entry(Frame2, width=6)
-            entry135.place(in_=Frame2, x=170, y=70)
             
-            entry136 = Entry(Frame2, width=6)
-            entry136.place(in_=Frame2, x=220, y=70)
+            self.entry135 = Entry(Frame2, width=6)
+            self.entry135.place(in_=Frame2, x=170, y=70)
+            
+            self.entry136 = Entry(Frame2, width=6)
+            self.entry136.place(in_=Frame2, x=220, y=70)
         
-            entry137 = Entry(Frame2, width=6)
-            entry137.place(in_=Frame2, x=270, y=70)
+            self.entry137 = Entry(Frame2, width=6)
+            self.entry137.place(in_=Frame2, x=270, y=70)
             
-            entry138 = Entry(Frame2, width=6)
-            entry138.place(in_=Frame2, x=320, y=70)
+            self.entry138 = Entry(Frame2, width=6)
+            self.entry138.place(in_=Frame2, x=320, y=70)
             
-            entry139 = Entry(Frame2, width=6)
-            entry139.place(in_=Frame2, x=370, y=70)
+            self.entry139 = Entry(Frame2, width=6)
+            self.entry139.place(in_=Frame2, x=370, y=70)
             
-            entry140 = Entry(Frame2, width=6)
-            entry140.place(in_=Frame2, x=420, y=70)
+            self.entry140 = Entry(Frame2, width=6)
+            self.entry140.place(in_=Frame2, x=420, y=70)
             
-            entry141 = Entry(Frame2, width=6)
-            entry141.place(in_=Frame2, x=470, y=70)
+            self.entry141 = Entry(Frame2, width=6)
+            self.entry141.place(in_=Frame2, x=470, y=70)
             
             output142 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
             output142.place(in_=Frame2,x=520,y=70)
             
             output143 = ttk.Label(Frame2, text="Reference Buffer Noise Offset", font="Arial 10 bold")
             output143.place(in_=Frame2,x=10,y=100)
-            entry143 = Entry(Frame2, width=6)
-            entry143.place(in_=Frame2, x=470, y=100)
+            
+            self.entry143 = Entry(Frame2, width=6)
+            self.entry143.place(in_=Frame2, x=470, y=100)
             
             output144 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
             output144.place(in_=Frame2,x=520,y=100)
             
         def change_noise3():
+            
+            change_noise()
+            noise = 3
             
             Crystal_button.config(relief=RAISED)
             Reference_button.config(relief=RAISED)
@@ -1227,103 +1266,101 @@ class MainGUI(Frame):
             Composite_button.config(relief=RAISED)
             HighPass_button.config(relief=RAISED)
             
-            command=change_noise
-            
             Frame2 = Frame(root, highlightbackground="black", highlightcolor="black", highlightthickness=2, width=600, height=450, bd=0)
             Frame2.grid(row = 2, column =5, rowspan = 2, columnspan = 2, sticky = W+E+N+S)            
             
             output145 = ttk.Label(Frame2, text="Use Simple Phase Detector Model?", font="Arial 10 bold")
             output145.place(in_=Frame2,x=10,y=10)   
+            
             check_var = IntVar()
             Checkbutton(root, variable=check_var).place(in_=Frame2, x=490, y=10)
             
             output146 = ttk.Label(Frame2, text="Phase Detector Noise Specification Frequency", font="Arial 10 bold")
             output146.place(in_=Frame2,x=10,y=40)
-            entry144 = Entry(Frame2, width=6)
-            entry144.place(in_=Frame2, x=470, y=40)
+            
+            self.entry144 = Entry(Frame2, width=6)
+            self.entry144.place(in_=Frame2, x=470, y=40)
+            
             output147 = ttk.Label(Frame2, text="Hz", font="Arial 10 bold")
             output147.place(in_=Frame2,x=520,y=40)
             
             output1 = ttk.Label(Frame2, text="Frequency Offset", font="Arial 10 bold")
             output1.place(in_=Frame2,x=10,y=70)
-            entry145 = Entry(Frame2, width=6)
             
-            entry146 = Entry(Frame2, width=6)
-            entry146.place(in_=Frame2, x=170, y=70)
+            self.entry146 = Entry(Frame2, width=6)
+            self.entry146.place(in_=Frame2, x=170, y=70)
             
-            entry147 = Entry(Frame2, width=6)
-            entry147.place(in_=Frame2, x=220, y=70)
+            self.entry147 = Entry(Frame2, width=6)
+            self.entry147.place(in_=Frame2, x=220, y=70)
         
-            entry148 = Entry(Frame2, width=6)
-            entry148.place(in_=Frame2, x=270, y=70)
+            self.entry148 = Entry(Frame2, width=6)
+            self.entry148.place(in_=Frame2, x=270, y=70)
             
-            entry149 = Entry(Frame2, width=6)
-            entry149.place(in_=Frame2, x=320, y=70)
+            self.entry149 = Entry(Frame2, width=6)
+            self.entry149.place(in_=Frame2, x=320, y=70)
             
-            entry150 = Entry(Frame2, width=6)
-            entry150.place(in_=Frame2, x=370, y=70)
+            self.entry150 = Entry(Frame2, width=6)
+            self.entry150.place(in_=Frame2, x=370, y=70)
             
-            entry151 = Entry(Frame2, width=6)
-            entry151.place(in_=Frame2, x=420, y=70)
+            self.entry151 = Entry(Frame2, width=6)
+            self.entry151.place(in_=Frame2, x=420, y=70)
             
-            entry152 = Entry(Frame2, width=6)
-            entry152.place(in_=Frame2, x=470, y=70)
+            self.entry152 = Entry(Frame2, width=6)
+            self.entry152.place(in_=Frame2, x=470, y=70)
             
             output153 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
             output153.place(in_=Frame2,x=520,y=70)
             
             output154 = ttk.Label(Frame2, text="Supply Noise", font="Arial 10 bold")
             output154.place(in_=Frame2,x=10,y=100)
-            entry153 = Entry(Frame2, width=6)
             
-            entry154 = Entry(Frame2, width=6)
-            entry154.place(in_=Frame2, x=170, y=100)
+            self.entry154 = Entry(Frame2, width=6)
+            self.entry154.place(in_=Frame2, x=170, y=100)
             
-            entry155 = Entry(Frame2, width=6)
-            entry155.place(in_=Frame2, x=220, y=100)
+            self.entry155 = Entry(Frame2, width=6)
+            self.entry155.place(in_=Frame2, x=220, y=100)
         
-            entry156 = Entry(Frame2, width=6)
-            entry156.place(in_=Frame2, x=270, y=100)
+            self.entry156 = Entry(Frame2, width=6)
+            self.entry156.place(in_=Frame2, x=270, y=100)
             
-            entry157 = Entry(Frame2, width=6)
-            entry157.place(in_=Frame2, x=320, y=100)
+            self.entry157 = Entry(Frame2, width=6)
+            self.entry157.place(in_=Frame2, x=320, y=100)
             
-            entry158 = Entry(Frame2, width=6)
-            entry158.place(in_=Frame2, x=370, y=100)
+            self.entry158 = Entry(Frame2, width=6)
+            self.entry158.place(in_=Frame2, x=370, y=100)
             
-            entry159 = Entry(Frame2, width=6)
-            entry159.place(in_=Frame2, x=420, y=100)
+            self.entry159 = Entry(Frame2, width=6)
+            self.entry159.place(in_=Frame2, x=420, y=100)
             
-            entry160 = Entry(Frame2, width=6)
-            entry160.place(in_=Frame2, x=470, y=100)
+            self.entry160 = Entry(Frame2, width=6)
+            self.entry160.place(in_=Frame2, x=470, y=100)
             
             output161 = ttk.Label(Frame2, text="dBV^2/Hz", font="Arial 10 bold")
             output161.place(in_=Frame2,x=520,y=100)
             
             output162 = ttk.Label(Frame2, text="PSRR", font="Arial 10 bold")
             output162.place(in_=Frame2,x=10,y=130)
-            entry161 = Entry(Frame2, width=6)
             
-            entry162 = Entry(Frame2, width=6)
-            entry162.place(in_=Frame2, x=170, y=130)
+            self.entry162 = Entry(Frame2, width=6)
+            self.entry162.place(in_=Frame2, x=170, y=130)
             
-            entry163 = Entry(Frame2, width=6)
-            entry163.place(in_=Frame2, x=220, y=130)
+            self.entry163 = Entry(Frame2, width=6)
+            self.entry163.place(in_=Frame2, x=220, y=130)
         
-            entry164 = Entry(Frame2, width=6)
-            entry164.place(in_=Frame2, x=270, y=130)
+            self.entry164 = Entry(Frame2, width=6)
+            self.entry164.place(in_=Frame2, x=270, y=130)
             
-            entry165 = Entry(Frame2, width=6)
-            entry165.place(in_=Frame2, x=320, y=130)
+            self.entry165 = Entry(Frame2, width=6)
+            self.entry165.place(in_=Frame2, x=320, y=130)
             
-            entry166 = Entry(Frame2, width=6)
-            entry166.place(in_=Frame2, x=370, y=130)
+            self.entry166 = Entry(Frame2, width=6)
+            self.entry166.place(in_=Frame2, x=370, y=130)
             
-            entry167 = Entry(Frame2, width=6)
-            entry167.place(in_=Frame2, x=420, y=130)
+            self.entry167 = Entry(Frame2, width=6)
+            self.entry167.place(in_=Frame2, x=420, y=130)
             
-            entry168 = Entry(Frame2, width=6)
-            entry168.place(in_=Frame2, x=470, y=130)
+            self.entry168 = Entry(Frame2, width=6)
+            self.entry168.place(in_=Frame2, x=470, y=130)
             
             output169 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
             output169.place(in_=Frame2,x=520,y=130)
@@ -1336,112 +1373,116 @@ class MainGUI(Frame):
             
             output172 = ttk.Label(Frame2, text="Min:", font="Arial 10 bold")
             output172.place(in_=Frame2,x=10,y=190)
-            entry169 = Entry(Frame2, width=6)
             
-            entry169 = Entry(Frame2, width=6)
-            entry169.place(in_=Frame2, x=70, y=190)
+            self.entry169 = Entry(Frame2, width=6)
+            self.entry169.place(in_=Frame2, x=70, y=190)
             
-            entry170 = Entry(Frame2, width=6)
-            entry170.place(in_=Frame2, x=170, y=190)
+            self.entry170 = Entry(Frame2, width=6)
+            self.entry170.place(in_=Frame2, x=170, y=190)
             
-            entry171 = Entry(Frame2, width=6)
-            entry171.place(in_=Frame2, x=220, y=190)
+            self.entry171 = Entry(Frame2, width=6)
+            self.entry171.place(in_=Frame2, x=220, y=190)
         
-            entry172 = Entry(Frame2, width=6)
-            entry172.place(in_=Frame2, x=270, y=190)
+            self.entry172 = Entry(Frame2, width=6)
+            self.entry172.place(in_=Frame2, x=270, y=190)
             
-            entry173 = Entry(Frame2, width=6)
-            entry173.place(in_=Frame2, x=320, y=190)
+            self.entry173 = Entry(Frame2, width=6)
+            self.entry173.place(in_=Frame2, x=320, y=190)
             
-            entry174 = Entry(Frame2, width=6)
-            entry174.place(in_=Frame2, x=370, y=190)
+            self.entry174 = Entry(Frame2, width=6)
+            self.entry174.place(in_=Frame2, x=370, y=190)
             
-            entry175 = Entry(Frame2, width=6)
-            entry175.place(in_=Frame2, x=420, y=190)
+            self.entry175 = Entry(Frame2, width=6)
+            self.entry175.place(in_=Frame2, x=420, y=190)
             
-            entry176 = Entry(Frame2, width=6)
-            entry176.place(in_=Frame2, x=470, y=190)
+            self.entry176 = Entry(Frame2, width=6)
+            self.entry176.place(in_=Frame2, x=470, y=190)
             
             output177 = ttk.Label(Frame2, text="dBc/Hz", font="Arial 10 bold")
             output177.place(in_=Frame2,x=520,y=190)
             
             output178 = ttk.Label(Frame2, text="Mid:", font="Arial 10 bold")
             output178.place(in_=Frame2,x=10,y=220)
-            entry177 = Entry(Frame2, width=6)
             
-            entry178 = Entry(Frame2, width=6)
-            entry178.place(in_=Frame2, x=70, y=220)
+            self.entry178 = Entry(Frame2, width=6)
+            self.entry178.place(in_=Frame2, x=70, y=220)
             
-            entry179 = Entry(Frame2, width=6)
-            entry179.place(in_=Frame2, x=170, y=220)
+            self.entry179 = Entry(Frame2, width=6)
+            self.entry179.place(in_=Frame2, x=170, y=220)
             
-            entry180 = Entry(Frame2, width=6)
-            entry180.place(in_=Frame2, x=220, y=220)
+            self.entry180 = Entry(Frame2, width=6)
+            self.entry180.place(in_=Frame2, x=220, y=220)
         
-            entry181 = Entry(Frame2, width=6)
-            entry181.place(in_=Frame2, x=270, y=220)
+            self.entry181 = Entry(Frame2, width=6)
+            self.entry181.place(in_=Frame2, x=270, y=220)
             
-            entry182 = Entry(Frame2, width=6)
-            entry182.place(in_=Frame2, x=320, y=220)
+            self.entry182 = Entry(Frame2, width=6)
+            self.entry182.place(in_=Frame2, x=320, y=220)
             
-            entry183 = Entry(Frame2, width=6)
-            entry183.place(in_=Frame2, x=370, y=220)
+            self.entry183 = Entry(Frame2, width=6)
+            self.entry183.place(in_=Frame2, x=370, y=220)
             
-            entry184 = Entry(Frame2, width=6)
-            entry184.place(in_=Frame2, x=420, y=220)
+            self.entry184 = Entry(Frame2, width=6)
+            self.entry184.place(in_=Frame2, x=420, y=220)
             
-            entry185 = Entry(Frame2, width=6)
-            entry185.place(in_=Frame2, x=470, y=220)
+            self.entry185 = Entry(Frame2, width=6)
+            self.entry185.place(in_=Frame2, x=470, y=220)
             
             output185 = ttk.Label(Frame2, text="dBc/Hz", font="Arial 10 bold")
             output185.place(in_=Frame2,x=520,y=220)
             
             output186 = ttk.Label(Frame2, text="Max:", font="Arial 10 bold")
             output186.place(in_=Frame2,x=10,y=250)
-            entry186 = Entry(Frame2, width=6)
             
-            entry187 = Entry(Frame2, width=6)
-            entry187.place(in_=Frame2, x=70, y=250)
+            self.entry187 = Entry(Frame2, width=6)
+            self.entry187.place(in_=Frame2, x=70, y=250)
             
-            entry188 = Entry(Frame2, width=6)
-            entry188.place(in_=Frame2, x=170, y=250)
+            self.entry188 = Entry(Frame2, width=6)
+            self.entry188.place(in_=Frame2, x=170, y=250)
             
-            entry189 = Entry(Frame2, width=6)
-            entry189.place(in_=Frame2, x=220, y=250)
+            self.entry189 = Entry(Frame2, width=6)
+            self.entry189.place(in_=Frame2, x=220, y=250)
         
-            entry190 = Entry(Frame2, width=6)
-            entry190.place(in_=Frame2, x=270, y=250)
+            self.entry190 = Entry(Frame2, width=6)
+            self.entry190.place(in_=Frame2, x=270, y=250)
             
-            entry191 = Entry(Frame2, width=6)
-            entry191.place(in_=Frame2, x=320, y=250)
+            self.entry191 = Entry(Frame2, width=6)
+            self.entry191.place(in_=Frame2, x=320, y=250)
             
-            entry192 = Entry(Frame2, width=6)
-            entry192.place(in_=Frame2, x=370, y=250)
+            self.entry192 = Entry(Frame2, width=6)
+            self.entry192.place(in_=Frame2, x=370, y=250)
             
-            entry193 = Entry(Frame2, width=6)
-            entry193.place(in_=Frame2, x=420, y=250)
+            self.entry193 = Entry(Frame2, width=6)
+            self.entry193.place(in_=Frame2, x=420, y=250)
             
-            entry194 = Entry(Frame2, width=6)
-            entry194.place(in_=Frame2, x=470, y=250)
+            self.entry194 = Entry(Frame2, width=6)
+            self.entry194.place(in_=Frame2, x=470, y=250)
             
             output194 = ttk.Label(Frame2, text="dBc/Hz", font="Arial 10 bold")
             output194.place(in_=Frame2,x=520,y=250)
             
             output195 = ttk.Label(Frame2, text="Phase Detector Noise Offset For Frac-N Mode", font="Arial 10 bold")
             output195.place(in_=Frame2,x=10,y=280)
-            entry195 = Entry(Frame2, width=6)
-            entry195.place(in_=Frame2, x=470, y=280)
+            
+            self.entry195 = Entry(Frame2, width=6)
+            self.entry195.place(in_=Frame2, x=470, y=280)
+            
             output196 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
             output196.place(in_=Frame2,x=520,y=280)
             
             output197 = ttk.Label(Frame2, text="Add Subtract From Phase Detector Noise", font="Arial 10 bold")
             output197.place(in_=Frame2,x=10,y=310)
-            entry196 = Entry(Frame2, width=6)
-            entry196.place(in_=Frame2, x=470, y=310)
+            
+            self.entry196 = Entry(Frame2, width=6)
+            self.entry196.place(in_=Frame2, x=470, y=310)
+            
             output198 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
             output198.place(in_=Frame2,x=520,y=310)
             
         def change_noise4():
+            
+            change_noise()
+            noise = 4
             
             Crystal_button.config(relief=RAISED)
             Reference_button.config(relief=RAISED)
@@ -1453,131 +1494,128 @@ class MainGUI(Frame):
             Composite_button.config(relief=RAISED)
             HighPass_button.config(relief=RAISED)
             
-            command=change_noise
-            
             Frame2 = Frame(root, highlightbackground="black", highlightcolor="black", highlightthickness=2, width=600, height=450, bd=0)
             Frame2.grid(row = 2, column =5, rowspan = 2, columnspan = 2, sticky = W+E+N+S)
             
             output199 = ttk.Label(Frame2, text="Use Simple VCO Model?", font="Arial 10 bold")
             output199.place(in_=Frame2,x=10,y=10)   
+            
             check_var = IntVar()
             Checkbutton(root, variable=check_var).place(in_=Frame2, x=490, y=10)
             
             output200 = ttk.Label(Frame2, text="VCO Noise Specification Frequency", font="Arial 10 bold")
             output200.place(in_=Frame2,x=10,y=40)
-            entry197 = Entry(Frame2, width=6)
-            entry197.place(in_=Frame2, x=470, y=40)
+            
+            self.entry197 = Entry(Frame2, width=6)
+            self.entry197.place(in_=Frame2, x=470, y=40)
+            
             output201 = ttk.Label(Frame2, text="Hz", font="Arial 10 bold")
             output201.place(in_=Frame2,x=520,y=40)
             
             output202 = ttk.Label(Frame2, text="Tuning Voltage", font="Arial 10 bold")
             output202.place(in_=Frame2,x=10,y=70)
-       #     entry198 = Entry(Frame2, width=6)
             
-            entry199 = Entry(Frame2, width=6)
-            entry199.place(in_=Frame2, x=170, y=70)
+            self.entry199 = Entry(Frame2, width=6)
+            self.entry199.place(in_=Frame2, x=170, y=70)
             
-            entry200 = Entry(Frame2, width=6)
-            entry200.place(in_=Frame2, x=220, y=70)
+            self.entry200 = Entry(Frame2, width=6)
+            self.entry200.place(in_=Frame2, x=220, y=70)
         
-            entry201 = Entry(Frame2, width=6)
-            entry201.place(in_=Frame2, x=270, y=70)
+            self.entry201 = Entry(Frame2, width=6)
+            self.entry201.place(in_=Frame2, x=270, y=70)
             
-            entry202 = Entry(Frame2, width=6)
-            entry202.place(in_=Frame2, x=320, y=70)
+            self.entry202 = Entry(Frame2, width=6)
+            self.entry202.place(in_=Frame2, x=320, y=70)
             
-            entry203 = Entry(Frame2, width=6)
-            entry203.place(in_=Frame2, x=370, y=70)
+            self.entry203 = Entry(Frame2, width=6)
+            self.entry203.place(in_=Frame2, x=370, y=70)
             
-            entry204 = Entry(Frame2, width=6)
-            entry204.place(in_=Frame2, x=420, y=70)
+            self.entry204 = Entry(Frame2, width=6)
+            self.entry204.place(in_=Frame2, x=420, y=70)
             
-            entry205 = Entry(Frame2, width=6)
-            entry205.place(in_=Frame2, x=470, y=70)
+            self.entry205 = Entry(Frame2, width=6)
+            self.entry205.place(in_=Frame2, x=470, y=70)
             
             output205 = ttk.Label(Frame2, text="Volts", font="Arial 10 bold")
             output205.place(in_=Frame2,x=520,y=70)
             
             output206 = ttk.Label(Frame2, text="VCO Frequency", font="Arial 10 bold")
             output206.place(in_=Frame2,x=10,y=100)
-      #      entry206 = Entry(Frame2, width=6)
             
-            entry207 = Entry(Frame2, width=6)
-            entry207.place(in_=Frame2, x=170, y=100)
+            self.entry207 = Entry(Frame2, width=6)
+            self.entry207.place(in_=Frame2, x=170, y=100)
             
-            entry208 = Entry(Frame2, width=6)
-            entry208.place(in_=Frame2, x=220, y=100)
+            self.entry208 = Entry(Frame2, width=6)
+            self.entry208.place(in_=Frame2, x=220, y=100)
         
-            entry209 = Entry(Frame2, width=6)
-            entry209.place(in_=Frame2, x=270, y=100)
+            self.entry209 = Entry(Frame2, width=6)
+            self.entry209.place(in_=Frame2, x=270, y=100)
             
-            entry210 = Entry(Frame2, width=6)
-            entry210.place(in_=Frame2, x=320, y=100)
+            self.entry210 = Entry(Frame2, width=6)
+            self.entry210.place(in_=Frame2, x=320, y=100)
             
-            entry211 = Entry(Frame2, width=6)
-            entry211.place(in_=Frame2, x=370, y=100)
+            self.entry211 = Entry(Frame2, width=6)
+            self.entry211.place(in_=Frame2, x=370, y=100)
             
-            entry212 = Entry(Frame2, width=6)
-            entry212.place(in_=Frame2, x=420, y=100)
+            self.entry212 = Entry(Frame2, width=6)
+            self.entry212.place(in_=Frame2, x=420, y=100)
             
-            entry213 = Entry(Frame2, width=6)
-            entry213.place(in_=Frame2, x=470, y=100)
+            self.entry213 = Entry(Frame2, width=6)
+            self.entry213.place(in_=Frame2, x=470, y=100)
             
             output213 = ttk.Label(Frame2, text="Hz", font="Arial 10 bold")
             output213.place(in_=Frame2,x=520,y=100)
             
             output214 = ttk.Label(Frame2, text="VCO Gain (Kvco)", font="Arial 10 bold")
             output214.place(in_=Frame2,x=10,y=130)
-         #   entry214 = Entry(Frame2, width=6)
             
-            entry215 = Entry(Frame2, width=6)
-            entry215.place(in_=Frame2, x=170, y=130)
+            self.entry215 = Entry(Frame2, width=6)
+            self.entry215.place(in_=Frame2, x=170, y=130)
             
-            entry216 = Entry(Frame2, width=6)
-            entry216.place(in_=Frame2, x=220, y=130)
+            self.entry216 = Entry(Frame2, width=6)
+            self.entry216.place(in_=Frame2, x=220, y=130)
         
-            entry217 = Entry(Frame2, width=6)
-            entry217.place(in_=Frame2, x=270, y=130)
+            self.entry217 = Entry(Frame2, width=6)
+            self.entry217.place(in_=Frame2, x=270, y=130)
             
-            entry218 = Entry(Frame2, width=6)
-            entry218.place(in_=Frame2, x=320, y=130)
+            self.entry218 = Entry(Frame2, width=6)
+            self.entry218.place(in_=Frame2, x=320, y=130)
             
-            entry219 = Entry(Frame2, width=6)
-            entry219.place(in_=Frame2, x=370, y=130)
+            self.entry219 = Entry(Frame2, width=6)
+            self.entry219.place(in_=Frame2, x=370, y=130)
             
-            entry220 = Entry(Frame2, width=6)
-            entry220.place(in_=Frame2, x=420, y=130)
+            self.entry220 = Entry(Frame2, width=6)
+            self.entry220.place(in_=Frame2, x=420, y=130)
             
-            entry221 = Entry(Frame2, width=6)
-            entry221.place(in_=Frame2, x=470, y=130)
+            self.entry221 = Entry(Frame2, width=6)
+            self.entry221.place(in_=Frame2, x=470, y=130)
             
             output221 = ttk.Label(Frame2, text="MHz", font="Arial 10 bold")
             output221.place(in_=Frame2,x=520,y=130)
             
             output222 = ttk.Label(Frame2, text="VCO Supply Noise", font="Arial 10 bold")
             output222.place(in_=Frame2,x=10,y=160)
-         #   entry222 = Entry(Frame2, width=6)
             
-            entry223 = Entry(Frame2, width=6)
-            entry223.place(in_=Frame2, x=170, y=160)
+            self.entry223 = Entry(Frame2, width=6)
+            self.entry223.place(in_=Frame2, x=170, y=160)
             
-            entry224 = Entry(Frame2, width=6)
-            entry224.place(in_=Frame2, x=220, y=160)
+            self.entry224 = Entry(Frame2, width=6)
+            self.entry224.place(in_=Frame2, x=220, y=160)
         
-            entry225 = Entry(Frame2, width=6)
-            entry225.place(in_=Frame2, x=270, y=160)
+            self.entry225 = Entry(Frame2, width=6)
+            self.entry225.place(in_=Frame2, x=270, y=160)
             
-            entry226 = Entry(Frame2, width=6)
-            entry226.place(in_=Frame2, x=320, y=160)
+            self.entry226 = Entry(Frame2, width=6)
+            self.entry226.place(in_=Frame2, x=320, y=160)
             
-            entry227 = Entry(Frame2, width=6)
-            entry227.place(in_=Frame2, x=370, y=160)
+            self.entry227 = Entry(Frame2, width=6)
+            self.entry227.place(in_=Frame2, x=370, y=160)
             
-            entry228 = Entry(Frame2, width=6)
-            entry228.place(in_=Frame2, x=420, y=160)
+            self.entry228 = Entry(Frame2, width=6)
+            self.entry228.place(in_=Frame2, x=420, y=160)
             
-            entry229 = Entry(Frame2, width=6)
-            entry229.place(in_=Frame2, x=470, y=160)
+            self.entry229 = Entry(Frame2, width=6)
+            self.entry229.place(in_=Frame2, x=470, y=160)
             
             output229 = ttk.Label(Frame2, text="dBV^2/Hz", font="Arial 10 bold")
             output229.place(in_=Frame2,x=520,y=160)
@@ -1590,112 +1628,116 @@ class MainGUI(Frame):
             
             output232 = ttk.Label(Frame2, text="Min:", font="Arial 10 bold")
             output232.place(in_=Frame2,x=10,y=220)
-       #     entry230 = Entry(Frame2, width=6)
             
-            entry230 = Entry(Frame2, width=6)
-            entry230.place(in_=Frame2, x=70, y=220)
+            self.entry230 = Entry(Frame2, width=6)
+            self.entry230.place(in_=Frame2, x=70, y=220)
             
-            entry231 = Entry(Frame2, width=6)
-            entry231.place(in_=Frame2, x=170, y=220)
+            self.entry231 = Entry(Frame2, width=6)
+            self.entry231.place(in_=Frame2, x=170, y=220)
             
-            entry232 = Entry(Frame2, width=6)
-            entry232.place(in_=Frame2, x=220, y=220)
+            self.entry232 = Entry(Frame2, width=6)
+            self.entry232.place(in_=Frame2, x=220, y=220)
         
-            entry233 = Entry(Frame2, width=6)
-            entry233.place(in_=Frame2, x=270, y=220)
+            self.entry233 = Entry(Frame2, width=6)
+            self.entry233.place(in_=Frame2, x=270, y=220)
             
-            entry234 = Entry(Frame2, width=6)
-            entry234.place(in_=Frame2, x=320, y=220)
+            self.entry234 = Entry(Frame2, width=6)
+            self.entry234.place(in_=Frame2, x=320, y=220)
             
-            entry235 = Entry(Frame2, width=6)
-            entry235.place(in_=Frame2, x=370, y=220)
+            self.entry235 = Entry(Frame2, width=6)
+            self.entry235.place(in_=Frame2, x=370, y=220)
             
-            entry236 = Entry(Frame2, width=6)
-            entry236.place(in_=Frame2, x=420, y=220)
+            self.entry236 = Entry(Frame2, width=6)
+            self.entry236.place(in_=Frame2, x=420, y=220)
             
-            entry237 = Entry(Frame2, width=6)
-            entry237.place(in_=Frame2, x=470, y=220)
+            self.entry237 = Entry(Frame2, width=6)
+            self.entry237.place(in_=Frame2, x=470, y=220)
             
             output237 = ttk.Label(Frame2, text="dBc/Hz", font="Arial 10 bold")
             output237.place(in_=Frame2,x=520,y=220)
             
             output238 = ttk.Label(Frame2, text="Mid:", font="Arial 10 bold")
             output238.place(in_=Frame2,x=10,y=250)
-         #   entry238 = Entry(Frame2, width=6)
             
-            entry238 = Entry(Frame2, width=6)
-            entry238.place(in_=Frame2, x=70, y=250)
+            self.entry238 = Entry(Frame2, width=6)
+            self.entry238.place(in_=Frame2, x=70, y=250)
             
-            entry239 = Entry(Frame2, width=6)
-            entry239.place(in_=Frame2, x=170, y=250)
+            self.entry239 = Entry(Frame2, width=6)
+            self.entry239.place(in_=Frame2, x=170, y=250)
             
-            entry240 = Entry(Frame2, width=6)
-            entry240.place(in_=Frame2, x=220, y=250)
+            self.entry240 = Entry(Frame2, width=6)
+            self.entry240.place(in_=Frame2, x=220, y=250)
         
-            entry241 = Entry(Frame2, width=6)
-            entry241.place(in_=Frame2, x=270, y=250)
+            self.entry241 = Entry(Frame2, width=6)
+            self.entry241.place(in_=Frame2, x=270, y=250)
             
-            entry242 = Entry(Frame2, width=6)
-            entry242.place(in_=Frame2, x=320, y=250)
+            self.entry242 = Entry(Frame2, width=6)
+            self.entry242.place(in_=Frame2, x=320, y=250)
             
-            entry243 = Entry(Frame2, width=6)
-            entry243.place(in_=Frame2, x=370, y=250)
+            self.entry243 = Entry(Frame2, width=6)
+            self.entry243.place(in_=Frame2, x=370, y=250)
             
-            entry244 = Entry(Frame2, width=6)
-            entry244.place(in_=Frame2, x=420, y=250)
+            self.entry244 = Entry(Frame2, width=6)
+            self.entry244.place(in_=Frame2, x=420, y=250)
             
-            entry245 = Entry(Frame2, width=6)
-            entry245.place(in_=Frame2, x=470, y=250)
+            self.entry245 = Entry(Frame2, width=6)
+            self.entry245.place(in_=Frame2, x=470, y=250)
             
             output245 = ttk.Label(Frame2, text="dBc/Hz", font="Arial 10 bold")
             output245.place(in_=Frame2,x=520,y=250)
             
             output246 = ttk.Label(Frame2, text="Max:", font="Arial 10 bold")
             output246.place(in_=Frame2,x=10,y=280)
-          #  entry24 = Entry(Frame2, width=6)
             
-            entry246 = Entry(Frame2, width=6)
-            entry246.place(in_=Frame2, x=70, y=280)
+            self.entry246 = Entry(Frame2, width=6)
+            self.entry246.place(in_=Frame2, x=70, y=280)
             
-            entry247 = Entry(Frame2, width=6)
-            entry247.place(in_=Frame2, x=170, y=280)
+            self.entry247 = Entry(Frame2, width=6)
+            self.entry247.place(in_=Frame2, x=170, y=280)
             
-            entry248 = Entry(Frame2, width=6)
-            entry248.place(in_=Frame2, x=220, y=280)
+            self.entry248 = Entry(Frame2, width=6)
+            self.entry248.place(in_=Frame2, x=220, y=280)
         
-            entry249 = Entry(Frame2, width=6)
-            entry249.place(in_=Frame2, x=270, y=280)
+            self.entry249 = Entry(Frame2, width=6)
+            self.entry249.place(in_=Frame2, x=270, y=280)
             
-            entry250 = Entry(Frame2, width=6)
-            entry250.place(in_=Frame2, x=320, y=280)
+            self.entry250 = Entry(Frame2, width=6)
+            self.entry250.place(in_=Frame2, x=320, y=280)
             
-            entry251 = Entry(Frame2, width=6)
-            entry251.place(in_=Frame2, x=370, y=280)
+            self.entry251 = Entry(Frame2, width=6)
+            self.entry251.place(in_=Frame2, x=370, y=280)
             
-            entry252 = Entry(Frame2, width=6)
-            entry252.place(in_=Frame2, x=420, y=280)
+            self.entry252 = Entry(Frame2, width=6)
+            self.entry252.place(in_=Frame2, x=420, y=280)
             
-            entry253 = Entry(Frame2, width=6)
-            entry253.place(in_=Frame2, x=470, y=280)
+            self.entry253 = Entry(Frame2, width=6)
+            self.entry253.place(in_=Frame2, x=470, y=280)
             
             output253 = ttk.Label(Frame2, text="dBc/Hz", font="Arial 10 bold")
             output253.place(in_=Frame2,x=520,y=280)
             
             output254 = ttk.Label(Frame2, text="Offset [dB]", font="Arial 10 bold")
             output254.place(in_=Frame2,x=10,y=310)
-            entry254 = Entry(Frame2, width=6)
-            entry254.place(in_=Frame2, x=470, y=310)
+            
+            self.entry254 = Entry(Frame2, width=6)
+            self.entry254.place(in_=Frame2, x=470, y=310)
+            
             output255 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
             output255.place(in_=Frame2,x=520,y=310)
             
             output256 = ttk.Label(Frame2, text="Pushing Figure", font="Arial 10 bold")
             output256.place(in_=Frame2,x=10,y=340)
-            entry255 = Entry(Frame2, width=6)
-            entry255.place(in_=Frame2, x=470, y=340)
+            
+            self.entry255 = Entry(Frame2, width=6)
+            self.entry255.place(in_=Frame2, x=470, y=340)
+            
             output257 = ttk.Label(Frame2, text="Hz/Volts", font="Arial 10 bold")
             output257.place(in_=Frame2,x=520,y=340)
             
         def change_noise5():
+            
+            change_noise()
+            noise = 5
             
             Crystal_button.config(relief=RAISED)
             Reference_button.config(relief=RAISED)
@@ -1707,82 +1749,85 @@ class MainGUI(Frame):
             Composite_button.config(relief=RAISED)
             HighPass_button.config(relief=RAISED)
             
-            command=change_noise
-            
             Frame2 = Frame(root, highlightbackground="black", highlightcolor="black", highlightthickness=2, width=600, height=450, bd=0)
             Frame2.grid(row = 2, column =5, rowspan = 2, columnspan = 2, sticky = W+E+N+S)
             
             output258 = ttk.Label(Frame2, text="Divider Noise Specification Frequency", font="Arial 10 bold")
             output258.place(in_=Frame2,x=10,y=10)
-            entry256 = Entry(Frame2, width=6)
-            entry256.place(in_=Frame2, x=470, y=10)
+            
+            self.entry256 = Entry(Frame2, width=6)
+            self.entry256.place(in_=Frame2, x=470, y=10)
+            
             output259 = ttk.Label(Frame2, text="Hz", font="Arial 10 bold")
             output259.place(in_=Frame2,x=520,y=10)
             
             output260 = ttk.Label(Frame2, text="Frequency Offset", font="Arial 10 bold")
             output260.place(in_=Frame2,x=10,y=40)
-           # entry33 = Entry(Frame2, width=6)
             
-            entry257 = Entry(Frame2, width=6)
-            entry257.place(in_=Frame2, x=170, y=40)
+            self.entry257 = Entry(Frame2, width=6)
+            self.entry257.place(in_=Frame2, x=170, y=40)
             
-            entry258 = Entry(Frame2, width=6)
-            entry258.place(in_=Frame2, x=220, y=40)
+            self.entry258 = Entry(Frame2, width=6)
+            self.entry258.place(in_=Frame2, x=220, y=40)
         
-            entry259 = Entry(Frame2, width=6)
-            entry259.place(in_=Frame2, x=270, y=40)
+            self.entry259 = Entry(Frame2, width=6)
+            self.entry259.place(in_=Frame2, x=270, y=40)
             
-            entry260 = Entry(Frame2, width=6)
-            entry260.place(in_=Frame2, x=320, y=40)
+            self.entry260 = Entry(Frame2, width=6)
+            self.entry260.place(in_=Frame2, x=320, y=40)
             
-            entry261 = Entry(Frame2, width=6)
-            entry261.place(in_=Frame2, x=370, y=40)
+            self.entry261 = Entry(Frame2, width=6)
+            self.entry261.place(in_=Frame2, x=370, y=40)
             
-            entry262 = Entry(Frame2, width=6)
-            entry262.place(in_=Frame2, x=420, y=40)
+            self.entry262 = Entry(Frame2, width=6)
+            self.entry262.place(in_=Frame2, x=420, y=40)
             
-            entry263 = Entry(Frame2, width=6)
-            entry263.place(in_=Frame2, x=470, y=40)
+            self.entry263 = Entry(Frame2, width=6)
+            self.entry263.place(in_=Frame2, x=470, y=40)
             
             output263 = ttk.Label(Frame2, text="Hz", font="Arial 10 bold")
             output263.place(in_=Frame2,x=520,y=40)
             
             output264 = ttk.Label(Frame2, text="Feedback Divider Noise", font="Arial 10 bold")
             output264.place(in_=Frame2,x=10,y=70)
-          #  entry264 = Entry(Frame2, width=6)
             
-            entry264 = Entry(Frame2, width=6)
-            entry264.place(in_=Frame2, x=170, y=70)
+            self.entry264 = Entry(Frame2, width=6)
+            self.entry264.place(in_=Frame2, x=170, y=70)
             
-            entry265 = Entry(Frame2, width=6)
-            entry265.place(in_=Frame2, x=220, y=70)
+            self.entry265 = Entry(Frame2, width=6)
+            self.entry265.place(in_=Frame2, x=220, y=70)
         
-            entry266 = Entry(Frame2, width=6)
-            entry266.place(in_=Frame2, x=270, y=70)
+            self.entry266 = Entry(Frame2, width=6)
+            self.entry266.place(in_=Frame2, x=270, y=70)
             
-            entry267 = Entry(Frame2, width=6)
-            entry267.place(in_=Frame2, x=320, y=70)
+            self.entry267 = Entry(Frame2, width=6)
+            self.entry267.place(in_=Frame2, x=320, y=70)
             
-            entry268 = Entry(Frame2, width=6)
-            entry268.place(in_=Frame2, x=370, y=70)
+            self.entry268 = Entry(Frame2, width=6)
+            self.entry268.place(in_=Frame2, x=370, y=70)
             
-            entry269 = Entry(Frame2, width=6)
-            entry269.place(in_=Frame2, x=420, y=70)
+            self.entry269 = Entry(Frame2, width=6)
+            self.entry269.place(in_=Frame2, x=420, y=70)
             
-            entry270 = Entry(Frame2, width=6)
-            entry270.place(in_=Frame2, x=470, y=70)
+            self.entry270 = Entry(Frame2, width=6)
+            self.entry270.place(in_=Frame2, x=470, y=70)
             
             output270 = ttk.Label(Frame2, text="dBc/Hz", font="Arial 10 bold")
             output270.place(in_=Frame2,x=520,y=70)
             
             output271 = ttk.Label(Frame2, text="Offset [dB]", font="Arial 10 bold")
             output271.place(in_=Frame2,x=10,y=100)
-            entry271 = Entry(Frame2, width=6)
-            entry271.place(in_=Frame2, x=470, y=100)
+            
+            self.entry271 = Entry(Frame2, width=6)
+            self.entry271.place(in_=Frame2, x=470, y=100)
+            
             output272 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
             output272.place(in_=Frame2,x=520,y=100)
             
         def change_noise6():
+            
+            change_noise()
+            noise = 6
             
             Crystal_button.config(relief=RAISED)
             Reference_button.config(relief=RAISED)
@@ -1794,180 +1839,175 @@ class MainGUI(Frame):
             Composite_button.config(relief=RAISED)
             HighPass_button.config(relief=RAISED)
             
-            command=change_noise
-            
             Frame2 = Frame(root, highlightbackground="black", highlightcolor="black", highlightthickness=2, width=600, height=450, bd=0)
             Frame2.grid(row = 2, column =5, rowspan = 2, columnspan = 2, sticky = W+E+N+S)
             
             output273 = ttk.Label(Frame2, text="Frequency Offset", font="Arial 10 bold")
             output273.place(in_=Frame2,x=10,y=10)
-            #entry44 = Entry(Frame2, width=6)
             
-            entry272 = Entry(Frame2, width=6)
-            entry272.place(in_=Frame2, x=170, y=10)
+            self.entry272 = Entry(Frame2, width=6)
+            self.entry272.place(in_=Frame2, x=170, y=10)
             
-            entry273 = Entry(Frame2, width=6)
-            entry273.place(in_=Frame2, x=220, y=10)
+            self.entry273 = Entry(Frame2, width=6)
+            self.entry273.place(in_=Frame2, x=220, y=10)
         
-            entry274 = Entry(Frame2, width=6)
-            entry274.place(in_=Frame2, x=270, y=10)
+            self.entry274 = Entry(Frame2, width=6)
+            self.entry274.place(in_=Frame2, x=270, y=10)
             
-            entry275 = Entry(Frame2, width=6)
-            entry275.place(in_=Frame2, x=320, y=10)
+            self.entry275 = Entry(Frame2, width=6)
+            self.entry275.place(in_=Frame2, x=320, y=10)
             
-            entry276 = Entry(Frame2, width=6)
-            entry276.place(in_=Frame2, x=370, y=10)
+            self.entry276 = Entry(Frame2, width=6)
+            self.entry276.place(in_=Frame2, x=370, y=10)
             
-            entry277 = Entry(Frame2, width=6)
-            entry277.place(in_=Frame2, x=420, y=10)
+            self.entry277 = Entry(Frame2, width=6)
+            self.entry277.place(in_=Frame2, x=420, y=10)
             
-            entry278 = Entry(Frame2, width=6)
-            entry278.place(in_=Frame2, x=470, y=10)
+            self.entry278 = Entry(Frame2, width=6)
+            self.entry278.place(in_=Frame2, x=470, y=10)
             
             output278 = ttk.Label(Frame2, text="Hz", font="Arial 10 bold")
             output278.place(in_=Frame2,x=520,y=10)
             
             output279 = ttk.Label(Frame2, text="OpAmp Supply Noise", font="Arial 10 bold")
             output279.place(in_=Frame2,x=10,y=40)
-            #entry44 = Entry(Frame2, width=6)
             
-            entry279 = Entry(Frame2, width=6)
-            entry279.place(in_=Frame2, x=170, y=40)
+            self.entry279 = Entry(Frame2, width=6)
+            self.entry279.place(in_=Frame2, x=170, y=40)
             
-            entry280 = Entry(Frame2, width=6)
-            entry280.place(in_=Frame2, x=220, y=40)
+            self.entry280 = Entry(Frame2, width=6)
+            self.entry280.place(in_=Frame2, x=220, y=40)
         
-            entry281 = Entry(Frame2, width=6)
-            entry281.place(in_=Frame2, x=270, y=40)
+            self.entry281 = Entry(Frame2, width=6)
+            self.entry281.place(in_=Frame2, x=270, y=40)
             
-            entry282 = Entry(Frame2, width=6)
-            entry282.place(in_=Frame2, x=320, y=40)
+            self.entry282 = Entry(Frame2, width=6)
+            self.entry282.place(in_=Frame2, x=320, y=40)
             
-            entry283 = Entry(Frame2, width=6)
-            entry283.place(in_=Frame2, x=370, y=40)
+            self.entry283 = Entry(Frame2, width=6)
+            self.entry283.place(in_=Frame2, x=370, y=40)
             
-            entry284 = Entry(Frame2, width=6)
-            entry284.place(in_=Frame2, x=420, y=40)
+            self.entry284 = Entry(Frame2, width=6)
+            self.entry284.place(in_=Frame2, x=420, y=40)
             
-            entry285 = Entry(Frame2, width=6)
-            entry285.place(in_=Frame2, x=470, y=40)
+            self.entry285 = Entry(Frame2, width=6)
+            self.entry285.place(in_=Frame2, x=470, y=40)
             
             output285 = ttk.Label(Frame2, text="dBcV^2/Hz", font="Arial 10 bold")
             output285.place(in_=Frame2,x=520,y=40)
 
             output286 = ttk.Label(Frame2, text="PSRR", font="Arial 10 bold")
             output286.place(in_=Frame2,x=10,y=70)
-            #entry286 = Entry(Frame2, width=6)
             
-            entry286 = Entry(Frame2, width=6)
-            entry286.place(in_=Frame2, x=170, y=70)
+            self.entry286 = Entry(Frame2, width=6)
+            self.entry286.place(in_=Frame2, x=170, y=70)
             
-            entry287 = Entry(Frame2, width=6)
-            entry287.place(in_=Frame2, x=220, y=70)
+            self.entry287 = Entry(Frame2, width=6)
+            self.entry287.place(in_=Frame2, x=220, y=70)
         
-            entry288 = Entry(Frame2, width=6)
-            entry288.place(in_=Frame2, x=270, y=70)
+            self.entry288 = Entry(Frame2, width=6)
+            self.entry288.place(in_=Frame2, x=270, y=70)
             
-            entry289 = Entry(Frame2, width=6)
-            entry289.place(in_=Frame2, x=320, y=70)
+            self.entry289 = Entry(Frame2, width=6)
+            self.entry289.place(in_=Frame2, x=320, y=70)
             
-            entry290 = Entry(Frame2, width=6)
-            entry290.place(in_=Frame2, x=370, y=70)
+            self.entry290 = Entry(Frame2, width=6)
+            self.entry290.place(in_=Frame2, x=370, y=70)
             
-            entry291 = Entry(Frame2, width=6)
-            entry291.place(in_=Frame2, x=420, y=70)
+            self.entry291 = Entry(Frame2, width=6)
+            self.entry291.place(in_=Frame2, x=420, y=70)
             
-            entry292 = Entry(Frame2, width=6)
-            entry292.place(in_=Frame2, x=470, y=70)
+            self.entry292 = Entry(Frame2, width=6)
+            self.entry292.place(in_=Frame2, x=470, y=70)
             
             output292 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
             output292.place(in_=Frame2,x=520,y=70)
             
             output293 = ttk.Label(Frame2, text="Vn", font="Arial 10 bold")
             output293.place(in_=Frame2,x=10,y=100)
-            #entry293 = Entry(Frame2, width=6)
             
-            entry293 = Entry(Frame2, width=6)
-            entry293.place(in_=Frame2, x=170, y=100)
+            self.entry293 = Entry(Frame2, width=6)
+            self.entry293.place(in_=Frame2, x=170, y=100)
             
-            entry294 = Entry(Frame2, width=6)
-            entry294.place(in_=Frame2, x=220, y=100)
+            self.entry294 = Entry(Frame2, width=6)
+            self.entry294.place(in_=Frame2, x=220, y=100)
         
-            entry295 = Entry(Frame2, width=6)
-            entry295.place(in_=Frame2, x=270, y=100)
+            self.entry295 = Entry(Frame2, width=6)
+            self.entry295.place(in_=Frame2, x=270, y=100)
             
-            entry296 = Entry(Frame2, width=6)
-            entry296.place(in_=Frame2, x=320, y=100)
+            self.entry296 = Entry(Frame2, width=6)
+            self.entry296.place(in_=Frame2, x=320, y=100)
             
-            entry297 = Entry(Frame2, width=6)
-            entry297.place(in_=Frame2, x=370, y=100)
+            self.entry297 = Entry(Frame2, width=6)
+            self.entry297.place(in_=Frame2, x=370, y=100)
             
-            entry298 = Entry(Frame2, width=6)
-            entry298.place(in_=Frame2, x=420, y=100)
+            self.entry298 = Entry(Frame2, width=6)
+            self.entry298.place(in_=Frame2, x=420, y=100)
             
-            entry299 = Entry(Frame2, width=6)
-            entry299.place(in_=Frame2, x=470, y=100)
+            self.entry299 = Entry(Frame2, width=6)
+            self.entry299.place(in_=Frame2, x=470, y=100)
             
             output299 = ttk.Label(Frame2, text="dB V^2/Hz", font="Arial 10 bold")
             output299.place(in_=Frame2,x=520,y=100)
 
             output300 = ttk.Label(Frame2, text="Inp", font="Arial 10 bold")
             output300.place(in_=Frame2,x=10,y=130)
-            #entry300 = Entry(Frame2, width=6)
             
-            entry300 = Entry(Frame2, width=6)
-            entry300.place(in_=Frame2, x=170, y=130)
+            self.entry300 = Entry(Frame2, width=6)
+            self.entry300.place(in_=Frame2, x=170, y=130)
             
-            entry301 = Entry(Frame2, width=6)
-            entry301.place(in_=Frame2, x=220, y=130)
+            self.entry301 = Entry(Frame2, width=6)
+            self.entry301.place(in_=Frame2, x=220, y=130)
         
-            entry302 = Entry(Frame2, width=6)
-            entry302.place(in_=Frame2, x=270, y=130)
+            self.entry302 = Entry(Frame2, width=6)
+            self.entry302.place(in_=Frame2, x=270, y=130)
             
-            entry303 = Entry(Frame2, width=6)
-            entry303.place(in_=Frame2, x=320, y=130)
+            self.entry303 = Entry(Frame2, width=6)
+            self.entry303.place(in_=Frame2, x=320, y=130)
             
-            entry304 = Entry(Frame2, width=6)
-            entry304.place(in_=Frame2, x=370, y=130)
+            self.entry304 = Entry(Frame2, width=6)
+            self.entry304.place(in_=Frame2, x=370, y=130)
             
-            entry305 = Entry(Frame2, width=6)
-            entry305.place(in_=Frame2, x=420, y=130)
+            self.entry305 = Entry(Frame2, width=6)
+            self.entry305.place(in_=Frame2, x=420, y=130)
             
-            entry306 = Entry(Frame2, width=6)
-            entry306.place(in_=Frame2, x=470, y=130)
+            self.entry306 = Entry(Frame2, width=6)
+            self.entry306.place(in_=Frame2, x=470, y=130)
             
             output306 = ttk.Label(Frame2, text="dB V^2/Hz", font="Arial 10 bold")
             output306.place(in_=Frame2,x=520,y=130)
             
             output307 = ttk.Label(Frame2, text="Inn", font="Arial 10 bold")
             output307.place(in_=Frame2,x=10,y=160)
-            #entry4 = Entry(Frame2, width=6)
             
-            entry307 = Entry(Frame2, width=6)
-            entry307.place(in_=Frame2, x=170, y=160)
+            self.entry307 = Entry(Frame2, width=6)
+            self.entry307.place(in_=Frame2, x=170, y=160)
             
-            entry308 = Entry(Frame2, width=6)
-            entry308.place(in_=Frame2, x=220, y=160)
+            self.entry308 = Entry(Frame2, width=6)
+            self.entry308.place(in_=Frame2, x=220, y=160)
         
-            entry309 = Entry(Frame2, width=6)
-            entry309.place(in_=Frame2, x=270, y=160)
+            self.entry309 = Entry(Frame2, width=6)
+            self.entry309.place(in_=Frame2, x=270, y=160)
             
-            entry310 = Entry(Frame2, width=6)
-            entry310.place(in_=Frame2, x=320, y=160)
+            self.entry310 = Entry(Frame2, width=6)
+            self.entry310.place(in_=Frame2, x=320, y=160)
             
-            entry311 = Entry(Frame2, width=6)
-            entry311.place(in_=Frame2, x=370, y=160)
+            self.entry311 = Entry(Frame2, width=6)
+            self.entry311.place(in_=Frame2, x=370, y=160)
             
-            entry312 = Entry(Frame2, width=6)
-            entry312.place(in_=Frame2, x=420, y=160)
+            self.entry312 = Entry(Frame2, width=6)
+            self.entry312.place(in_=Frame2, x=420, y=160)
             
-            entry313 = Entry(Frame2, width=6)
-            entry313.place(in_=Frame2, x=470, y=160)
+            self.entry313 = Entry(Frame2, width=6)
+            self.entry313.place(in_=Frame2, x=470, y=160)
             
             output313 = ttk.Label(Frame2, text="dB V^2/Hz", font="Arial 10 bold")
             output313.place(in_=Frame2,x=520,y=160)            
             
         def change_noise7():
+            
+            change_noise()
+            noise = 7
             
             Crystal_button.config(relief=RAISED)
             Reference_button.config(relief=RAISED)
@@ -1979,14 +2019,11 @@ class MainGUI(Frame):
             Composite_button.config(relief=RAISED)
             HighPass_button.config(relief=RAISED)
             
-            command=change_noise
-            
             Frame2 = Frame(root, highlightbackground="black", highlightcolor="black", highlightthickness=2, width=600, height=450, bd=0)
             Frame2.grid(row = 2, column =5, rowspan = 2, columnspan = 2, sticky = W+E+N+S)
             
             output314 = ttk.Label(Frame2, text="Delta Sigma Type", font="Arial 10 bold")
             output314.place(in_=Frame2,x=10,y=10)
-            #entry314 = Entry(Frame2, width=6)
             
             paramMenu=['nth Order Mode B','nth Order Mode B','nth Order Mode B']
             option_select=StringVar(root)
@@ -1998,7 +2035,6 @@ class MainGUI(Frame):
             
             output315 = ttk.Label(Frame2, text="Delta Sigma Order", font="Arial 10 bold")
             output315.place(in_=Frame2,x=10,y=40)
-            #entry315 = Entry(Frame2, width=6)
             
             paramMenu=['1','2','3']
             option_select=StringVar(root)
@@ -2010,12 +2046,14 @@ class MainGUI(Frame):
             
             output316 = ttk.Label(Frame2, text="Offset [dB]", font="Arial 10 bold")
             output316.place(in_=Frame2,x=10,y=70)
-            #entry316 = Entry(Frame2, width=6)           
             
-            entry314 = Entry(Frame2, width=6)
-            entry314.place(in_=Frame2, x=470, y=70)
+            self.entry314 = Entry(Frame2, width=6)
+            self.entry314.place(in_=Frame2, x=470, y=70)
             
         def change_noise8():
+            
+            change_noise()
+            noise = 8
             
             Crystal_button.config(relief=RAISED)
             Reference_button.config(relief=RAISED)
@@ -2026,8 +2064,6 @@ class MainGUI(Frame):
             Delta_button.config(relief=RAISED)
             Composite_button.config(relief=SUNKEN)
             HighPass_button.config(relief=RAISED)
-            
-            command=change_noise
             
             Frame2 = Frame(root, highlightbackground="black", highlightcolor="black", highlightthickness=2, width=600, height=450, bd=0)
             Frame2.grid(row = 2, column =5, rowspan = 2, columnspan = 2, sticky = W+E+N+S)
@@ -2043,74 +2079,76 @@ class MainGUI(Frame):
             
             output317 = ttk.Label(Frame2, text="Frequency Offset", font="Arial 10 bold")
             output317.place(in_=Frame2,x=10,y=10)
-            #entry44 = Entry(Frame2, width=6)
             
-            entry315 = Entry(Frame2, width=6)
-            entry315.place(in_=Frame2, x=170, y=10)
+            self.entry315 = Entry(Frame2, width=6)
+            self.entry315.place(in_=Frame2, x=170, y=10)
             
-            entry316 = Entry(Frame2, width=6)
-            entry316.place(in_=Frame2, x=220, y=10)
+            self.entry316 = Entry(Frame2, width=6)
+            self.entry316.place(in_=Frame2, x=220, y=10)
         
-            entry317 = Entry(Frame2, width=6)
-            entry317.place(in_=Frame2, x=270, y=10)
+            self.entry317 = Entry(Frame2, width=6)
+            self.entry317.place(in_=Frame2, x=270, y=10)
             
-            entry318 = Entry(Frame2, width=6)
-            entry318.place(in_=Frame2, x=320, y=10)
+            self.entry318 = Entry(Frame2, width=6)
+            self.entry318.place(in_=Frame2, x=320, y=10)
             
-            entry319 = Entry(Frame2, width=6)
-            entry319.place(in_=Frame2, x=370, y=10)
+            self.entry319 = Entry(Frame2, width=6)
+            self.entry319.place(in_=Frame2, x=370, y=10)
             
-            entry320 = Entry(Frame2, width=6)
-            entry320.place(in_=Frame2, x=420, y=10)
+            self.entry320 = Entry(Frame2, width=6)
+            self.entry320.place(in_=Frame2, x=420, y=10)
             
-            entry321 = Entry(Frame2, width=6)
-            entry321.place(in_=Frame2, x=470, y=10)
+            self.entry321 = Entry(Frame2, width=6)
+            self.entry321.place(in_=Frame2, x=470, y=10)
             
             output321 = ttk.Label(Frame2, text="Hz", font="Arial 10 bold")
             output321.place(in_=Frame2,x=520,y=10)
             
             output322 = ttk.Label(Frame2, text="Phase Noise Mask", font="Arial 10 bold")
             output322.place(in_=Frame2,x=10,y=40)
-            #entry44 = Entry(Frame2, width=6)
             
-            entry322 = Entry(Frame2, width=6)
-            entry322.place(in_=Frame2, x=170, y=40)
+            self.entry322 = Entry(Frame2, width=6)
+            self.entry322.place(in_=Frame2, x=170, y=40)
             
-            entry323 = Entry(Frame2, width=6)
-            entry323.place(in_=Frame2, x=220, y=40)
+            self.entry323 = Entry(Frame2, width=6)
+            self.entry323.place(in_=Frame2, x=220, y=40)
         
-            entry324 = Entry(Frame2, width=6)
-            entry324.place(in_=Frame2, x=270, y=40)
+            self.entry324 = Entry(Frame2, width=6)
+            self.entry324.place(in_=Frame2, x=270, y=40)
             
-            entry325 = Entry(Frame2, width=6)
-            entry325.place(in_=Frame2, x=320, y=40)
+            self.entry325 = Entry(Frame2, width=6)
+            self.entry325.place(in_=Frame2, x=320, y=40)
             
-            entry326 = Entry(Frame2, width=6)
-            entry326.place(in_=Frame2, x=370, y=40)
+            self.entry326 = Entry(Frame2, width=6)
+            self.entry326.place(in_=Frame2, x=370, y=40)
             
-            entry327 = Entry(Frame2, width=6)
-            entry327.place(in_=Frame2, x=420, y=40)
+            self.entry327 = Entry(Frame2, width=6)
+            self.entry327.place(in_=Frame2, x=420, y=40)
             
-            entry328 = Entry(Frame2, width=6)
-            entry328.place(in_=Frame2, x=470, y=40)
+            self.entry328 = Entry(Frame2, width=6)
+            self.entry328.place(in_=Frame2, x=470, y=40)
             
             output328 = ttk.Label(Frame2, text="dBc/Hz", font="Arial 10 bold")
             output328.place(in_=Frame2,x=520,y=40)
             
             output329 = ttk.Label(Frame2, text="Add Subtract From Composite Noise?", font="Arial 10 bold")
             output329.place(in_=Frame2,x=10,y=70)
-            entry329 = Entry(Frame2, width=6)
-            entry329.place(in_=Frame2, x=470, y=70)
+            
+            self.entry329 = Entry(Frame2, width=6)
+            self.entry329.place(in_=Frame2, x=470, y=70)
+            
             output330 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
             output330.place(in_=Frame2,x=520,y=70)
             
             output331 = ttk.Label(Frame2, text="Refine Number of Points?", font="Arial 10 bold")
             output331.place(in_=Frame2,x=10,y=100)
+            
             check_var = IntVar()
             Checkbutton(root, variable=check_var).place(in_=Frame2, x=490, y=100)
             
             output332 = ttk.Label(Frame3, text="Enable", font="Arial 10 bold")
             output332.place(in_=Frame3,x=30,y=10)
+            
             check_var = IntVar()
             Checkbutton(root, variable=check_var).place(in_=Frame3, x=5, y=10)
             
@@ -2124,41 +2162,53 @@ class MainGUI(Frame):
             
             output333 = ttk.Label(Frame3, text="Division Ratio", font="Arial 10 bold")
             output333.place(in_=Frame3,x=10,y=40)
-            entry330 = Entry(Frame3, width=6)
-            entry330.place(in_=Frame3, x=480, y=40)
+            
+            self.entry330 = Entry(Frame3, width=6)
+            self.entry330.place(in_=Frame3, x=480, y=40)
             
             output331 = ttk.Label(Frame3, text="Phase Noise Floor FOM", font="Arial 10 bold")
             output331.place(in_=Frame3,x=10,y=70)
-            entry331 = Entry(Frame3, width=6)
-            entry331.place(in_=Frame3, x=180, y=70)
+            
+            self.entry331 = Entry(Frame3, width=6)
+            self.entry331.place(in_=Frame3, x=180, y=70)
+            
             output331 = ttk.Label(Frame3, text="dB/Hz", font="Arial 10 bold")
             output331.place(in_=Frame3,x=230,y=70)
             
             output332 = ttk.Label(Frame3, text="Spec Frequency", font="Arial 10 bold")
             output332.place(in_=Frame3,x=370,y=70)
-            entry332 = Entry(Frame3, width=6)
-            entry332.place(in_=Frame3, x=480, y=70)
+            
+            self.entry332 = Entry(Frame3, width=6)
+            self.entry332.place(in_=Frame3, x=480, y=70)
             
             output333 = ttk.Label(Frame3, text="Flicker Noise FOM", font="Arial 10 bold")
             output333.place(in_=Frame3,x=10,y=100)
-            entry333 = Entry(Frame3, width=6)
-            entry333.place(in_=Frame3, x=480, y=100)
+            
+            self.entry333 = Entry(Frame3, width=6)
+            self.entry333.place(in_=Frame3, x=480, y=100)
+            
             output333 = ttk.Label(Frame3, text="dBc/Hz", font="Arial 10 bold")
             output333.place(in_=Frame3,x=525,y=100)
             
             output334 = ttk.Label(Frame3, text="Divider Output Power", font="Arial 10 bold")
             output334.place(in_=Frame3,x=10,y=190)
-            entry334 = Entry(Frame3, width=6)
-            entry334.place(in_=Frame3, x=480, y=190)
+            
+            self.entry334 = Entry(Frame3, width=6)
+            self.entry334.place(in_=Frame3, x=480, y=190)
+            
             output334 = ttk.Label(Frame3, text="dBm", font="Arial 10 bold")
             output334.place(in_=Frame3,x=525,y=190)
             
             output335 = ttk.Label(Frame3, text="Output Frequency", font="Arial 10 bold")
             output335.place(in_=Frame3,x=10,y=220)
-            entry335 = Entry(Frame3, width=6)
-            entry335.place(in_=Frame3, x=480, y=220)
+            
+            self.entry335 = Entry(Frame3, width=6)
+            self.entry335.place(in_=Frame3, x=480, y=220)
             
         def change_noise9():
+            
+            change_noise()
+            noise = 9
             
             Crystal_button.config(relief=RAISED)
             Reference_button.config(relief=RAISED)
@@ -2170,15 +2220,15 @@ class MainGUI(Frame):
             Composite_button.config(relief=RAISED)
             HighPass_button.config(relief=SUNKEN)
             
-            command=change_noise
-            
             Frame2 = Frame(root, highlightbackground="black", highlightcolor="black", highlightthickness=2, width=600, height=450, bd=0)
             Frame2.grid(row = 2, column =5, rowspan = 2, columnspan = 2, sticky = W+E+N+S)
             
             output336 = ttk.Label(Frame2, text="High Pass Integration Cutoff Frequency", font="Arial 10 bold")
             output336.place(in_=Frame2,x=10,y=10)
-            entry336 = Entry(Frame2, width=6)
-            entry336.place(in_=Frame2, x=470, y=10)
+            
+            self.entry336 = Entry(Frame2, width=6)
+            self.entry336.place(in_=Frame2, x=470, y=10)
+            
             output336 = ttk.Label(Frame2, text="Hz", font="Arial 10 bold")
             output336.place(in_=Frame2,x=520,y=10)
             
@@ -2234,27 +2284,33 @@ class MainGUI(Frame):
         output102 = ttk.Label(Frame2, text="Frequency Offset", font="Arial 10 bold")
         output102.place(in_=Frame2,x=10,y=10)
         
-        entry102 = Entry(Frame2, width=6)
-        entry102.place(in_=Frame2, x=170, y=10)
-        entry102.insert(1,"50")
+        self.entry102 = Entry(Frame2, width=6)
+        self.entry102.place(in_=Frame2, x=170, y=10)
+        self.entry102.insert(0, temp_noise_array[0])
         
-        entry103 = Entry(Frame2, width=6)
-        entry103.place(in_=Frame2, x=220, y=10)
+        self.entry103 = Entry(Frame2, width=6)
+        self.entry103.place(in_=Frame2, x=220, y=10)
+        self.entry103.insert(0, temp_noise_array[1])
         
-        entry104 = Entry(Frame2, width=6)
-        entry104.place(in_=Frame2, x=270, y=10)
+        self.entry104 = Entry(Frame2, width=6)
+        self.entry104.place(in_=Frame2, x=270, y=10)
+        self.entry104.insert(0, temp_noise_array[2])
         
-        entry105 = Entry(Frame2, width=6)
-        entry105.place(in_=Frame2, x=320, y=10)
+        self.entry105 = Entry(Frame2, width=6)
+        self.entry105.place(in_=Frame2, x=320, y=10)
+        self.entry105.insert(0, temp_noise_array[3])
         
-        entry106 = Entry(Frame2, width=6)
-        entry106.place(in_=Frame2, x=370, y=10)
+        self.entry106 = Entry(Frame2, width=6)
+        self.entry106.place(in_=Frame2, x=370, y=10)
+        self.entry106.insert(0, temp_noise_array[4])
         
-        entry107 = Entry(Frame2, width=6)
-        entry107.place(in_=Frame2, x=420, y=10)
+        self.entry107 = Entry(Frame2, width=6)
+        self.entry107.place(in_=Frame2, x=420, y=10)
+        self.entry107.insert(0, temp_noise_array[5])
         
-        entry108 = Entry(Frame2, width=6)
-        entry108.place(in_=Frame2, x=470, y=10)
+        self.entry108 = Entry(Frame2, width=6)
+        self.entry108.place(in_=Frame2, x=470, y=10)
+        self.entry108.insert(0, temp_noise_array[6])
         
         output108 = ttk.Label(Frame2, text="Hz", font="Arial 10 bold")
         output108.place(in_=Frame2,x=520,y=10)
@@ -2262,38 +2318,46 @@ class MainGUI(Frame):
         output109 = ttk.Label(Frame2, text="Crystal Oscillator Noise", font="Arial 10 bold")
         output109.place(in_=Frame2,x=10,y=40)
         
-        entry110 = Entry(Frame2, width=6)
-        entry110.place(in_=Frame2, x=170, y=40)
+        self.entry110 = Entry(Frame2, width=6)
+        self.entry110.place(in_=Frame2, x=170, y=40)
+        self.entry110.insert(0, temp_noise_array[7])
         
-        entry111 = Entry(Frame2, width=6)
-        entry111.place(in_=Frame2, x=220, y=40)
+        self.entry111 = Entry(Frame2, width=6)
+        self.entry111.place(in_=Frame2, x=220, y=40)
+        self.entry111.insert(0, temp_noise_array[8])
         
-        entry112 = Entry(Frame2, width=6)
-        entry112.place(in_=Frame2, x=270, y=40)
+        self.entry112 = Entry(Frame2, width=6)
+        self.entry112.place(in_=Frame2, x=270, y=40)
+        self.entry112.insert(0, temp_noise_array[9])
         
-        entry113 = Entry(Frame2, width=6)
-        entry113.place(in_=Frame2, x=320, y=40)
+        self.entry113 = Entry(Frame2, width=6)
+        self.entry113.place(in_=Frame2, x=320, y=40)
+        self.entry113.insert(0, temp_noise_array[10])
         
-        entry114 = Entry(Frame2, width=6)
-        entry114.place(in_=Frame2, x=370, y=40)
+        self.entry114 = Entry(Frame2, width=6)
+        self.entry114.place(in_=Frame2, x=370, y=40)
+        self.entry114.insert(0, temp_noise_array[11])
         
-        entry115 = Entry(Frame2, width=6)
-        entry115.place(in_=Frame2, x=420, y=40)
+        self.entry115 = Entry(Frame2, width=6)
+        self.entry115.place(in_=Frame2, x=420, y=40)
+        self.entry115.insert(0, temp_noise_array[12])
         
-        entry116 = Entry(Frame2, width=6)
-        entry116.place(in_=Frame2, x=470, y=40)
+        self.entry116 = Entry(Frame2, width=6)
+        self.entry116.place(in_=Frame2, x=470, y=40)
+        self.entry116.insert(0, temp_noise_array[13])
         
         output116 = ttk.Label(Frame2, text="dBc/Hz", font="Arial 10 bold")
         output116.place(in_=Frame2,x=520,y=40)
         
         output117 = ttk.Label(Frame2, text="Add / Subtract from Crystal Phase Noise?", font="Arial 10 bold")
         output117.place(in_=Frame2,x=10,y=70)
-        entry118 = Entry(Frame2, width=6)
-        entry118.place(in_=Frame2, x=470, y=70)
+        
+        self.entry118 = Entry(Frame2, width=6)
+        self.entry118.place(in_=Frame2, x=470, y=70)
+        self.entry118.insert(0, temp_noise_array[14])
         
         output118 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
         output118.place(in_=Frame2,x=520,y=70)
-        
         
         
   #  def OptionsMenu_SelectionEvent(event):
@@ -3030,6 +3094,8 @@ Stop_Freq_Hz = "Ghz"
     
 array = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
 loadedvalues = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1] #52
+noise_array = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] #16
+temp_noise_array = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 
 filtertype = 0
 filterselect = "Passive"
