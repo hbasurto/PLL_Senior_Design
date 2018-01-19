@@ -457,13 +457,13 @@ class MainGUI(Frame):
             
         label38 = ttk.Label(master, text="3dB Bandwidth", font="Arial 10 bold")
         label38.place(in_= Frame2, x=50, y=250) 
-        entry38 = Entry(Frame2, width=15)
-        entry38.place(in_= Frame2, x=210, y=250)
+        self.entry38 = Entry(Frame2, width=15)
+        self.entry38.place(in_= Frame2, x=210, y=250)
         
         label39 = ttk.Label(master, text="Actual Phase Margin", font="Arial 10 bold")
         label39.place(in_= Frame2, x=50, y=280) 
-        entry39 = Entry(Frame2, width=15)
-        entry39.place(in_= Frame2, x=210, y=280)
+        self.entry39 = Entry(Frame2, width=15)
+        self.entry39.place(in_= Frame2, x=210, y=280)
         
         label40 = ttk.Label(Frame4, text="Time Domain Settling", font="Arial 10 bold")
         label40.place(in_= Frame4, x=40, y=10)
@@ -758,38 +758,42 @@ class MainGUI(Frame):
             else:
                 self.option_select10.set('Phase Step')
             filtertype = loadedvalues[26]
+            self.entry38.delete(0, END)
+            self.entry38.insert(0, loadedvalues[27])
+            self.entry39.delete(0, END)
+            self.entry39.insert(0, loadedvalues[28])
             self.entry41.delete(0, END)
-            self.entry41.insert(0, loadedvalues[27])
+            self.entry41.insert(0, loadedvalues[29])
             self.entry42.delete(0, END)
-            self.entry42.insert(0, loadedvalues[28])
+            self.entry42.insert(0, loadedvalues[30])
             self.entry45.delete(0, END)
-            self.entry45.insert(0, loadedvalues[29])
+            self.entry45.insert(0, loadedvalues[31])
             self.entry46.delete(0, END)
-            self.entry46.insert(0, loadedvalues[30])
+            self.entry46.insert(0, loadedvalues[32])
             self.entry47.delete(0, END)
-            self.entry47.insert(0, loadedvalues[31])
+            self.entry47.insert(0, loadedvalues[33])
             self.entry48.delete(0, END)
-            self.entry48.insert(0, loadedvalues[32])
-            self.input417 = loadedvalues[33]
-            self.input418 = loadedvalues[34]
-            self.input419 = loadedvalues[35]
-            self.input420 = loadedvalues[36]
-            self.input421 = loadedvalues[37]
-            self.input422 = loadedvalues[38]
-            self.input423 = loadedvalues[39]
-            self.input424 = loadedvalues[40]
-            self.input425 = loadedvalues[41]
-            self.input426 = loadedvalues[42]
-            self.input427 = loadedvalues[43]
-            self.input428 = loadedvalues[44]
-            self.input430 = loadedvalues[45]
-            self.input431 = loadedvalues[46]
-            self.input432 = loadedvalues[47]
-            self.input435 = loadedvalues[48]
-            self.input436 = loadedvalues[49]
-            self.input437 = loadedvalues[50]
-            self.input438 = loadedvalues[51]
-            self.input439 = loadedvalues[52]
+            self.entry48.insert(0, loadedvalues[34])
+            self.input417 = loadedvalues[35]
+            self.input418 = loadedvalues[36]
+            self.input419 = loadedvalues[37]
+            self.input420 = loadedvalues[38]
+            self.input421 = loadedvalues[39]
+            self.input422 = loadedvalues[40]
+            self.input423 = loadedvalues[41]
+            self.input424 = loadedvalues[42]
+            self.input425 = loadedvalues[43]
+            self.input426 = loadedvalues[44]
+            self.input427 = loadedvalues[45]
+            self.input428 = loadedvalues[46]
+            self.input430 = loadedvalues[47]
+            self.input431 = loadedvalues[48]
+            self.input432 = loadedvalues[49]
+            self.input435 = loadedvalues[50]
+            self.input436 = loadedvalues[51]
+            self.input437 = loadedvalues[52]
+            self.input438 = loadedvalues[53]
+            self.input439 = loadedvalues[54]
             
 
             filterbox()
@@ -913,32 +917,34 @@ class MainGUI(Frame):
         else:
             array[25] = 2
         array[26] = filtertype  #loads the filter type
-        array[27] = self.entry41.get()
-        array[28] = self.entry42.get()
-        array[29] = self.entry45.get()
-        array[30] = self.entry46.get()
-        array[31] = self.entry47.get()
-        array[32] = self.entry48.get()
-        array[33] = self.input417
-        array[34] = self.input418
-        array[35] = self.input419
-        array[36] = self.input420
-        array[37] = self.input421
-        array[38] = self.input422
-        array[39] = self.input423
-        array[40] = self.input424
-        array[41] = self.input425
-        array[42] = self.input426
-        array[43] = self.input427
-        array[44] = self.input428
-        array[45] = self.input430
-        array[46] = self.input431
-        array[47] = self.input432
-        array[48] = self.input435
-        array[49] = self.input436
-        array[50] = self.input437
-        array[51] = self.input438
-        array[52] = self.input439
+        array[27] = self.entry38.get()
+        array[28] = self.entry39.get()
+        array[29] = self.entry41.get()
+        array[30] = self.entry42.get()
+        array[31] = self.entry45.get()
+        array[32] = self.entry46.get()
+        array[33] = self.entry47.get()
+        array[34] = self.entry48.get()
+        array[35] = self.input417
+        array[36] = self.input418
+        array[37] = self.input419
+        array[38] = self.input420
+        array[39] = self.input421
+        array[40] = self.input422
+        array[41] = self.input423
+        array[42] = self.input424
+        array[43] = self.input425
+        array[44] = self.input426
+        array[45] = self.input427
+        array[46] = self.input428
+        array[47] = self.input430
+        array[48] = self.input431
+        array[49] = self.input432
+        array[50] = self.input435
+        array[51] = self.input436
+        array[52] = self.input437
+        array[53] = self.input438
+        array[54] = self.input439
         
         
         # a window pop up asking: pls input a new name
@@ -1013,27 +1019,233 @@ class MainGUI(Frame):
                 temp_noise_array[14] = self.entry118.get()
                 
             elif noise == 2:
-                Frame2.destroy()
+                temp_noise_array[15] = self.entry119.get()
+                temp_noise_array[16] = self.entry120.get()
+                temp_noise_array[17] = self.entry121.get()
+                temp_noise_array[18] = self.entry122.get()
+                temp_noise_array[19] = self.entry123.get()
+                temp_noise_array[20] = self.entry124.get()
+                temp_noise_array[21] = self.entry125.get()
+                temp_noise_array[22] = self.entry127.get()
+                temp_noise_array[23] = self.entry128.get()
+                temp_noise_array[24] = self.entry129.get()
+                temp_noise_array[25] = self.entry130.get()
+                temp_noise_array[26] = self.entry131.get()
+                temp_noise_array[27] = self.entry132.get()
+                temp_noise_array[28] = self.entry133.get()
+                temp_noise_array[29] = self.entry135.get()
+                temp_noise_array[30] = self.entry136.get()
+                temp_noise_array[31] = self.entry137.get()
+                temp_noise_array[32] = self.entry138.get()
+                temp_noise_array[33] = self.entry139.get()
+                temp_noise_array[34] = self.entry140.get()
+                temp_noise_array[35] = self.entry141.get()
+                temp_noise_array[36] = self.entry143.get()
             elif noise == 3:
-                Frame2.destroy()
+                temp_noise_array[37] = self.entry144.get()
+                temp_noise_array[38] = self.entry146.get()
+                temp_noise_array[39] = self.entry147.get()
+                temp_noise_array[40] = self.entry148.get()
+                temp_noise_array[41] = self.entry149.get()
+                temp_noise_array[42] = self.entry150.get()
+                temp_noise_array[43] = self.entry151.get()
+                temp_noise_array[44] = self.entry152.get()
+                temp_noise_array[45] = self.entry154.get()
+                temp_noise_array[46] = self.entry155.get()
+                temp_noise_array[47] = self.entry156.get()
+                temp_noise_array[48] = self.entry157.get()
+                temp_noise_array[49] = self.entry158.get()
+                temp_noise_array[50] = self.entry159.get()
+                temp_noise_array[51] = self.entry160.get()
+                temp_noise_array[52] = self.entry162.get()
+                temp_noise_array[53] = self.entry163.get()
+                temp_noise_array[54] = self.entry164.get()
+                temp_noise_array[55] = self.entry165.get()
+                temp_noise_array[56] = self.entry166.get()
+                temp_noise_array[57] = self.entry167.get()
+                temp_noise_array[58] = self.entry168.get()
+                temp_noise_array[59] = self.entry169.get()
+                temp_noise_array[60] = self.entry170.get()
+                temp_noise_array[61] = self.entry171.get()
+                temp_noise_array[62] = self.entry172.get()
+                temp_noise_array[63] = self.entry173.get()
+                temp_noise_array[64] = self.entry174.get()
+                temp_noise_array[65] = self.entry175.get()
+                temp_noise_array[66] = self.entry176.get()
+                temp_noise_array[67] = self.entry178.get()
+                temp_noise_array[68] = self.entry179.get()
+                temp_noise_array[69] = self.entry180.get()
+                temp_noise_array[70] = self.entry181.get()
+                temp_noise_array[71] = self.entry182.get()
+                temp_noise_array[72] = self.entry183.get()
+                temp_noise_array[73] = self.entry184.get()
+                temp_noise_array[74] = self.entry185.get()
+                temp_noise_array[75] = self.entry187.get()
+                temp_noise_array[76] = self.entry188.get()
+                temp_noise_array[77] = self.entry189.get()
+                temp_noise_array[78] = self.entry190.get()
+                temp_noise_array[79] = self.entry191.get()
+                temp_noise_array[80] = self.entry192.get()
+                temp_noise_array[81] = self.entry193.get()
+                temp_noise_array[82] = self.entry194.get()
+                temp_noise_array[83] = self.entry195.get()
+                temp_noise_array[84] = self.entry196.get()
+                
             elif noise == 4:
-                Frame2.destroy()
+                temp_noise_array[85] = self.entry197.get()
+                temp_noise_array[86] = self.entry199.get()
+                temp_noise_array[87] = self.entry200.get()
+                temp_noise_array[88] = self.entry201.get()
+                temp_noise_array[89] = self.entry202.get()
+                temp_noise_array[90] = self.entry203.get()
+                temp_noise_array[91] = self.entry204.get()
+                temp_noise_array[92] = self.entry205.get()
+                temp_noise_array[93] = self.entry207.get()
+                temp_noise_array[94] = self.entry208.get()
+                temp_noise_array[95] = self.entry209.get()
+                temp_noise_array[96] = self.entry210.get()
+                temp_noise_array[97] = self.entry211.get()
+                temp_noise_array[98] = self.entry212.get()
+                temp_noise_array[99] = self.entry213.get()
+                temp_noise_array[100] = self.entry215.get()
+                temp_noise_array[101] = self.entry216.get()
+                temp_noise_array[102] = self.entry217.get()
+                temp_noise_array[103] = self.entry218.get()
+                temp_noise_array[104] = self.entry219.get()
+                temp_noise_array[105] = self.entry220.get()
+                temp_noise_array[106] = self.entry221.get()
+                temp_noise_array[107] = self.entry223.get()
+                temp_noise_array[108] = self.entry224.get()
+                temp_noise_array[109] = self.entry225.get()
+                temp_noise_array[110] = self.entry226.get()
+                temp_noise_array[111] = self.entry227.get()
+                temp_noise_array[112] = self.entry228.get()
+                temp_noise_array[113] = self.entry229.get()
+                temp_noise_array[114] = self.entry230.get()
+                temp_noise_array[115] = self.entry231.get()
+                temp_noise_array[116] = self.entry232.get()
+                temp_noise_array[117] = self.entry233.get()
+                temp_noise_array[118] = self.entry234.get()
+                temp_noise_array[119] = self.entry235.get()
+                temp_noise_array[120] = self.entry236.get()
+                temp_noise_array[121] = self.entry237.get()
+                temp_noise_array[122] = self.entry238.get()
+                temp_noise_array[123] = self.entry239.get()
+                temp_noise_array[124] = self.entry240.get()
+                temp_noise_array[125] = self.entry241.get()
+                temp_noise_array[126] = self.entry242.get()
+                temp_noise_array[127] = self.entry243.get()
+                temp_noise_array[128] = self.entry244.get()
+                temp_noise_array[129] = self.entry245.get()
+                temp_noise_array[130] = self.entry246.get()
+                temp_noise_array[131] = self.entry247.get()
+                temp_noise_array[132] = self.entry248.get()
+                temp_noise_array[133] = self.entry249.get()
+                temp_noise_array[134] = self.entry250.get()
+                temp_noise_array[135] = self.entry251.get()
+                temp_noise_array[136] = self.entry252.get()
+                temp_noise_array[137] = self.entry253.get()
+                temp_noise_array[138] = self.entry254.get()
+                temp_noise_array[139] = self.entry255.get()
+                
             elif noise == 5:
-                Frame2.destroy()
+                temp_noise_array[140] = self.entry256.get()
+                temp_noise_array[141] = self.entry257.get()
+                temp_noise_array[142] = self.entry258.get()
+                temp_noise_array[143] = self.entry259.get()
+                temp_noise_array[144] = self.entry260.get()
+                temp_noise_array[145] = self.entry261.get()
+                temp_noise_array[146] = self.entry262.get()
+                temp_noise_array[147] = self.entry263.get()
+                temp_noise_array[148] = self.entry264.get()
+                temp_noise_array[149] = self.entry265.get()
+                temp_noise_array[150] = self.entry266.get()
+                temp_noise_array[151] = self.entry267.get()
+                temp_noise_array[152] = self.entry268.get()
+                temp_noise_array[153] = self.entry269.get()
+                temp_noise_array[154] = self.entry270.get()
+                temp_noise_array[155] = self.entry271.get()
+                
             elif noise == 6:
-                Frame2.destroy()
+                temp_noise_array[156] = self.entry272.get()
+                temp_noise_array[157] = self.entry273.get()
+                temp_noise_array[158] = self.entry274.get()
+                temp_noise_array[159] = self.entry275.get()
+                temp_noise_array[160] = self.entry276.get()
+                temp_noise_array[161] = self.entry277.get()
+                temp_noise_array[162] = self.entry278.get()
+                temp_noise_array[163] = self.entry279.get()
+                temp_noise_array[164] = self.entry280.get()
+                temp_noise_array[165] = self.entry281.get()
+                temp_noise_array[166] = self.entry282.get()
+                temp_noise_array[167] = self.entry283.get()
+                temp_noise_array[168] = self.entry284.get()
+                temp_noise_array[169] = self.entry285.get()
+                temp_noise_array[170] = self.entry286.get()
+                temp_noise_array[171] = self.entry287.get()
+                temp_noise_array[172] = self.entry288.get()
+                temp_noise_array[173] = self.entry289.get()
+                temp_noise_array[174] = self.entry290.get()
+                temp_noise_array[175] = self.entry291.get()
+                temp_noise_array[176] = self.entry292.get()
+                temp_noise_array[177] = self.entry293.get()
+                temp_noise_array[178] = self.entry294.get()
+                temp_noise_array[179] = self.entry295.get()
+                temp_noise_array[180] = self.entry296.get()
+                temp_noise_array[181] = self.entry297.get()
+                temp_noise_array[182] = self.entry298.get()
+                temp_noise_array[183] = self.entry299.get()
+                temp_noise_array[184] = self.entry300.get()
+                temp_noise_array[185] = self.entry301.get()
+                temp_noise_array[186] = self.entry302.get()
+                temp_noise_array[187] = self.entry303.get()
+                temp_noise_array[188] = self.entry304.get()
+                temp_noise_array[189] = self.entry305.get()
+                temp_noise_array[190] = self.entry306.get()
+                temp_noise_array[191] = self.entry307.get()
+                temp_noise_array[192] = self.entry308.get()
+                temp_noise_array[193] = self.entry309.get()
+                temp_noise_array[194] = self.entry310.get()
+                temp_noise_array[195] = self.entry311.get()
+                temp_noise_array[196] = self.entry312.get()
+                temp_noise_array[197] = self.entry313.get()
+                
             elif noise == 7:
-                Frame2.destroy()
+                temp_noise_array[198] = self.entry314.get()
+                
             elif noise == 8:
-                Frame2.destroy()
+                temp_noise_array[199] = self.entry315.get()
+                temp_noise_array[200] = self.entry316.get()
+                temp_noise_array[201] = self.entry317.get()
+                temp_noise_array[202] = self.entry318.get()
+                temp_noise_array[203] = self.entry319.get()
+                temp_noise_array[204] = self.entry320.get()
+                temp_noise_array[205] = self.entry321.get()
+                temp_noise_array[206] = self.entry322.get()
+                temp_noise_array[207] = self.entry323.get()
+                temp_noise_array[208] = self.entry324.get()
+                temp_noise_array[209] = self.entry325.get()
+                temp_noise_array[210] = self.entry326.get()
+                temp_noise_array[211] = self.entry327.get()
+                temp_noise_array[212] = self.entry328.get()
+                temp_noise_array[213] = self.entry329.get()
+                temp_noise_array[214] = self.entry330.get()
+                temp_noise_array[215] = self.entry331.get()
+                temp_noise_array[216] = self.entry332.get()
+                temp_noise_array[217] = self.entry333.get()
+                temp_noise_array[218] = self.entry334.get()
+                temp_noise_array[219] = self.entry335.get()
+                
             else:
-                Frame2.destroy()
+                temp_noise_array[220] = self.entry336.get()
         
         def change_noise1():
+            
             global change_noise
             global temp_noise_array
-            #global noise
+            global noise
             change_noise()    
+            noise = 1
             
             Crystal_button.config(relief=SUNKEN)
             Reference_button.config(relief=RAISED)
@@ -1044,8 +1256,6 @@ class MainGUI(Frame):
             Delta_button.config(relief=RAISED)
             Composite_button.config(relief=RAISED)
             HighPass_button.config(relief=RAISED)
-            
-            noise = 1
             
             Frame2 = Frame(root, highlightbackground="black", highlightcolor="black", highlightthickness=2, width=600, height=450, bd=0)
             Frame2.grid(row = 2, column =5, rowspan = 2, columnspan = 2, sticky = W+E+N+S)
@@ -1145,7 +1355,10 @@ class MainGUI(Frame):
             
         def change_noise2():
             
-            change_noise()
+            global noise
+            global change_noise
+            global temp_noise_array
+            change_noise() 
             noise = 2
             
             Crystal_button.config(relief=RAISED)
@@ -1166,24 +1379,38 @@ class MainGUI(Frame):
             
             self.entry119 = Entry(Frame2, width=6)
             self.entry119.place(in_=Frame2, x=170, y=10)
+            self.entry119.delete(0, END)
+            self.entry119.insert(0, temp_noise_array[15])
         
             self.entry120 = Entry(Frame2, width=6)
             self.entry120.place(in_=Frame2, x=220, y=10)
+            self.entry120.delete(0, END)
+            self.entry120.insert(0, temp_noise_array[16])
             
             self.entry121 = Entry(Frame2, width=6)
             self.entry121.place(in_=Frame2, x=270, y=10)
+            self.entry121.delete(0, END)
+            self.entry121.insert(0, temp_noise_array[17])
             
             self.entry122 = Entry(Frame2, width=6)
             self.entry122.place(in_=Frame2, x=320, y=10)
+            self.entry122.delete(0, END)
+            self.entry122.insert(0, temp_noise_array[18])
             
             self.entry123 = Entry(Frame2, width=6)
             self.entry123.place(in_=Frame2, x=370, y=10)
+            self.entry123.delete(0, END)
+            self.entry123.insert(0, temp_noise_array[19])
             
             self.entry124 = Entry(Frame2, width=6)
             self.entry124.place(in_=Frame2, x=420, y=10)
-            
-            self.entry425 = Entry(Frame2, width=6)
-            self.entry425.place(in_=Frame2, x=470, y=10)
+            self.entry124.delete(0, END)
+            self.entry124.insert(0, temp_noise_array[20])
+        
+            self.entry125 = Entry(Frame2, width=6)          #425
+            self.entry125.place(in_=Frame2, x=470, y=10)
+            self.entry125.delete(0, END)
+            self.entry125.insert(0, temp_noise_array[21])
             
             output126 = ttk.Label(Frame2, text="Hz", font="Arial 10 bold")
             output126.place(in_=Frame2,x=520,y=10)
@@ -1193,24 +1420,38 @@ class MainGUI(Frame):
             
             self.entry127 = Entry(Frame2, width=6)
             self.entry127.place(in_=Frame2, x=170, y=40)
+            self.entry127.delete(0, END)
+            self.entry127.insert(0, temp_noise_array[22])
             
             self.entry128 = Entry(Frame2, width=6)
             self.entry128.place(in_=Frame2, x=220, y=40)
+            self.entry128.delete(0, END)
+            self.entry128.insert(0, temp_noise_array[23])
         
             self.entry129 = Entry(Frame2, width=6)
             self.entry129.place(in_=Frame2, x=270, y=40)
+            self.entry129.delete(0, END)
+            self.entry129.insert(0, temp_noise_array[24])
             
             self.entry130 = Entry(Frame2, width=6)
             self.entry130.place(in_=Frame2, x=320, y=40)
+            self.entry130.delete(0, END)
+            self.entry130.insert(0, temp_noise_array[25])
             
             self.entry131 = Entry(Frame2, width=6)
             self.entry131.place(in_=Frame2, x=370, y=40)
+            self.entry131.delete(0, END)
+            self.entry131.insert(0, temp_noise_array[26])
             
             self.entry132 = Entry(Frame2, width=6)
             self.entry132.place(in_=Frame2, x=420, y=40)
+            self.entry132.delete(0, END)
+            self.entry132.insert(0, temp_noise_array[27])
             
             self.entry133 = Entry(Frame2, width=6)
             self.entry133.place(in_=Frame2, x=470, y=40)
+            self.entry133.delete(0, END)
+            self.entry133.insert(0, temp_noise_array[28])
             
             output134 = ttk.Label(Frame2, text="dBc/Hz", font="Arial 10 bold")
             output134.place(in_=Frame2,x=520,y=40)
@@ -1220,24 +1461,38 @@ class MainGUI(Frame):
             
             self.entry135 = Entry(Frame2, width=6)
             self.entry135.place(in_=Frame2, x=170, y=70)
+            self.entry135.delete(0, END)
+            self.entry135.insert(0, temp_noise_array[29])
             
             self.entry136 = Entry(Frame2, width=6)
             self.entry136.place(in_=Frame2, x=220, y=70)
+            self.entry136.delete(0, END)
+            self.entry136.insert(0, temp_noise_array[30])
         
             self.entry137 = Entry(Frame2, width=6)
             self.entry137.place(in_=Frame2, x=270, y=70)
+            self.entry137.delete(0, END)
+            self.entry137.insert(0, temp_noise_array[31])
             
             self.entry138 = Entry(Frame2, width=6)
             self.entry138.place(in_=Frame2, x=320, y=70)
+            self.entry138.delete(0, END)
+            self.entry138.insert(0, temp_noise_array[32])
             
             self.entry139 = Entry(Frame2, width=6)
             self.entry139.place(in_=Frame2, x=370, y=70)
+            self.entry139.delete(0, END)
+            self.entry139.insert(0, temp_noise_array[33])
             
             self.entry140 = Entry(Frame2, width=6)
             self.entry140.place(in_=Frame2, x=420, y=70)
+            self.entry140.delete(0, END)
+            self.entry140.insert(0, temp_noise_array[34])
             
             self.entry141 = Entry(Frame2, width=6)
             self.entry141.place(in_=Frame2, x=470, y=70)
+            self.entry141.delete(0, END)
+            self.entry141.insert(0, temp_noise_array[35])
             
             output142 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
             output142.place(in_=Frame2,x=520,y=70)
@@ -1247,13 +1502,18 @@ class MainGUI(Frame):
             
             self.entry143 = Entry(Frame2, width=6)
             self.entry143.place(in_=Frame2, x=470, y=100)
+            self.entry143.delete(0, END)
+            self.entry143.insert(0, temp_noise_array[36])
             
             output144 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
             output144.place(in_=Frame2,x=520,y=100)
             
         def change_noise3():
             
-            change_noise()
+            global noise
+            global change_noise
+            global temp_noise_array
+            change_noise() 
             noise = 3
             
             Crystal_button.config(relief=RAISED)
@@ -1280,6 +1540,8 @@ class MainGUI(Frame):
             
             self.entry144 = Entry(Frame2, width=6)
             self.entry144.place(in_=Frame2, x=470, y=40)
+            self.entry144.delete(0, END)
+            self.entry144.insert(0, temp_noise_array[37])
             
             output147 = ttk.Label(Frame2, text="Hz", font="Arial 10 bold")
             output147.place(in_=Frame2,x=520,y=40)
@@ -1289,24 +1551,38 @@ class MainGUI(Frame):
             
             self.entry146 = Entry(Frame2, width=6)
             self.entry146.place(in_=Frame2, x=170, y=70)
+            self.entry146.delete(0, END)
+            self.entry146.insert(0, temp_noise_array[38])
             
             self.entry147 = Entry(Frame2, width=6)
             self.entry147.place(in_=Frame2, x=220, y=70)
-        
+            self.entry147.delete(0, END)
+            self.entry147.insert(0, temp_noise_array[39])
+            
             self.entry148 = Entry(Frame2, width=6)
             self.entry148.place(in_=Frame2, x=270, y=70)
+            self.entry148.delete(0, END)
+            self.entry148.insert(0, temp_noise_array[40])
             
             self.entry149 = Entry(Frame2, width=6)
             self.entry149.place(in_=Frame2, x=320, y=70)
+            self.entry149.delete(0, END)
+            self.entry149.insert(0, temp_noise_array[41])
             
             self.entry150 = Entry(Frame2, width=6)
             self.entry150.place(in_=Frame2, x=370, y=70)
+            self.entry150.delete(0, END)
+            self.entry150.insert(0, temp_noise_array[42])
             
             self.entry151 = Entry(Frame2, width=6)
             self.entry151.place(in_=Frame2, x=420, y=70)
+            self.entry151.delete(0, END)
+            self.entry151.insert(0, temp_noise_array[43])
             
             self.entry152 = Entry(Frame2, width=6)
             self.entry152.place(in_=Frame2, x=470, y=70)
+            self.entry152.delete(0, END)
+            self.entry152.insert(0, temp_noise_array[44])
             
             output153 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
             output153.place(in_=Frame2,x=520,y=70)
@@ -1316,24 +1592,38 @@ class MainGUI(Frame):
             
             self.entry154 = Entry(Frame2, width=6)
             self.entry154.place(in_=Frame2, x=170, y=100)
+            self.entry154.delete(0, END)
+            self.entry154.insert(0, temp_noise_array[45])
             
             self.entry155 = Entry(Frame2, width=6)
             self.entry155.place(in_=Frame2, x=220, y=100)
-        
+            self.entry155.delete(0, END)
+            self.entry155.insert(0, temp_noise_array[46])
+            
             self.entry156 = Entry(Frame2, width=6)
             self.entry156.place(in_=Frame2, x=270, y=100)
+            self.entry156.delete(0, END)
+            self.entry156.insert(0, temp_noise_array[47])
             
             self.entry157 = Entry(Frame2, width=6)
             self.entry157.place(in_=Frame2, x=320, y=100)
+            self.entry157.delete(0, END)
+            self.entry157.insert(0, temp_noise_array[48])
             
             self.entry158 = Entry(Frame2, width=6)
             self.entry158.place(in_=Frame2, x=370, y=100)
+            self.entry158.delete(0, END)
+            self.entry158.insert(0, temp_noise_array[49])
             
             self.entry159 = Entry(Frame2, width=6)
             self.entry159.place(in_=Frame2, x=420, y=100)
+            self.entry159.delete(0, END)
+            self.entry159.insert(0, temp_noise_array[50])
             
             self.entry160 = Entry(Frame2, width=6)
             self.entry160.place(in_=Frame2, x=470, y=100)
+            self.entry160.delete(0, END)
+            self.entry160.insert(0, temp_noise_array[51])
             
             output161 = ttk.Label(Frame2, text="dBV^2/Hz", font="Arial 10 bold")
             output161.place(in_=Frame2,x=520,y=100)
@@ -1343,24 +1633,38 @@ class MainGUI(Frame):
             
             self.entry162 = Entry(Frame2, width=6)
             self.entry162.place(in_=Frame2, x=170, y=130)
+            self.entry162.delete(0, END)
+            self.entry162.insert(0, temp_noise_array[52])
             
             self.entry163 = Entry(Frame2, width=6)
             self.entry163.place(in_=Frame2, x=220, y=130)
-        
+            self.entry163.delete(0, END)
+            self.entry163.insert(0, temp_noise_array[53])
+            
             self.entry164 = Entry(Frame2, width=6)
             self.entry164.place(in_=Frame2, x=270, y=130)
+            self.entry164.delete(0, END)
+            self.entry164.insert(0, temp_noise_array[54])
             
             self.entry165 = Entry(Frame2, width=6)
             self.entry165.place(in_=Frame2, x=320, y=130)
+            self.entry165.delete(0, END)
+            self.entry165.insert(0, temp_noise_array[55])
             
             self.entry166 = Entry(Frame2, width=6)
             self.entry166.place(in_=Frame2, x=370, y=130)
+            self.entry166.delete(0, END)
+            self.entry166.insert(0, temp_noise_array[56])
             
             self.entry167 = Entry(Frame2, width=6)
             self.entry167.place(in_=Frame2, x=420, y=130)
+            self.entry167.delete(0, END)
+            self.entry167.insert(0, temp_noise_array[57])
             
             self.entry168 = Entry(Frame2, width=6)
             self.entry168.place(in_=Frame2, x=470, y=130)
+            self.entry168.delete(0, END)
+            self.entry168.insert(0, temp_noise_array[58])
             
             output169 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
             output169.place(in_=Frame2,x=520,y=130)
@@ -1376,27 +1680,43 @@ class MainGUI(Frame):
             
             self.entry169 = Entry(Frame2, width=6)
             self.entry169.place(in_=Frame2, x=70, y=190)
+            self.entry169.delete(0, END)
+            self.entry169.insert(0, temp_noise_array[59])
             
             self.entry170 = Entry(Frame2, width=6)
             self.entry170.place(in_=Frame2, x=170, y=190)
+            self.entry170.delete(0, END)
+            self.entry170.insert(0, temp_noise_array[60])
             
             self.entry171 = Entry(Frame2, width=6)
             self.entry171.place(in_=Frame2, x=220, y=190)
-        
+            self.entry171.delete(0, END)
+            self.entry171.insert(0, temp_noise_array[61])
+            
             self.entry172 = Entry(Frame2, width=6)
             self.entry172.place(in_=Frame2, x=270, y=190)
+            self.entry172.delete(0, END)
+            self.entry172.insert(0, temp_noise_array[62])
             
             self.entry173 = Entry(Frame2, width=6)
             self.entry173.place(in_=Frame2, x=320, y=190)
+            self.entry173.delete(0, END)
+            self.entry173.insert(0, temp_noise_array[63])
             
             self.entry174 = Entry(Frame2, width=6)
             self.entry174.place(in_=Frame2, x=370, y=190)
+            self.entry174.delete(0, END)
+            self.entry174.insert(0, temp_noise_array[64])
             
             self.entry175 = Entry(Frame2, width=6)
             self.entry175.place(in_=Frame2, x=420, y=190)
+            self.entry175.delete(0, END)
+            self.entry175.insert(0, temp_noise_array[65])            
             
             self.entry176 = Entry(Frame2, width=6)
             self.entry176.place(in_=Frame2, x=470, y=190)
+            self.entry176.delete(0, END)
+            self.entry176.insert(0, temp_noise_array[66])
             
             output177 = ttk.Label(Frame2, text="dBc/Hz", font="Arial 10 bold")
             output177.place(in_=Frame2,x=520,y=190)
@@ -1406,27 +1726,43 @@ class MainGUI(Frame):
             
             self.entry178 = Entry(Frame2, width=6)
             self.entry178.place(in_=Frame2, x=70, y=220)
+            self.entry178.delete(0, END)
+            self.entry178.insert(0, temp_noise_array[67])
             
             self.entry179 = Entry(Frame2, width=6)
             self.entry179.place(in_=Frame2, x=170, y=220)
+            self.entry179.delete(0, END)
+            self.entry179.insert(0, temp_noise_array[68])
             
             self.entry180 = Entry(Frame2, width=6)
             self.entry180.place(in_=Frame2, x=220, y=220)
-        
+            self.entry180.delete(0, END)
+            self.entry180.insert(0, temp_noise_array[69])
+            
             self.entry181 = Entry(Frame2, width=6)
             self.entry181.place(in_=Frame2, x=270, y=220)
+            self.entry181.delete(0, END)
+            self.entry181.insert(0, temp_noise_array[70])
             
             self.entry182 = Entry(Frame2, width=6)
             self.entry182.place(in_=Frame2, x=320, y=220)
+            self.entry182.delete(0, END)
+            self.entry182.insert(0, temp_noise_array[71])
             
             self.entry183 = Entry(Frame2, width=6)
             self.entry183.place(in_=Frame2, x=370, y=220)
+            self.entry183.delete(0, END)
+            self.entry183.insert(0, temp_noise_array[72])
             
             self.entry184 = Entry(Frame2, width=6)
             self.entry184.place(in_=Frame2, x=420, y=220)
+            self.entry184.delete(0, END)
+            self.entry184.insert(0, temp_noise_array[73])
             
             self.entry185 = Entry(Frame2, width=6)
             self.entry185.place(in_=Frame2, x=470, y=220)
+            self.entry185.delete(0, END)
+            self.entry185.insert(0, temp_noise_array[74])
             
             output185 = ttk.Label(Frame2, text="dBc/Hz", font="Arial 10 bold")
             output185.place(in_=Frame2,x=520,y=220)
@@ -1436,27 +1772,43 @@ class MainGUI(Frame):
             
             self.entry187 = Entry(Frame2, width=6)
             self.entry187.place(in_=Frame2, x=70, y=250)
+            self.entry187.delete(0, END)
+            self.entry187.insert(0, temp_noise_array[75])
             
             self.entry188 = Entry(Frame2, width=6)
             self.entry188.place(in_=Frame2, x=170, y=250)
+            self.entry188.delete(0, END)
+            self.entry188.insert(0, temp_noise_array[76])
             
             self.entry189 = Entry(Frame2, width=6)
             self.entry189.place(in_=Frame2, x=220, y=250)
-        
+            self.entry189.delete(0, END)
+            self.entry189.insert(0, temp_noise_array[77])
+            
             self.entry190 = Entry(Frame2, width=6)
             self.entry190.place(in_=Frame2, x=270, y=250)
+            self.entry190.delete(0, END)
+            self.entry190.insert(0, temp_noise_array[78])
             
             self.entry191 = Entry(Frame2, width=6)
             self.entry191.place(in_=Frame2, x=320, y=250)
+            self.entry191.delete(0, END)
+            self.entry191.insert(0, temp_noise_array[79])
             
             self.entry192 = Entry(Frame2, width=6)
             self.entry192.place(in_=Frame2, x=370, y=250)
+            self.entry192.delete(0, END)
+            self.entry192.insert(0, temp_noise_array[80])
             
             self.entry193 = Entry(Frame2, width=6)
             self.entry193.place(in_=Frame2, x=420, y=250)
+            self.entry193.delete(0, END)
+            self.entry193.insert(0, temp_noise_array[81])
             
             self.entry194 = Entry(Frame2, width=6)
             self.entry194.place(in_=Frame2, x=470, y=250)
+            self.entry194.delete(0, END)
+            self.entry194.insert(0, temp_noise_array[82])
             
             output194 = ttk.Label(Frame2, text="dBc/Hz", font="Arial 10 bold")
             output194.place(in_=Frame2,x=520,y=250)
@@ -1466,6 +1818,8 @@ class MainGUI(Frame):
             
             self.entry195 = Entry(Frame2, width=6)
             self.entry195.place(in_=Frame2, x=470, y=280)
+            self.entry195.delete(0, END)
+            self.entry195.insert(0, temp_noise_array[83])
             
             output196 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
             output196.place(in_=Frame2,x=520,y=280)
@@ -1475,13 +1829,18 @@ class MainGUI(Frame):
             
             self.entry196 = Entry(Frame2, width=6)
             self.entry196.place(in_=Frame2, x=470, y=310)
+            self.entry196.delete(0, END)
+            self.entry196.insert(0, temp_noise_array[84])
             
             output198 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
             output198.place(in_=Frame2,x=520,y=310)
             
         def change_noise4():
             
-            change_noise()
+            global noise
+            global change_noise
+            global temp_noise_array
+            change_noise() 
             noise = 4
             
             Crystal_button.config(relief=RAISED)
@@ -1508,6 +1867,8 @@ class MainGUI(Frame):
             
             self.entry197 = Entry(Frame2, width=6)
             self.entry197.place(in_=Frame2, x=470, y=40)
+            self.entry197.delete(0, END)
+            self.entry197.insert(0, temp_noise_array[85])
             
             output201 = ttk.Label(Frame2, text="Hz", font="Arial 10 bold")
             output201.place(in_=Frame2,x=520,y=40)
@@ -1517,24 +1878,38 @@ class MainGUI(Frame):
             
             self.entry199 = Entry(Frame2, width=6)
             self.entry199.place(in_=Frame2, x=170, y=70)
+            self.entry199.delete(0, END)
+            self.entry199.insert(0, temp_noise_array[86])
             
             self.entry200 = Entry(Frame2, width=6)
             self.entry200.place(in_=Frame2, x=220, y=70)
+            self.entry200.delete(0, END)
+            self.entry200.insert(0, temp_noise_array[87])
         
             self.entry201 = Entry(Frame2, width=6)
             self.entry201.place(in_=Frame2, x=270, y=70)
+            self.entry201.delete(0, END)
+            self.entry201.insert(0, temp_noise_array[88])
             
             self.entry202 = Entry(Frame2, width=6)
             self.entry202.place(in_=Frame2, x=320, y=70)
+            self.entry202.delete(0, END)
+            self.entry202.insert(0, temp_noise_array[89])
             
             self.entry203 = Entry(Frame2, width=6)
             self.entry203.place(in_=Frame2, x=370, y=70)
+            self.entry203.delete(0, END)
+            self.entry203.insert(0, temp_noise_array[90])
             
             self.entry204 = Entry(Frame2, width=6)
             self.entry204.place(in_=Frame2, x=420, y=70)
+            self.entry204.delete(0, END)
+            self.entry204.insert(0, temp_noise_array[91])
             
             self.entry205 = Entry(Frame2, width=6)
             self.entry205.place(in_=Frame2, x=470, y=70)
+            self.entry205.delete(0, END)
+            self.entry205.insert(0, temp_noise_array[92])
             
             output205 = ttk.Label(Frame2, text="Volts", font="Arial 10 bold")
             output205.place(in_=Frame2,x=520,y=70)
@@ -1544,24 +1919,38 @@ class MainGUI(Frame):
             
             self.entry207 = Entry(Frame2, width=6)
             self.entry207.place(in_=Frame2, x=170, y=100)
+            self.entry207.delete(0, END)
+            self.entry207.insert(0, temp_noise_array[93])
             
             self.entry208 = Entry(Frame2, width=6)
             self.entry208.place(in_=Frame2, x=220, y=100)
-        
+            self.entry208.delete(0, END)
+            self.entry208.insert(0, temp_noise_array[94])
+            
             self.entry209 = Entry(Frame2, width=6)
             self.entry209.place(in_=Frame2, x=270, y=100)
+            self.entry209.delete(0, END)
+            self.entry209.insert(0, temp_noise_array[95])
             
             self.entry210 = Entry(Frame2, width=6)
             self.entry210.place(in_=Frame2, x=320, y=100)
+            self.entry210.delete(0, END)
+            self.entry210.insert(0, temp_noise_array[96])
             
             self.entry211 = Entry(Frame2, width=6)
             self.entry211.place(in_=Frame2, x=370, y=100)
+            self.entry211.delete(0, END)
+            self.entry211.insert(0, temp_noise_array[97])            
             
             self.entry212 = Entry(Frame2, width=6)
             self.entry212.place(in_=Frame2, x=420, y=100)
+            self.entry212.delete(0, END)
+            self.entry212.insert(0, temp_noise_array[98])
             
             self.entry213 = Entry(Frame2, width=6)
             self.entry213.place(in_=Frame2, x=470, y=100)
+            self.entry213.delete(0, END)
+            self.entry213.insert(0, temp_noise_array[99])
             
             output213 = ttk.Label(Frame2, text="Hz", font="Arial 10 bold")
             output213.place(in_=Frame2,x=520,y=100)
@@ -1571,24 +1960,38 @@ class MainGUI(Frame):
             
             self.entry215 = Entry(Frame2, width=6)
             self.entry215.place(in_=Frame2, x=170, y=130)
+            self.entry215.delete(0, END)
+            self.entry215.insert(0, temp_noise_array[100])
             
             self.entry216 = Entry(Frame2, width=6)
             self.entry216.place(in_=Frame2, x=220, y=130)
-        
+            self.entry216.delete(0, END)
+            self.entry216.insert(0, temp_noise_array[101])
+            
             self.entry217 = Entry(Frame2, width=6)
             self.entry217.place(in_=Frame2, x=270, y=130)
+            self.entry217.delete(0, END)
+            self.entry217.insert(0, temp_noise_array[102])
             
             self.entry218 = Entry(Frame2, width=6)
             self.entry218.place(in_=Frame2, x=320, y=130)
+            self.entry218.delete(0, END)
+            self.entry218.insert(0, temp_noise_array[103])
             
             self.entry219 = Entry(Frame2, width=6)
             self.entry219.place(in_=Frame2, x=370, y=130)
+            self.entry219.delete(0, END)
+            self.entry219.insert(0, temp_noise_array[104])
             
             self.entry220 = Entry(Frame2, width=6)
             self.entry220.place(in_=Frame2, x=420, y=130)
+            self.entry220.delete(0, END)
+            self.entry220.insert(0, temp_noise_array[105])
             
             self.entry221 = Entry(Frame2, width=6)
             self.entry221.place(in_=Frame2, x=470, y=130)
+            self.entry221.delete(0, END)
+            self.entry221.insert(0, temp_noise_array[106])
             
             output221 = ttk.Label(Frame2, text="MHz", font="Arial 10 bold")
             output221.place(in_=Frame2,x=520,y=130)
@@ -1598,24 +2001,38 @@ class MainGUI(Frame):
             
             self.entry223 = Entry(Frame2, width=6)
             self.entry223.place(in_=Frame2, x=170, y=160)
+            self.entry223.delete(0, END)
+            self.entry223.insert(0, temp_noise_array[107])
             
             self.entry224 = Entry(Frame2, width=6)
             self.entry224.place(in_=Frame2, x=220, y=160)
-        
+            self.entry224.delete(0, END)
+            self.entry224.insert(0, temp_noise_array[108])
+            
             self.entry225 = Entry(Frame2, width=6)
             self.entry225.place(in_=Frame2, x=270, y=160)
+            self.entry225.delete(0, END)
+            self.entry225.insert(0, temp_noise_array[109])
             
             self.entry226 = Entry(Frame2, width=6)
             self.entry226.place(in_=Frame2, x=320, y=160)
+            self.entry226.delete(0, END)
+            self.entry226.insert(0, temp_noise_array[110])
             
             self.entry227 = Entry(Frame2, width=6)
             self.entry227.place(in_=Frame2, x=370, y=160)
+            self.entry227.delete(0, END)
+            self.entry227.insert(0, temp_noise_array[111])
             
             self.entry228 = Entry(Frame2, width=6)
             self.entry228.place(in_=Frame2, x=420, y=160)
+            self.entry228.delete(0, END)
+            self.entry228.insert(0, temp_noise_array[112])
             
             self.entry229 = Entry(Frame2, width=6)
             self.entry229.place(in_=Frame2, x=470, y=160)
+            self.entry229.delete(0, END)
+            self.entry229.insert(0, temp_noise_array[113])
             
             output229 = ttk.Label(Frame2, text="dBV^2/Hz", font="Arial 10 bold")
             output229.place(in_=Frame2,x=520,y=160)
@@ -1631,27 +2048,43 @@ class MainGUI(Frame):
             
             self.entry230 = Entry(Frame2, width=6)
             self.entry230.place(in_=Frame2, x=70, y=220)
+            self.entry230.delete(0, END)
+            self.entry230.insert(0, temp_noise_array[114])
             
             self.entry231 = Entry(Frame2, width=6)
             self.entry231.place(in_=Frame2, x=170, y=220)
+            self.entry231.delete(0, END)
+            self.entry231.insert(0, temp_noise_array[115])
             
             self.entry232 = Entry(Frame2, width=6)
             self.entry232.place(in_=Frame2, x=220, y=220)
-        
+            self.entry232.delete(0, END)
+            self.entry232.insert(0, temp_noise_array[116])
+            
             self.entry233 = Entry(Frame2, width=6)
             self.entry233.place(in_=Frame2, x=270, y=220)
+            self.entry233.delete(0, END)
+            self.entry233.insert(0, temp_noise_array[117])
             
             self.entry234 = Entry(Frame2, width=6)
             self.entry234.place(in_=Frame2, x=320, y=220)
+            self.entry234.delete(0, END)
+            self.entry234.insert(0, temp_noise_array[118])
             
             self.entry235 = Entry(Frame2, width=6)
             self.entry235.place(in_=Frame2, x=370, y=220)
+            self.entry235.delete(0, END)
+            self.entry235.insert(0, temp_noise_array[119])
             
             self.entry236 = Entry(Frame2, width=6)
             self.entry236.place(in_=Frame2, x=420, y=220)
+            self.entry236.delete(0, END)
+            self.entry236.insert(0, temp_noise_array[120])
             
             self.entry237 = Entry(Frame2, width=6)
             self.entry237.place(in_=Frame2, x=470, y=220)
+            self.entry237.delete(0, END)
+            self.entry237.insert(0, temp_noise_array[121])
             
             output237 = ttk.Label(Frame2, text="dBc/Hz", font="Arial 10 bold")
             output237.place(in_=Frame2,x=520,y=220)
@@ -1661,27 +2094,43 @@ class MainGUI(Frame):
             
             self.entry238 = Entry(Frame2, width=6)
             self.entry238.place(in_=Frame2, x=70, y=250)
+            self.entry238.delete(0, END)
+            self.entry238.insert(0, temp_noise_array[122])            
             
             self.entry239 = Entry(Frame2, width=6)
             self.entry239.place(in_=Frame2, x=170, y=250)
+            self.entry239.delete(0, END)
+            self.entry239.insert(0, temp_noise_array[123])
             
             self.entry240 = Entry(Frame2, width=6)
             self.entry240.place(in_=Frame2, x=220, y=250)
-        
+            self.entry240.delete(0, END)
+            self.entry240.insert(0, temp_noise_array[124])
+            
             self.entry241 = Entry(Frame2, width=6)
             self.entry241.place(in_=Frame2, x=270, y=250)
+            self.entry241.delete(0, END)
+            self.entry241.insert(0, temp_noise_array[125])
             
             self.entry242 = Entry(Frame2, width=6)
             self.entry242.place(in_=Frame2, x=320, y=250)
+            self.entry242.delete(0, END)
+            self.entry242.insert(0, temp_noise_array[126])
             
             self.entry243 = Entry(Frame2, width=6)
             self.entry243.place(in_=Frame2, x=370, y=250)
+            self.entry243.delete(0, END)
+            self.entry243.insert(0, temp_noise_array[127])
             
             self.entry244 = Entry(Frame2, width=6)
             self.entry244.place(in_=Frame2, x=420, y=250)
+            self.entry244.delete(0, END)
+            self.entry244.insert(0, temp_noise_array[128])
             
             self.entry245 = Entry(Frame2, width=6)
             self.entry245.place(in_=Frame2, x=470, y=250)
+            self.entry245.delete(0, END)
+            self.entry245.insert(0, temp_noise_array[129])
             
             output245 = ttk.Label(Frame2, text="dBc/Hz", font="Arial 10 bold")
             output245.place(in_=Frame2,x=520,y=250)
@@ -1691,27 +2140,43 @@ class MainGUI(Frame):
             
             self.entry246 = Entry(Frame2, width=6)
             self.entry246.place(in_=Frame2, x=70, y=280)
+            self.entry246.delete(0, END)
+            self.entry246.insert(0, temp_noise_array[130])
             
             self.entry247 = Entry(Frame2, width=6)
             self.entry247.place(in_=Frame2, x=170, y=280)
+            self.entry247.delete(0, END)
+            self.entry247.insert(0, temp_noise_array[131])
             
             self.entry248 = Entry(Frame2, width=6)
             self.entry248.place(in_=Frame2, x=220, y=280)
-        
+            self.entry248.delete(0, END)
+            self.entry248.insert(0, temp_noise_array[132])
+            
             self.entry249 = Entry(Frame2, width=6)
             self.entry249.place(in_=Frame2, x=270, y=280)
+            self.entry249.delete(0, END)
+            self.entry249.insert(0, temp_noise_array[133])
             
             self.entry250 = Entry(Frame2, width=6)
             self.entry250.place(in_=Frame2, x=320, y=280)
+            self.entry250.delete(0, END)
+            self.entry250.insert(0, temp_noise_array[134])
             
             self.entry251 = Entry(Frame2, width=6)
             self.entry251.place(in_=Frame2, x=370, y=280)
+            self.entry251.delete(0, END)
+            self.entry251.insert(0, temp_noise_array[135])
             
             self.entry252 = Entry(Frame2, width=6)
             self.entry252.place(in_=Frame2, x=420, y=280)
+            self.entry252.delete(0, END)
+            self.entry252.insert(0, temp_noise_array[136])
             
             self.entry253 = Entry(Frame2, width=6)
             self.entry253.place(in_=Frame2, x=470, y=280)
+            self.entry253.delete(0, END)
+            self.entry253.insert(0, temp_noise_array[137])
             
             output253 = ttk.Label(Frame2, text="dBc/Hz", font="Arial 10 bold")
             output253.place(in_=Frame2,x=520,y=280)
@@ -1721,6 +2186,8 @@ class MainGUI(Frame):
             
             self.entry254 = Entry(Frame2, width=6)
             self.entry254.place(in_=Frame2, x=470, y=310)
+            self.entry254.delete(0, END)
+            self.entry254.insert(0, temp_noise_array[138])
             
             output255 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
             output255.place(in_=Frame2,x=520,y=310)
@@ -1730,13 +2197,18 @@ class MainGUI(Frame):
             
             self.entry255 = Entry(Frame2, width=6)
             self.entry255.place(in_=Frame2, x=470, y=340)
+            self.entry255.delete(0, END)
+            self.entry255.insert(0, temp_noise_array[139])
             
             output257 = ttk.Label(Frame2, text="Hz/Volts", font="Arial 10 bold")
             output257.place(in_=Frame2,x=520,y=340)
             
         def change_noise5():
             
-            change_noise()
+            global noise
+            global change_noise
+            global temp_noise_array
+            change_noise() 
             noise = 5
             
             Crystal_button.config(relief=RAISED)
@@ -1757,6 +2229,8 @@ class MainGUI(Frame):
             
             self.entry256 = Entry(Frame2, width=6)
             self.entry256.place(in_=Frame2, x=470, y=10)
+            self.entry256.delete(0, END)
+            self.entry256.insert(0, temp_noise_array[140])
             
             output259 = ttk.Label(Frame2, text="Hz", font="Arial 10 bold")
             output259.place(in_=Frame2,x=520,y=10)
@@ -1766,24 +2240,38 @@ class MainGUI(Frame):
             
             self.entry257 = Entry(Frame2, width=6)
             self.entry257.place(in_=Frame2, x=170, y=40)
+            self.entry257.delete(0, END)
+            self.entry257.insert(0, temp_noise_array[141])
             
             self.entry258 = Entry(Frame2, width=6)
             self.entry258.place(in_=Frame2, x=220, y=40)
-        
+            self.entry258.delete(0, END)
+            self.entry258.insert(0, temp_noise_array[142])
+            
             self.entry259 = Entry(Frame2, width=6)
             self.entry259.place(in_=Frame2, x=270, y=40)
+            self.entry259.delete(0, END)
+            self.entry259.insert(0, temp_noise_array[143])
             
             self.entry260 = Entry(Frame2, width=6)
             self.entry260.place(in_=Frame2, x=320, y=40)
+            self.entry260.delete(0, END)
+            self.entry260.insert(0, temp_noise_array[144])
             
             self.entry261 = Entry(Frame2, width=6)
             self.entry261.place(in_=Frame2, x=370, y=40)
+            self.entry261.delete(0, END)
+            self.entry261.insert(0, temp_noise_array[145])
             
             self.entry262 = Entry(Frame2, width=6)
             self.entry262.place(in_=Frame2, x=420, y=40)
+            self.entry262.delete(0, END)
+            self.entry262.insert(0, temp_noise_array[146])
             
             self.entry263 = Entry(Frame2, width=6)
             self.entry263.place(in_=Frame2, x=470, y=40)
+            self.entry263.delete(0, END)
+            self.entry263.insert(0, temp_noise_array[147])
             
             output263 = ttk.Label(Frame2, text="Hz", font="Arial 10 bold")
             output263.place(in_=Frame2,x=520,y=40)
@@ -1793,24 +2281,38 @@ class MainGUI(Frame):
             
             self.entry264 = Entry(Frame2, width=6)
             self.entry264.place(in_=Frame2, x=170, y=70)
+            self.entry264.delete(0, END)
+            self.entry264.insert(0, temp_noise_array[148])
             
             self.entry265 = Entry(Frame2, width=6)
             self.entry265.place(in_=Frame2, x=220, y=70)
-        
+            self.entry265.delete(0, END)
+            self.entry265.insert(0, temp_noise_array[149])
+            
             self.entry266 = Entry(Frame2, width=6)
             self.entry266.place(in_=Frame2, x=270, y=70)
+            self.entry266.delete(0, END)
+            self.entry266.insert(0, temp_noise_array[150])
             
             self.entry267 = Entry(Frame2, width=6)
             self.entry267.place(in_=Frame2, x=320, y=70)
+            self.entry267.delete(0, END)
+            self.entry267.insert(0, temp_noise_array[151])
             
             self.entry268 = Entry(Frame2, width=6)
             self.entry268.place(in_=Frame2, x=370, y=70)
+            self.entry268.delete(0, END)
+            self.entry268.insert(0, temp_noise_array[152])
             
             self.entry269 = Entry(Frame2, width=6)
             self.entry269.place(in_=Frame2, x=420, y=70)
+            self.entry269.delete(0, END)
+            self.entry269.insert(0, temp_noise_array[153])
             
             self.entry270 = Entry(Frame2, width=6)
             self.entry270.place(in_=Frame2, x=470, y=70)
+            self.entry270.delete(0, END)
+            self.entry270.insert(0, temp_noise_array[154])
             
             output270 = ttk.Label(Frame2, text="dBc/Hz", font="Arial 10 bold")
             output270.place(in_=Frame2,x=520,y=70)
@@ -1820,13 +2322,18 @@ class MainGUI(Frame):
             
             self.entry271 = Entry(Frame2, width=6)
             self.entry271.place(in_=Frame2, x=470, y=100)
+            self.entry271.delete(0, END)
+            self.entry271.insert(0, temp_noise_array[155])
             
             output272 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
             output272.place(in_=Frame2,x=520,y=100)
             
         def change_noise6():
             
-            change_noise()
+            global noise
+            global change_noise
+            global temp_noise_array
+            change_noise() 
             noise = 6
             
             Crystal_button.config(relief=RAISED)
@@ -1847,25 +2354,39 @@ class MainGUI(Frame):
             
             self.entry272 = Entry(Frame2, width=6)
             self.entry272.place(in_=Frame2, x=170, y=10)
+            self.entry272.delete(0, END)
+            self.entry272.insert(0, temp_noise_array[156])
             
             self.entry273 = Entry(Frame2, width=6)
             self.entry273.place(in_=Frame2, x=220, y=10)
-        
+            self.entry273.delete(0, END)
+            self.entry273.insert(0, temp_noise_array[157])
+            
             self.entry274 = Entry(Frame2, width=6)
             self.entry274.place(in_=Frame2, x=270, y=10)
+            self.entry274.delete(0, END)
+            self.entry274.insert(0, temp_noise_array[158])
             
             self.entry275 = Entry(Frame2, width=6)
             self.entry275.place(in_=Frame2, x=320, y=10)
-            
+            self.entry275.delete(0, END)
+            self.entry275.insert(0, temp_noise_array[159])            
+
             self.entry276 = Entry(Frame2, width=6)
             self.entry276.place(in_=Frame2, x=370, y=10)
+            self.entry276.delete(0, END)
+            self.entry276.insert(0, temp_noise_array[160])
             
             self.entry277 = Entry(Frame2, width=6)
             self.entry277.place(in_=Frame2, x=420, y=10)
+            self.entry277.delete(0, END)
+            self.entry277.insert(0, temp_noise_array[161])
             
             self.entry278 = Entry(Frame2, width=6)
             self.entry278.place(in_=Frame2, x=470, y=10)
-            
+            self.entry278.delete(0, END)
+            self.entry278.insert(0, temp_noise_array[162])            
+
             output278 = ttk.Label(Frame2, text="Hz", font="Arial 10 bold")
             output278.place(in_=Frame2,x=520,y=10)
             
@@ -1874,24 +2395,38 @@ class MainGUI(Frame):
             
             self.entry279 = Entry(Frame2, width=6)
             self.entry279.place(in_=Frame2, x=170, y=40)
+            self.entry279.delete(0, END)
+            self.entry279.insert(0, temp_noise_array[163])
             
             self.entry280 = Entry(Frame2, width=6)
             self.entry280.place(in_=Frame2, x=220, y=40)
-        
+            self.entry280.delete(0, END)
+            self.entry280.insert(0, temp_noise_array[164])
+            
             self.entry281 = Entry(Frame2, width=6)
             self.entry281.place(in_=Frame2, x=270, y=40)
+            self.entry281.delete(0, END)
+            self.entry281.insert(0, temp_noise_array[165])
             
             self.entry282 = Entry(Frame2, width=6)
             self.entry282.place(in_=Frame2, x=320, y=40)
+            self.entry282.delete(0, END)
+            self.entry282.insert(0, temp_noise_array[166])
             
             self.entry283 = Entry(Frame2, width=6)
             self.entry283.place(in_=Frame2, x=370, y=40)
+            self.entry283.delete(0, END)
+            self.entry283.insert(0, temp_noise_array[167])
             
             self.entry284 = Entry(Frame2, width=6)
             self.entry284.place(in_=Frame2, x=420, y=40)
+            self.entry284.delete(0, END)
+            self.entry284.insert(0, temp_noise_array[168])
             
             self.entry285 = Entry(Frame2, width=6)
             self.entry285.place(in_=Frame2, x=470, y=40)
+            self.entry285.delete(0, END)
+            self.entry285.insert(0, temp_noise_array[169])
             
             output285 = ttk.Label(Frame2, text="dBcV^2/Hz", font="Arial 10 bold")
             output285.place(in_=Frame2,x=520,y=40)
@@ -1901,24 +2436,38 @@ class MainGUI(Frame):
             
             self.entry286 = Entry(Frame2, width=6)
             self.entry286.place(in_=Frame2, x=170, y=70)
+            self.entry286.delete(0, END)
+            self.entry286.insert(0, temp_noise_array[170])
             
             self.entry287 = Entry(Frame2, width=6)
             self.entry287.place(in_=Frame2, x=220, y=70)
-        
+            self.entry287.delete(0, END)
+            self.entry287.insert(0, temp_noise_array[171])
+            
             self.entry288 = Entry(Frame2, width=6)
             self.entry288.place(in_=Frame2, x=270, y=70)
+            self.entry288.delete(0, END)
+            self.entry288.insert(0, temp_noise_array[172])
             
             self.entry289 = Entry(Frame2, width=6)
             self.entry289.place(in_=Frame2, x=320, y=70)
+            self.entry289.delete(0, END)
+            self.entry289.insert(0, temp_noise_array[173])
             
             self.entry290 = Entry(Frame2, width=6)
             self.entry290.place(in_=Frame2, x=370, y=70)
+            self.entry290.delete(0, END)
+            self.entry290.insert(0, temp_noise_array[174])
             
             self.entry291 = Entry(Frame2, width=6)
             self.entry291.place(in_=Frame2, x=420, y=70)
+            self.entry291.delete(0, END)
+            self.entry291.insert(0, temp_noise_array[175])
             
             self.entry292 = Entry(Frame2, width=6)
             self.entry292.place(in_=Frame2, x=470, y=70)
+            self.entry292.delete(0, END)
+            self.entry292.insert(0, temp_noise_array[176])
             
             output292 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
             output292.place(in_=Frame2,x=520,y=70)
@@ -1928,24 +2477,38 @@ class MainGUI(Frame):
             
             self.entry293 = Entry(Frame2, width=6)
             self.entry293.place(in_=Frame2, x=170, y=100)
+            self.entry293.delete(0, END)
+            self.entry293.insert(0, temp_noise_array[177])
             
             self.entry294 = Entry(Frame2, width=6)
             self.entry294.place(in_=Frame2, x=220, y=100)
-        
+            self.entry294.delete(0, END)
+            self.entry294.insert(0, temp_noise_array[178])
+            
             self.entry295 = Entry(Frame2, width=6)
             self.entry295.place(in_=Frame2, x=270, y=100)
+            self.entry295.delete(0, END)
+            self.entry295.insert(0, temp_noise_array[179])
             
             self.entry296 = Entry(Frame2, width=6)
             self.entry296.place(in_=Frame2, x=320, y=100)
+            self.entry296.delete(0, END)
+            self.entry296.insert(0, temp_noise_array[180])
             
             self.entry297 = Entry(Frame2, width=6)
             self.entry297.place(in_=Frame2, x=370, y=100)
+            self.entry297.delete(0, END)
+            self.entry297.insert(0, temp_noise_array[181])
             
             self.entry298 = Entry(Frame2, width=6)
             self.entry298.place(in_=Frame2, x=420, y=100)
+            self.entry298.delete(0, END)
+            self.entry298.insert(0, temp_noise_array[182])
             
             self.entry299 = Entry(Frame2, width=6)
             self.entry299.place(in_=Frame2, x=470, y=100)
+            self.entry299.delete(0, END)
+            self.entry299.insert(0, temp_noise_array[183])
             
             output299 = ttk.Label(Frame2, text="dB V^2/Hz", font="Arial 10 bold")
             output299.place(in_=Frame2,x=520,y=100)
@@ -1955,24 +2518,38 @@ class MainGUI(Frame):
             
             self.entry300 = Entry(Frame2, width=6)
             self.entry300.place(in_=Frame2, x=170, y=130)
+            self.entry300.delete(0, END)
+            self.entry300.insert(0, temp_noise_array[184])
             
             self.entry301 = Entry(Frame2, width=6)
             self.entry301.place(in_=Frame2, x=220, y=130)
-        
+            self.entry301.delete(0, END)
+            self.entry301.insert(0, temp_noise_array[185])
+            
             self.entry302 = Entry(Frame2, width=6)
             self.entry302.place(in_=Frame2, x=270, y=130)
+            self.entry302.delete(0, END)
+            self.entry302.insert(0, temp_noise_array[186])
             
             self.entry303 = Entry(Frame2, width=6)
             self.entry303.place(in_=Frame2, x=320, y=130)
+            self.entry303.delete(0, END)
+            self.entry303.insert(0, temp_noise_array[187])
             
             self.entry304 = Entry(Frame2, width=6)
             self.entry304.place(in_=Frame2, x=370, y=130)
+            self.entry304.delete(0, END)
+            self.entry304.insert(0, temp_noise_array[188])
             
             self.entry305 = Entry(Frame2, width=6)
             self.entry305.place(in_=Frame2, x=420, y=130)
+            self.entry305.delete(0, END)
+            self.entry305.insert(0, temp_noise_array[189])
             
             self.entry306 = Entry(Frame2, width=6)
             self.entry306.place(in_=Frame2, x=470, y=130)
+            self.entry306.delete(0, END)
+            self.entry306.insert(0, temp_noise_array[190])
             
             output306 = ttk.Label(Frame2, text="dB V^2/Hz", font="Arial 10 bold")
             output306.place(in_=Frame2,x=520,y=130)
@@ -1982,31 +2559,48 @@ class MainGUI(Frame):
             
             self.entry307 = Entry(Frame2, width=6)
             self.entry307.place(in_=Frame2, x=170, y=160)
+            self.entry307.delete(0, END)
+            self.entry307.insert(0, temp_noise_array[191])
             
             self.entry308 = Entry(Frame2, width=6)
             self.entry308.place(in_=Frame2, x=220, y=160)
-        
+            self.entry308.delete(0, END)
+            self.entry308.insert(0, temp_noise_array[192])
+            
             self.entry309 = Entry(Frame2, width=6)
             self.entry309.place(in_=Frame2, x=270, y=160)
+            self.entry309.delete(0, END)
+            self.entry309.insert(0, temp_noise_array[193])
             
             self.entry310 = Entry(Frame2, width=6)
             self.entry310.place(in_=Frame2, x=320, y=160)
+            self.entry310.delete(0, END)
+            self.entry310.insert(0, temp_noise_array[194])
             
             self.entry311 = Entry(Frame2, width=6)
             self.entry311.place(in_=Frame2, x=370, y=160)
+            self.entry311.delete(0, END)
+            self.entry311.insert(0, temp_noise_array[195])
             
             self.entry312 = Entry(Frame2, width=6)
             self.entry312.place(in_=Frame2, x=420, y=160)
+            self.entry312.delete(0, END)
+            self.entry312.insert(0, temp_noise_array[196])
             
             self.entry313 = Entry(Frame2, width=6)
             self.entry313.place(in_=Frame2, x=470, y=160)
+            self.entry313.delete(0, END)
+            self.entry313.insert(0, temp_noise_array[197])
             
             output313 = ttk.Label(Frame2, text="dB V^2/Hz", font="Arial 10 bold")
             output313.place(in_=Frame2,x=520,y=160)            
             
         def change_noise7():
             
-            change_noise()
+            global noise
+            global change_noise
+            global temp_noise_array
+            change_noise() 
             noise = 7
             
             Crystal_button.config(relief=RAISED)
@@ -2049,10 +2643,15 @@ class MainGUI(Frame):
             
             self.entry314 = Entry(Frame2, width=6)
             self.entry314.place(in_=Frame2, x=470, y=70)
+            self.entry314.delete(0, END)
+            self.entry314.insert(0, temp_noise_array[198])
             
         def change_noise8():
             
-            change_noise()
+            global noise
+            global change_noise
+            global temp_noise_array
+            change_noise() 
             noise = 8
             
             Crystal_button.config(relief=RAISED)
@@ -2082,24 +2681,38 @@ class MainGUI(Frame):
             
             self.entry315 = Entry(Frame2, width=6)
             self.entry315.place(in_=Frame2, x=170, y=10)
+            self.entry315.delete(0, END)
+            self.entry315.insert(0, temp_noise_array[199])
             
             self.entry316 = Entry(Frame2, width=6)
             self.entry316.place(in_=Frame2, x=220, y=10)
-        
+            self.entry316.delete(0, END)
+            self.entry316.insert(0, temp_noise_array[200])
+            
             self.entry317 = Entry(Frame2, width=6)
             self.entry317.place(in_=Frame2, x=270, y=10)
+            self.entry317.delete(0, END)
+            self.entry317.insert(0, temp_noise_array[201])
             
             self.entry318 = Entry(Frame2, width=6)
             self.entry318.place(in_=Frame2, x=320, y=10)
+            self.entry318.delete(0, END)
+            self.entry318.insert(0, temp_noise_array[202])
             
             self.entry319 = Entry(Frame2, width=6)
             self.entry319.place(in_=Frame2, x=370, y=10)
+            self.entry319.delete(0, END)
+            self.entry319.insert(0, temp_noise_array[203])
             
             self.entry320 = Entry(Frame2, width=6)
             self.entry320.place(in_=Frame2, x=420, y=10)
+            self.entry320.delete(0, END)
+            self.entry320.insert(0, temp_noise_array[204])
             
             self.entry321 = Entry(Frame2, width=6)
             self.entry321.place(in_=Frame2, x=470, y=10)
+            self.entry321.delete(0, END)
+            self.entry321.insert(0, temp_noise_array[205])
             
             output321 = ttk.Label(Frame2, text="Hz", font="Arial 10 bold")
             output321.place(in_=Frame2,x=520,y=10)
@@ -2109,24 +2722,38 @@ class MainGUI(Frame):
             
             self.entry322 = Entry(Frame2, width=6)
             self.entry322.place(in_=Frame2, x=170, y=40)
+            self.entry322.delete(0, END)
+            self.entry322.insert(0, temp_noise_array[206])
             
             self.entry323 = Entry(Frame2, width=6)
             self.entry323.place(in_=Frame2, x=220, y=40)
-        
+            self.entry323.delete(0, END)
+            self.entry323.insert(0, temp_noise_array[207])
+
             self.entry324 = Entry(Frame2, width=6)
             self.entry324.place(in_=Frame2, x=270, y=40)
+            self.entry324.delete(0, END)
+            self.entry324.insert(0, temp_noise_array[208])
             
             self.entry325 = Entry(Frame2, width=6)
             self.entry325.place(in_=Frame2, x=320, y=40)
+            self.entry325.delete(0, END)
+            self.entry325.insert(0, temp_noise_array[209])
             
             self.entry326 = Entry(Frame2, width=6)
             self.entry326.place(in_=Frame2, x=370, y=40)
+            self.entry326.delete(0, END)
+            self.entry326.insert(0, temp_noise_array[210])
             
             self.entry327 = Entry(Frame2, width=6)
             self.entry327.place(in_=Frame2, x=420, y=40)
+            self.entry327.delete(0, END)
+            self.entry327.insert(0, temp_noise_array[211])
             
             self.entry328 = Entry(Frame2, width=6)
             self.entry328.place(in_=Frame2, x=470, y=40)
+            self.entry328.delete(0, END)
+            self.entry328.insert(0, temp_noise_array[212])
             
             output328 = ttk.Label(Frame2, text="dBc/Hz", font="Arial 10 bold")
             output328.place(in_=Frame2,x=520,y=40)
@@ -2136,6 +2763,8 @@ class MainGUI(Frame):
             
             self.entry329 = Entry(Frame2, width=6)
             self.entry329.place(in_=Frame2, x=470, y=70)
+            self.entry329.delete(0, END)
+            self.entry329.insert(0, temp_noise_array[213])
             
             output330 = ttk.Label(Frame2, text="dB", font="Arial 10 bold")
             output330.place(in_=Frame2,x=520,y=70)
@@ -2165,12 +2794,16 @@ class MainGUI(Frame):
             
             self.entry330 = Entry(Frame3, width=6)
             self.entry330.place(in_=Frame3, x=480, y=40)
-            
+            self.entry330.delete(0, END)
+            self.entry330.insert(0, temp_noise_array[214])           
+
             output331 = ttk.Label(Frame3, text="Phase Noise Floor FOM", font="Arial 10 bold")
             output331.place(in_=Frame3,x=10,y=70)
             
             self.entry331 = Entry(Frame3, width=6)
             self.entry331.place(in_=Frame3, x=180, y=70)
+            self.entry331.delete(0, END)
+            self.entry331.insert(0, temp_noise_array[215])
             
             output331 = ttk.Label(Frame3, text="dB/Hz", font="Arial 10 bold")
             output331.place(in_=Frame3,x=230,y=70)
@@ -2180,12 +2813,16 @@ class MainGUI(Frame):
             
             self.entry332 = Entry(Frame3, width=6)
             self.entry332.place(in_=Frame3, x=480, y=70)
+            self.entry332.delete(0, END)
+            self.entry332.insert(0, temp_noise_array[216])
             
             output333 = ttk.Label(Frame3, text="Flicker Noise FOM", font="Arial 10 bold")
             output333.place(in_=Frame3,x=10,y=100)
             
             self.entry333 = Entry(Frame3, width=6)
             self.entry333.place(in_=Frame3, x=480, y=100)
+            self.entry333.delete(0, END)
+            self.entry333.insert(0, temp_noise_array[217])
             
             output333 = ttk.Label(Frame3, text="dBc/Hz", font="Arial 10 bold")
             output333.place(in_=Frame3,x=525,y=100)
@@ -2195,6 +2832,8 @@ class MainGUI(Frame):
             
             self.entry334 = Entry(Frame3, width=6)
             self.entry334.place(in_=Frame3, x=480, y=190)
+            self.entry334.delete(0, END)
+            self.entry334.insert(0, temp_noise_array[218])
             
             output334 = ttk.Label(Frame3, text="dBm", font="Arial 10 bold")
             output334.place(in_=Frame3,x=525,y=190)
@@ -2204,10 +2843,15 @@ class MainGUI(Frame):
             
             self.entry335 = Entry(Frame3, width=6)
             self.entry335.place(in_=Frame3, x=480, y=220)
+            self.entry335.delete(0, END)
+            self.entry335.insert(0, temp_noise_array[219])
             
         def change_noise9():
             
-            change_noise()
+            global noise
+            global change_noise
+            global temp_noise_array
+            change_noise() 
             noise = 9
             
             Crystal_button.config(relief=RAISED)
@@ -2228,6 +2872,8 @@ class MainGUI(Frame):
             
             self.entry336 = Entry(Frame2, width=6)
             self.entry336.place(in_=Frame2, x=470, y=10)
+            self.entry336.delete(0, END)
+            self.entry336.insert(0, temp_noise_array[220])
             
             output336 = ttk.Label(Frame2, text="Hz", font="Arial 10 bold")
             output336.place(in_=Frame2,x=520,y=10)
@@ -3051,34 +3697,6 @@ class MainGUI(Frame):
 global filtertype
 global filterselect
 global input412
-#global apply_filter
-#global input413
-#global input414
-#global input415
-#global input416
-#global input417
-#global input418
-#global input419
-#global input420
-#global input421
-#global input422
-#global input423
-#global input424
-#global input425
-#global input426
-#global input427
-#global input428
-#global input429
-#global input430
-#global input431
-#global input432
-#global input433
-#global input434
-#global input435
-#global input436
-#global input437
-#global input438
-#global input439
 global VCO_Freq_Hz
 global PFD_Freq_Hz
 global TCXO_Freq_Hz
@@ -3091,11 +3709,37 @@ TCXO_Freq_Hz = "GHz"
 Desired_Band_Hz = "GHz"
 Start_Freq_Hz = "GHz"
 Stop_Freq_Hz = "Ghz"
-    
-array = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
-loadedvalues = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1] #52
-noise_array = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] #16
-temp_noise_array = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+
+array = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1    #Rows of 20
+        ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+        ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+loadedvalues = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+               ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+               ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1] #60
+noise_array = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+              ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+              ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+              ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+              ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+              ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+              ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+              ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+              ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+              ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+              ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+              ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] #240
+temp_noise_array = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+              ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+              ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+              ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+              ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+              ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+              ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+              ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+              ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+              ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+              ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+              ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] #240
 
 filtertype = 0
 filterselect = "Passive"
