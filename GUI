@@ -292,8 +292,8 @@ class MainGUI(Frame):
         filterType = ttk.Label(Frame2, text="Filter Type:", font="Arial 10 bold")
         filterType.place(in_= Frame2, x=7, y=44)
         
-        filterOrder = ttk.Label(Frame2, text="Filter Order:", font="Arial 10 bold")
-        filterOrder.place(in_= Frame2, x=7, y=70) 
+        filterOrderNum = ttk.Label(Frame2, text="Filter Order:", font="Arial 10 bold")
+        filterOrderNum.place(in_= Frame2, x=7, y=70) 
         
         self.label25 = ttk.Label(Frame2, text="C1", font="Arial 10 bold") #
         self.label25.place(in_= Frame2, x=7, y=100) 
@@ -313,11 +313,17 @@ class MainGUI(Frame):
         self.entry27.place(in_= Frame2, x=50, y=160)
         self.entry27.config(state='disabled')
         
-        self.label28 = ttk.Label(Frame2, text="L1", font="Arial 10 bold")
+        self.label28 = ttk.Label(Frame2, text="C4", font="Arial 10 bold")
         self.label28.place(in_= Frame2, x=7, y=190) 
         self.entry28 = Entry(Frame2, width=15)
         self.entry28.place(in_= Frame2, x=50, y=190)
         self.entry28.config(state='disabled')
+        
+        self.label29 = ttk.Label(Frame2, text="L1", font="Arial 10 bold")
+        self.label29.place(in_= Frame2, x=7, y=220) 
+        self.entry29 = Entry(Frame2, width=15)
+        self.entry29.place(in_= Frame2, x=50, y=220)
+        self.entry29.config(state='disabled')
 
         #label29 = ttk.Label(Frame2, text="C6", font="Arial 10 bold") #
         #label29.place(in_= Frame2, x=7, y=220) 
@@ -341,6 +347,12 @@ class MainGUI(Frame):
         self.entry32 = Entry(Frame2, width=15)
         self.entry32.place(in_= Frame2, x=210, y=160)
         self.entry32.config(state='disabled')
+        
+        self.label33 = ttk.Label(Frame2, text="R4", font="Arial 10 bold") #
+        self.label33.place(in_= Frame2, x=175, y=190) 
+        self.entry33 = Entry(Frame2, width=15)
+        self.entry33.place(in_= Frame2, x=210, y=190)
+        self.entry33.config(state='disabled')
 
         #label33 = ttk.Label(Frame2, text="L3", font="Arial 10 bold")
         #label33.place(in_= Frame2, x=175, y=190) 
@@ -357,6 +369,7 @@ class MainGUI(Frame):
                     
             global filtertype
             global filterselect
+            global filterorder
 
             if filtertype == 1:  #C1, C2, R2
                 filterselect = "Passive"                
@@ -372,8 +385,8 @@ class MainGUI(Frame):
                 self.label27.config(text="    ")     #Remove C3
                 self.entry27.place_forget()
                 
-                self.label28.config(text="    ")     #Remove L1
-                self.entry28.place_forget()
+                self.label29.config(text="    ")     #Remove L1
+                self.entry29.place_forget()
                 
                 self.label31 = ttk.Label(Frame2, text="R2", font="Arial 10 bold")
                 self.label31.place(in_= Frame2, x=175, y=130) 
@@ -386,6 +399,14 @@ class MainGUI(Frame):
                 self.label26 = ttk.Label(Frame2, text="C2", font="Arial 10 bold")
                 self.label26.place(in_= Frame2, x=7, y=130) 
                 self.entry26.place(in_= Frame2, x=50, y=130)
+                
+                #if self.filterorder == '3':
+                    
+                    #self.label28.config(text="    ")     #Remove C4
+                    #self.entry28.place_forget()
+                    
+                    #self.label33.config(text="    ")     #Remove L1
+                    #self.entry33.place_forget()
             
             elif filtertype == 2: #C1, R1, L1, C2
                 filterselect = "Butterworth"
@@ -413,17 +434,19 @@ class MainGUI(Frame):
                 self.label30.place(in_= Frame2, x=175, y=100) 
                 self.entry30.place(in_= Frame2, x=210, y=100)
         
-                self.label28 = ttk.Label(Frame2, text="L1", font="Arial 10 bold")
-                self.label28.place(in_= Frame2, x=7, y=190) 
-                self.entry28.place(in_= Frame2, x=50, y=190)
+                self.label29 = ttk.Label(Frame2, text="L1", font="Arial 10 bold")
+                self.label29.place(in_= Frame2, x=7, y=220) 
+                self.entry29.place(in_= Frame2, x=50, y=220)
         
             elif filtertype == 3:  #C1, C2, R2, C3, R3
+                global filterorder
+            
                 filterselect = "Active C"
                 filter_type=Label(root, text='Active C      ')
                 filter_type.place(in_= Frame2, x=80, y=44)
                 
-                self.label28.config(text="    ")     #Remove L1
-                self.entry28.place_forget()
+                #self.label28.config(text="    ")     #Remove C4
+                #self.entry28.place_forget()
                 
                 self.label30.config(text="    ")     #Remove R1
                 self.entry30.place_forget()
@@ -447,6 +470,39 @@ class MainGUI(Frame):
                 self.label27 = ttk.Label(Frame2, text="C3", font="Arial 10 bold") #
                 self.label27.place(in_= Frame2, x=7, y=160) 
                 self.entry27.place(in_= Frame2, x=50, y=160)
+                
+                print (filterorder)
+                
+                if filterorder == '3':
+                    
+                    filter_Order_Num=Label(root, text='3')
+                    filter_Order_Num.place(in_= Frame2, x=90, y=70) 
+                    
+                    self.label28.config(text="    ")     #Remove C4
+                    self.entry28.place_forget()
+                    
+                    self.label33.config(text="    ")     #Remove R4
+                    self.entry33.place_forget()
+                
+                elif filterorder == '4':
+                    
+                    filter_Order_Num=Label(root, text='4')
+                    filter_Order_Num.place(in_= Frame2, x=90, y=70)                     
+                    
+                    self.label28 = ttk.Label(Frame2, text="C4", font="Arial 10 bold") #
+                    self.label28.place(in_= Frame2, x=7, y=190) 
+                    self.entry28.place(in_= Frame2, x=50, y=190)
+                
+                    self.label33 = ttk.Label(Frame2, text="R4", font="Arial 10 bold") #
+                    self.label33.place(in_= Frame2, x=175, y=190) 
+                    self.entry33.place(in_= Frame2, x=210, y=190)
+                
+                else:
+                    self.label28.config(text="    ")     #Remove C4
+                    self.entry28.place_forget()
+                    
+                    self.label33.config(text="    ")     #Remove R4
+                    self.entry33.place_forget()
                         
             else:
                 filter_type=Label(root, text='None        ')
@@ -573,9 +629,10 @@ class MainGUI(Frame):
         dataPlot.get_tk_widget().grid(row=18, column=1, sticky=N+W+E+S, columnspan=23,rowspan=23)
         a.legend(loc='upper right', bbox_to_anchor=(1.1, 1.05),fancybox=True, shadow=True, ncol=1).draggable()
       
-        compute_button = Button(master, text="Compute", bg="white",font="Arial 10 bold", command=master.destroy)
+        compute_button = Button(master, text="Compute", bg="white",font="Arial 10 bold", command=stuff)
         compute_button.grid(row=41, column=48) 
 
+############################################################################################################
 
     def load(self):
         root = Toplevel(self.master)
@@ -655,8 +712,8 @@ class MainGUI(Frame):
             if not os.path.exists(f):
                 os.makedirs(f)
                 
-        def load_from_csv(self, name='test'):  #Not sure how to make this load the value selected
-            string = "%s.csv" % name
+        def load_from_csv():  #Not sure how to make this load the value selected
+            string = self.selected_file
             my_data = genfromtxt(string, delimiter=',') #dtype=str
             return my_data
         
@@ -664,7 +721,8 @@ class MainGUI(Frame):
             global loadedvalues
             global filtertype
             global filterbox
-            loadedvalues= load_from_csv(self.selected_file)
+            global noise_array
+            loadedvalues= load_from_csv()
             
             self.entry1.delete(0, END)
             self.entry1.insert(0, loadedvalues[0])
@@ -794,7 +852,15 @@ class MainGUI(Frame):
             self.input437 = loadedvalues[52]
             self.input438 = loadedvalues[53]
             self.input439 = loadedvalues[54]
-            
+            self.input440 = loadedvalues[55]
+            self.input441 = loadedvalues[56]
+            self.input442 = loadedvalues[57]
+            self.input443 = loadedvalues[58]
+            self.input444 = loadedvalues[59]
+            self.input445 = loadedvalues[60]                        
+            for x in range(0,219):
+                y = x+61
+                noise_array[x]= loadedvalues[y]
 
             filterbox()
             load_filterbox()
@@ -844,6 +910,7 @@ class MainGUI(Frame):
         #root = Toplevel(self.master)
         #root.geometry("400x400")
         global array
+        global noise_array
         
         def save_to_csv(array, name='test'):
             # load an array from given name .csv file into certain array
@@ -865,24 +932,27 @@ class MainGUI(Frame):
         array[8] = self.entry9.get()
         array[9] = self.entry10.get()
         #array[10] = self.drop1
-        if self.option_select1 == 'GHz':
+        temp_option_select=self.option_select1.get()
+        if temp_option_select == 'GHz':
             array[10] = 0
-        elif self.option_select1 == 'MHz':
+        elif temp_option_select == 'MHz':
             array[10] = 1
         else:
             array[10] = 2
         array[11] = self.entry12.get()
         array[12] = self.entry13.get()
         array[13] = self.entry14.get()
-        if self.option_select2 == 'GHz':
+        temp_option_select=self.option_select2.get()
+        if temp_option_select == 'GHz':
             array[14] = 0
-        elif self.option_select2 == 'MHz':
+        elif temp_option_select == 'MHz':
             array[14] = 1
         else:
             array[14] = 2
-        if self.option_select3 == 'GHz':
+        temp_option_select=self.option_select3.get()
+        if temp_option_select == 'GHz':
             array[15] = 0
-        elif self.option_select3 == 'MHz':
+        elif temp_option_select == 'MHz':
             array[15] = 1
         else:
             array[15] = 2
@@ -890,29 +960,35 @@ class MainGUI(Frame):
         array[17] = self.entry18.get()
         array[18] = self.entry19.get()
         array[19] = self.entry20.get()
-        if self.option_select4 == 'GHz':
+        temp_option_select=self.option_select4.get()
+        if temp_option_select == 'GHz':
             array[20] = 0
-        elif self.option_select4 == 'MHz':
+        elif temp_option_select == 'MHz':
             array[20] = 1
         else:
             array[20] = 2
-        if self.option_select5 == 'GHz':
+        temp_option_select=self.option_select5.get()
+        if temp_option_select == 'GHz':
             array[21] = 0
-        elif self.option_select5 == 'MHz':
+        elif temp_option_select == 'MHz':
             array[21] = 1
         else:
             array[21] = 2
         array[22] = self.entry23.get()
         array[23] = self.entry24.get()
-        if self.option_select6 == 'GHz':
+        #print(self.option_select6)
+        temp_option_select=self.option_select6.get()
+        if temp_option_select == 'GHz':
             array[24] = 0
-        elif self.option_select6 == 'MHz':
+        elif temp_option_select == 'MHz':
             array[24] = 1
         else:
-            array[24] = 2
-        if self.option_select10 == "Frequency Step":
+            array[24] = 2    
+        #print(array[24])
+        temp_option_select=self.option_select10.get()
+        if temp_option_select == "Frequency Step":
             array[25] = 0
-        elif self.option_select10 == "Frequency Sweep":
+        elif temp_option_select == "Frequency Sweep":
             array[25] = 1
         else:
             array[25] = 2
@@ -945,6 +1021,16 @@ class MainGUI(Frame):
         array[52] = self.input437
         array[53] = self.input438
         array[54] = self.input439
+        array[55] = self.input440
+        array[56] = self.input441
+        array[57] = self.input442
+        array[58] = self.input443
+        array[59] = self.input444
+        array[60] = self.input445
+        for x in range(0,219):
+            y = x+61
+            array[y] = noise_array[x]
+            
         
         
         # a window pop up asking: pls input a new name
@@ -952,9 +1038,9 @@ class MainGUI(Frame):
         # use save_to_csv to save current input into a new csv file
         if var is not None:
             save_to_csv(array, var)
-        
-        
-        
+
+############################################################################################################
+            
     def new_window1(self):
         root = Toplevel(self.master)
         root.geometry("1000x550")
@@ -3009,7 +3095,9 @@ class MainGUI(Frame):
   #  def OptionsMenu_SelectionEvent(event):
   #      label50 = ttk.Label(root, text="3rd and 4th Pole Calculations", font="Arial 12 bold")
   #      label50.grid(row=10, column=1,columnspan=1, sticky=W)
-        
+
+############################################################################################################
+
     def filter_design(self):
         root = Toplevel(self.master)
         root.geometry("750x600")
@@ -3023,29 +3111,6 @@ class MainGUI(Frame):
             global input414
             global input415
             global input416
-            #global input417
-            #global input418
-            #global input419
-            #global input420
-            #global input421
-            #global input422
-            #global input423
-            #global input424
-            #global input425
-            #global input426
-            #global input427
-            #global input428
-            #global input429
-            #global input430
-            #global input431
-            #global input432
-            #global input433
-            #global input434
-            #global input435
-            #global input436
-            #global input437
-            #global input438
-            #global input439
             
             input412 = entry412.get()
             #input413 = entry413.get()
@@ -3072,9 +3137,15 @@ class MainGUI(Frame):
             #input434 = entry434.get()
             self.input435 = entry435.get()
             self.input436 = entry436.get()
-            self.input437 = entry437.get()
-            self.input438 = entry438.get()
-            self.input439 = entry439.get()
+            #self.input437 = entry437.get()
+            #self.input438 = entry438.get()
+            #self.input439 = entry439.get()
+            self.input440 = entry440.get()
+            self.input441 = entry441.get()
+            self.input442 = entry442.get()
+            self.input443 = entry443.get()
+            self.input444 = entry444.get()
+            self.input445 = entry445.get()
             
             filterbox()     #prepares the filter box for data being sent back
             
@@ -3250,6 +3321,8 @@ class MainGUI(Frame):
             global filterselect
             global filtertype
             global chosen_option
+            global filterorder
+            
             chosen_option = option_filtertype.get()
             
             if chosen_option == 'Passive':
@@ -3291,11 +3364,11 @@ class MainGUI(Frame):
                 
                 entry436.config(state='disabled')        #C4
                 
-                entry437.config(state='disabled')        #L5
+                #entry437.config(state='disabled')        #L5
                 
-                entry438.config(state='disabled')        #C6
+                #entry438.config(state='disabled')        #C6
                
-                entry439.config(state='disabled')        #L7
+                #entry439.config(state='disabled')        #L7
                 
             elif chosen_option =='Butterworth':
                 pic_option = pic2
@@ -3336,11 +3409,11 @@ class MainGUI(Frame):
                 
                 entry436.config(state='disabled')            #C4
                 
-                entry437.config(state='disabled')            #L5 
+                #entry437.config(state='disabled')            #L5 
                 
-                entry438.config(state='disabled')            #C6
+                #entry438.config(state='disabled')            #C6
                
-                entry439.config(state='disabled')            #L7
+                #entry439.config(state='disabled')            #L7
                 
             else:
                 pic_option = pic3
@@ -3380,11 +3453,22 @@ class MainGUI(Frame):
                 
                 entry436.config(state='disabled')            #C4
                 
-                entry437.config(state='disabled')            #L5 
+                #entry437.config(state='disabled')            #L5 
                 
-                entry438.config(state='disabled')            #C6
+                #entry438.config(state='disabled')            #C6
                
-                entry439.config(state='disabled')            #L7
+                #entry439.config(state='disabled')            #L7
+               
+        def order_number(self):
+            global filterorder
+            
+            filterorder = filter_order.get()
+            if filterorder == '3':
+                entry435.config(state='disabled')
+                entry436.config(state='disabled')
+            else:
+                entry435.config(state='normal')
+                entry436.config(state='normal')
         
         pic1 = PhotoImage(file='C:/Users/Eric/Desktop/Senior D/RC.gif')
         pic2 = PhotoImage(file='C:/Users/Eric/Desktop/Senior D/Butter.gif')
@@ -3411,10 +3495,11 @@ class MainGUI(Frame):
         output1 = ttk.Label(Frame1, text="Filter Order", font="Arial 10 bold")
         output1.place(in_=Frame1,x=10,y=60)
         
-        paramMenu=['2','3','4']
-        option_select=StringVar(root)
-        option_select.set("Select")
-        drop4=OptionMenu(root,option_select,*paramMenu)
+        paramMenu=['3','4']
+        filter_order=StringVar(root)
+        filter_order.set(filterorder)
+        #option_select.set("Select")
+        drop4=OptionMenu(root,filter_order,*paramMenu, command=order_number)
         drop4.place(in_=Frame1,x=250,y=60)   
         drop4.config(font=('Arial 7 bold'),bg='white',width=8)
         drop4['menu'].config(font=('Arial 7 bold'),bg='white')
@@ -3540,34 +3625,34 @@ class MainGUI(Frame):
         entry432.place(in_=Frame3, x=180, y=360)
         #entry432.config(state='disabled')
         
-        output1 = ttk.Label(Frame3, text="L3", font="Arial 10 bold")
+        output1 = ttk.Label(Frame3, text="C4", font="Arial 10 bold")
         output1.place(in_=Frame3,x=140,y=380)        
         entry435 = Entry(Frame3, width=5)
         entry435.place(in_=Frame3, x=180, y=380)
         #entry435.config(state='disabled')
         
-        output1 = ttk.Label(Frame3, text="C4", font="Arial 10 bold")
+        output1 = ttk.Label(Frame3, text="R4", font="Arial 10 bold")
         output1.place(in_=Frame3,x=140,y=400)        
         entry436 = Entry(Frame3, width=5)
         entry436.place(in_=Frame3, x=180, y=400)
         #entry436.config(state='disabled')
         
-        output1 = ttk.Label(Frame3, text="L5", font="Arial 10 bold")
-        output1.place(in_=Frame3,x=140,y=420)        
-        entry437 = Entry(Frame3, width=5)
-        entry437.place(in_=Frame3, x=180, y=420)
+        #output1 = ttk.Label(Frame3, text="L5", font="Arial 10 bold")
+        #output1.place(in_=Frame3,x=140,y=420)        
+        #entry437 = Entry(Frame3, width=5)
+        #entry437.place(in_=Frame3, x=180, y=420)
         #entry437.config(state='disabled')
         
-        output1 = ttk.Label(Frame3, text="C6", font="Arial 10 bold")
-        output1.place(in_=Frame3,x=140,y=440)        
-        entry438 = Entry(Frame3, width=5)
-        entry438.place(in_=Frame3, x=180, y=440)
+        #output1 = ttk.Label(Frame3, text="C6", font="Arial 10 bold")
+        #output1.place(in_=Frame3,x=140,y=440)        
+        #entry438 = Entry(Frame3, width=5)
+        #entry438.place(in_=Frame3, x=180, y=440)
         #entry438.config(state='disabled')
         
-        output1 = ttk.Label(Frame3, text="L7", font="Arial 10 bold")
-        output1.place(in_=Frame3,x=140,y=460)        
-        entry439 = Entry(Frame3, width=5)
-        entry439.place(in_=Frame3, x=180, y=460)
+        #output1 = ttk.Label(Frame3, text="L7", font="Arial 10 bold")
+        #output1.place(in_=Frame3,x=140,y=460)        
+        #entry439 = Entry(Frame3, width=5)
+        #entry439.place(in_=Frame3, x=180, y=460)
         #entry439.config(state='disabled')
         
         output1 = ttk.Label(Frame4, text="Filter Capacitor Ratio To C2", font="Arial 10 bold")
@@ -3663,12 +3748,24 @@ class MainGUI(Frame):
         entry435.insert(0, self.input435)
         entry436.delete(0, END)
         entry436.insert(0, self.input436)
-        entry437.delete(0, END)
-        entry437.insert(0, self.input437)
-        entry438.delete(0, END)
-        entry438.insert(0, self.input438)
-        entry439.delete(0, END)
-        entry439.insert(0, self.input439)
+        #entry437.delete(0, END)
+        #entry437.insert(0, self.input437)
+        #entry438.delete(0, END)
+        #entry438.insert(0, self.input438)
+        #entry439.delete(0, END)
+        #entry439.insert(0, self.input439)
+        entry440.delete(0, END)
+        entry440.insert(0, self.input440)
+        entry441.delete(0, END)
+        entry441.insert(0, self.input441)
+        entry442.delete(0, END)
+        entry442.insert(0, self.input442)
+        entry443.delete(0, END)
+        entry443.insert(0, self.input443)
+        entry444.delete(0, END)
+        entry444.insert(0, self.input444)
+        entry445.delete(0, END)
+        entry445.insert(0, self.input445)
     
     input417 = 0
     input418 = 0
@@ -3692,7 +3789,18 @@ class MainGUI(Frame):
     input436 = 0
     input437 = 0
     input438 = 0
-    input439 = 0
+    input439 = 0    
+    input440 = 0
+    input441 = 0
+    input442 = 0
+    input443 = 0
+    input444 = 0
+    input445 = 0
+    
+def stuff():
+    input1=0
+        
+############################################################################################################
     
 global filtertype
 global filterselect
@@ -3702,6 +3810,7 @@ global PFD_Freq_Hz
 global TCXO_Freq_Hz
 global Desired_Band_Hz
 global Start_Freq_Hz
+global filterorder
 
 VCO_Freq_Hz = "MHz"
 PFD_Freq_Hz = "GHz"
@@ -3712,10 +3821,34 @@ Stop_Freq_Hz = "Ghz"
 
 array = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1    #Rows of 20
         ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+        ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+        ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+        ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+        ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+        ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+        ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+        ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+        ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+        ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+        ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+        ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
         ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
-loadedvalues = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-               ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-               ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1] #60
+        
+loadedvalues = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1    #300
+        ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+        ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+        ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+        ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+        ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+        ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+        ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+        ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+        ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+        ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+        ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+        ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+        ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        
 noise_array = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
               ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
               ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
@@ -3728,6 +3861,7 @@ noise_array = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
               ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
               ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
               ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] #240
+              
 temp_noise_array = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
               ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
               ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
@@ -3743,6 +3877,7 @@ temp_noise_array = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 
 filtertype = 0
 filterselect = "Passive"
+filterorder = 3
 input412 = 0
 #input413 = 0
 input414 = 0
