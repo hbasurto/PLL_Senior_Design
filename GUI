@@ -11,7 +11,9 @@ from tkinter import messagebox
 import tkinter.simpledialog
 import numpy as np
 from numpy import exp, sqrt, log, log10, absolute, genfromtxt
+from math import sin, cos, pi
 import warnings
+
 
 warnings.filterwarnings("ignore")
 
@@ -471,8 +473,6 @@ class MainGUI(Frame):
                 self.label27.place(in_= Frame2, x=7, y=160) 
                 self.entry27.place(in_= Frame2, x=50, y=160)
                 
-                print (filterorder)
-                
                 if filterorder == '3':
                     
                     filter_Order_Num=Label(root, text='3')
@@ -537,15 +537,15 @@ class MainGUI(Frame):
         label43 = ttk.Label(Frame4, text="Select Plot Type", font="Arial 10 bold")
         label43.place(in_= Frame4, x=60, y=100)
         
-        plotType=['Open Loop Response','Close Loop Response','Loop Filter Response','Reference Phase Noise',
+        plotoption=['Open Loop Response','Close Loop Response','Loop Filter Response','Reference Phase Noise',
         'Phase Detector Noise','VCO Phase Noise','Closed Loop Modulated Filter Noise',
         'N Divider Phase Noise','Delta Sigma Noise','Open Loop Phase Noise Overalay',
         'Composite Phase Noise','All Noise Contributors','Time Domain Response',
         'Frequency Error Response','Time Domain Phase Settling','Percentage Noise Contributions',
         'High-Passed Phase Noise']
-        option_select=StringVar(root)
-        option_select.set("Open Loop Response")
-        drop2=OptionMenu(root,option_select,*plotType)
+        self.plotType=StringVar(root)
+        self.plotType.set("Open Loop Response")
+        drop2=OptionMenu(root,self.plotType,*plotoption)
         drop2.place(in_= Frame4, x=7, y=125)  
         drop2.config(font=('Arial 10 bold'),bg='white',width=25)
         drop2['menu'].config(font=('Arial 10 bold'),bg='white')
@@ -616,21 +616,742 @@ class MainGUI(Frame):
         
         f = Figure(figsize=(0,0))
         a = f.add_subplot(111)
-        a.set_xscale('log')
+        #a.set_xscale('log')
         a.grid(b=True, which='minor', color='gray', linestyle='--')
         t = [10000,1000,100,10,1]
         s = [40,20,10,5,3 ]
-        a.set_title ("My Plot Title", fontsize=10)
-        a.set_ylabel("Y-Axis Title", fontsize=10)
+        a.set_title ("Select Plot", fontsize=10)
+        a.set_ylabel("Y-Axis", fontsize=10)
         a.set_xlabel("Frequency", fontsize=10)
-        a.plot(t,s, lw=1, color = 'blue', label ="my line")
+        #a.plot(t,s, lw=1, color = 'blue', label ="my line")
         dataPlot = FigureCanvasTkAgg(f, self.master)
         dataPlot.show()
         dataPlot.get_tk_widget().grid(row=18, column=1, sticky=N+W+E+S, columnspan=23,rowspan=23)
-        a.legend(loc='upper right', bbox_to_anchor=(1.1, 1.05),fancybox=True, shadow=True, ncol=1).draggable()
+        #a.legend(loc='upper right', bbox_to_anchor=(1.1, 1.05),fancybox=True, shadow=True, ncol=1).draggable()
       
-        compute_button = Button(master, text="Compute", bg="white",font="Arial 10 bold", command=stuff)
+        compute_button = Button(master, text="Compute", bg="white",font="Arial 10 bold", command=self.plot)
         compute_button.grid(row=41, column=48) 
+
+############################################################################################################
+
+    def plot(self):
+        self.plot_type = self.plotType.get()
+        if self.plot_type == 'Open Loop Response':
+            
+            self.f = Figure(figsize=(0,0))
+            self.a = self.f.add_subplot(111)
+            #self.a.set_xscale('log')
+            self.a.grid(b=True, which='minor', color='gray', linestyle='--')
+            
+            self.x_axis_min = self.entry45.get()        #get axis limits and set
+            self.x_axis_max = self.entry46.get()
+            self.y_axis_min = self.entry47.get()
+            self.y_axis_max = self.entry48.get()
+            
+            #x = [self.x_axis_min, self.x_axis_min]
+            #y = [self.y_axis_min, self.y_axis_min]
+            #self.a.plot(x,y, lw=1, color = 'black')
+            
+            #x = [self.x_axis_max, self.x_axis_max]
+            #y = [self.y_axis_max, self.y_axis_max]
+            #self.a.plot(x,y, lw=1, color = 'black')            
+            
+            x = [10000,1000,100,10,1]
+            y = [40,20,10,5,3 ]
+            
+            if (self.y_axis_max == '') or (self.y_axis_min == ''):
+                self.a.set_ylim(0, 10)
+            else:
+                self.a.set_ylim(float(self.y_axis_min),float(self.y_axis_max))
+            
+            if (self.x_axis_max == '') or (self.x_axis_min == ''):
+                self.a.set_xlim(0, 10)
+            else:                   
+                self.a.set_xlim(float(self.x_axis_min),float(self.x_axis_max))
+            
+            self.a.set_title ("Open Loop Response", fontsize=10)
+            self.a.set_ylabel("dB", fontsize=10)
+            self.a.set_xlabel("Frequency", fontsize=10)
+            self.a.plot(x, y, lw=1, color = 'blue', label ="Results")
+            dataPlot = FigureCanvasTkAgg(self.f, self.master)
+            dataPlot.show()
+            dataPlot.get_tk_widget().grid(row=18, column=1, sticky=N+W+E+S, columnspan=23,rowspan=23)
+            self.a.legend(loc='upper right', bbox_to_anchor=(1.1, 1.05),fancybox=True, shadow=True, ncol=1).draggable()
+        
+        elif self.plot_type == 'Close Loop Response':
+            
+            self.f = Figure(figsize=(0,0))
+            self.a = self.f.add_subplot(111)
+            #self.a.set_xscale('log')
+            self.a.grid(b=True, which='minor', color='gray', linestyle='--')
+            
+            self.x_axis_min = self.entry45.get()        #get axis limits and set
+            self.x_axis_max = self.entry46.get()
+            self.y_axis_min = self.entry47.get()
+            self.y_axis_max = self.entry48.get()
+            
+            #x = [self.x_axis_min, self.x_axis_min]
+            #y = [self.y_axis_min, self.y_axis_min]
+            #self.a.plot(x,y, lw=1, color = 'black')
+            
+            #x = [self.x_axis_max, self.x_axis_max]
+            #y = [self.y_axis_max, self.y_axis_max]
+            #self.a.plot(x,y, lw=1, color = 'black')            
+            
+            x = [x*2*pi/50 for x in range(51)]
+            y = [sin(t) for t in x]
+            
+            if (self.y_axis_max == '') or (self.y_axis_min == ''):
+                self.a.set_ylim(-1.1, 1.1)
+            else:
+                self.a.set_ylim(float(self.y_axis_min),float(self.y_axis_max))
+            
+            if (self.x_axis_max == '') or (self.x_axis_min == ''):
+                self.a.set_xlim(0, 2*pi)
+            else:                   
+                self.a.set_xlim(float(self.x_axis_min),float(self.x_axis_max))
+            
+            self.a.set_title ("Close Loop Response", fontsize=10)
+            self.a.set_ylabel("dB", fontsize=10)
+            self.a.set_xlabel("Frequency", fontsize=10)
+            self.a.plot(x,y, lw=1, color = 'blue', label ="Results")
+            dataPlot = FigureCanvasTkAgg(self.f, self.master)
+            dataPlot.show()
+            dataPlot.get_tk_widget().grid(row=18, column=1, sticky=N+W+E+S, columnspan=23,rowspan=23)
+            self.a.legend(loc='upper right', bbox_to_anchor=(1.1, 1.05),fancybox=True, shadow=True, ncol=1).draggable()
+            
+        elif self.plot_type == 'Loop Filter Response':
+            
+            self.f = Figure(figsize=(0,0))
+            self.a = self.f.add_subplot(111)
+            #self.a.set_xscale('log')
+            self.a.grid(b=True, which='minor', color='gray', linestyle='--')
+            
+            self.x_axis_min = self.entry45.get()        #get axis limits and set
+            self.x_axis_max = self.entry46.get()
+            self.y_axis_min = self.entry47.get()
+            self.y_axis_max = self.entry48.get()
+            
+            #x = [self.x_axis_min, self.x_axis_min]
+            #y = [self.y_axis_min, self.y_axis_min]
+            #self.a.plot(x,y, lw=1, color = 'black')
+            
+            #x = [self.x_axis_max, self.x_axis_max]
+            #y = [self.y_axis_max, self.y_axis_max]
+            #self.a.plot(x,y, lw=1, color = 'black')            
+            
+            x = [10000,1000,100,10,1]
+            y = [40,20,10,5,3 ]
+            
+            if (self.y_axis_max == '') or (self.y_axis_min == ''):
+                self.a.set_ylim(0, 10)
+            else:
+                self.a.set_ylim(float(self.y_axis_min),float(self.y_axis_max))
+            
+            if (self.x_axis_max == '') or (self.x_axis_min == ''):
+                self.a.set_xlim(0, 10)
+            else:                   
+                self.a.set_xlim(float(self.x_axis_min),float(self.x_axis_max))
+            
+            self.a.set_title ("Loop Filter Response", fontsize=10)
+            self.a.set_ylabel("dB", fontsize=10)
+            self.a.set_xlabel("Frequency", fontsize=10)
+            self.a.plot(x,y, lw=1, color = 'blue', label ="Results")
+            dataPlot = FigureCanvasTkAgg(self.f, self.master)
+            dataPlot.show()
+            dataPlot.get_tk_widget().grid(row=18, column=1, sticky=N+W+E+S, columnspan=23,rowspan=23)
+            self.a.legend(loc='upper right', bbox_to_anchor=(1.1, 1.05),fancybox=True, shadow=True, ncol=1).draggable()
+            
+        elif self.plot_type == 'Reference Phase Noise':
+            
+            self.f = Figure(figsize=(0,0))
+            self.a = self.f.add_subplot(111)
+            #self.a.set_xscale('log')
+            self.a.grid(b=True, which='minor', color='gray', linestyle='--')
+            
+            self.x_axis_min = self.entry45.get()        #get axis limits and set
+            self.x_axis_max = self.entry46.get()
+            self.y_axis_min = self.entry47.get()
+            self.y_axis_max = self.entry48.get()
+            
+            #x = [self.x_axis_min, self.x_axis_min]
+            #y = [self.y_axis_min, self.y_axis_min]
+            #self.a.plot(x,y, lw=1, color = 'black')
+            
+            #x = [self.x_axis_max, self.x_axis_max]
+            #y = [self.y_axis_max, self.y_axis_max]
+            #self.a.plot(x,y, lw=1, color = 'black')            
+            
+            x = [10000,1000,100,10,1]
+            y = [40,20,10,5,3 ]
+            
+            if (self.y_axis_max == '') or (self.y_axis_min == ''):
+                self.a.set_ylim(0, 10)
+            else:
+                self.a.set_ylim(float(self.y_axis_min),float(self.y_axis_max))
+            
+            if (self.x_axis_max == '') or (self.x_axis_min == ''):
+                self.a.set_xlim(0, 10)
+            else:                   
+                self.a.set_xlim(float(self.x_axis_min),float(self.x_axis_max))
+            
+            self.a.set_title ("Reference Phase Noise", fontsize=10)
+            self.a.set_ylabel("dB", fontsize=10)
+            self.a.set_xlabel("Frequency", fontsize=10)
+            self.a.plot(x,y, lw=1, color = 'blue', label ="Results")
+            dataPlot = FigureCanvasTkAgg(self.f, self.master)
+            dataPlot.show()
+            dataPlot.get_tk_widget().grid(row=18, column=1, sticky=N+W+E+S, columnspan=23,rowspan=23)
+            self.a.legend(loc='upper right', bbox_to_anchor=(1.1, 1.05),fancybox=True, shadow=True, ncol=1).draggable()
+            
+        elif self.plot_type == 'Phase Detector Noise':
+            
+            self.f = Figure(figsize=(0,0))
+            self.a = self.f.add_subplot(111)
+            #self.a.set_xscale('log')
+            self.a.grid(b=True, which='minor', color='gray', linestyle='--')
+            
+            self.x_axis_min = self.entry45.get()        #get axis limits and set
+            self.x_axis_max = self.entry46.get()
+            self.y_axis_min = self.entry47.get()
+            self.y_axis_max = self.entry48.get()
+            
+            #x = [self.x_axis_min, self.x_axis_min]
+            #y = [self.y_axis_min, self.y_axis_min]
+            #self.a.plot(x,y, lw=1, color = 'black')
+            
+            #x = [self.x_axis_max, self.x_axis_max]
+            #y = [self.y_axis_max, self.y_axis_max]
+            #self.a.plot(x,y, lw=1, color = 'black')            
+            
+            x = [10000,1000,100,10,1]
+            y = [40,20,10,5,3 ]
+            
+            if (self.y_axis_max == '') or (self.y_axis_min == ''):
+                self.a.set_ylim(0, 10)
+            else:
+                self.a.set_ylim(float(self.y_axis_min),float(self.y_axis_max))
+            
+            if (self.x_axis_max == '') or (self.x_axis_min == ''):
+                self.a.set_xlim(0, 10)
+            else:                   
+                self.a.set_xlim(float(self.x_axis_min),float(self.x_axis_max))
+            
+            self.a.set_title ("Phase Detector Noise", fontsize=10)
+            self.a.set_ylabel("dB", fontsize=10)
+            self.a.set_xlabel("Frequency", fontsize=10)
+            self.a.plot(x,y, lw=1, color = 'blue', label ="Results")
+            dataPlot = FigureCanvasTkAgg(self.f, self.master)
+            dataPlot.show()
+            dataPlot.get_tk_widget().grid(row=18, column=1, sticky=N+W+E+S, columnspan=23,rowspan=23)
+            self.a.legend(loc='upper right', bbox_to_anchor=(1.1, 1.05),fancybox=True, shadow=True, ncol=1).draggable()
+            
+        elif self.plot_type == 'VCO Phase Noise':
+            
+            self.f = Figure(figsize=(0,0))
+            self.a = self.f.add_subplot(111)
+            #self.a.set_xscale('log')
+            self.a.grid(b=True, which='minor', color='gray', linestyle='--')
+            
+            self.x_axis_min = self.entry45.get()        #get axis limits and set
+            self.x_axis_max = self.entry46.get()
+            self.y_axis_min = self.entry47.get()
+            self.y_axis_max = self.entry48.get()
+            
+            #x = [self.x_axis_min, self.x_axis_min]
+            #y = [self.y_axis_min, self.y_axis_min]
+            #self.a.plot(x,y, lw=1, color = 'black')
+            
+            #x = [self.x_axis_max, self.x_axis_max]
+            #y = [self.y_axis_max, self.y_axis_max]
+            #self.a.plot(x,y, lw=1, color = 'black')            
+            
+            x = [10000,1000,100,10,1]
+            y = [40,20,10,5,3 ]
+            
+            if (self.y_axis_max == '') or (self.y_axis_min == ''):
+                self.a.set_ylim(0, 10)
+            else:
+                self.a.set_ylim(float(self.y_axis_min),float(self.y_axis_max))
+            
+            if (self.x_axis_max == '') or (self.x_axis_min == ''):
+                self.a.set_xlim(0, 10)
+            else:                   
+                self.a.set_xlim(float(self.x_axis_min),float(self.x_axis_max))
+            
+            self.a.set_title ("VCO Phase Noise", fontsize=10)
+            self.a.set_ylabel("dB", fontsize=10)
+            self.a.set_xlabel("Frequency", fontsize=10)
+            self.a.plot(x,y, lw=1, color = 'blue', label ="Results")
+            dataPlot = FigureCanvasTkAgg(self.f, self.master)
+            dataPlot.show()
+            dataPlot.get_tk_widget().grid(row=18, column=1, sticky=N+W+E+S, columnspan=23,rowspan=23)
+            self.a.legend(loc='upper right', bbox_to_anchor=(1.1, 1.05),fancybox=True, shadow=True, ncol=1).draggable()
+            
+        elif self.plot_type == 'Closed Loop Modulated Filter Noise':
+            
+            self.f = Figure(figsize=(0,0))
+            self.a = self.f.add_subplot(111)
+            #self.a.set_xscale('log')
+            self.a.grid(b=True, which='minor', color='gray', linestyle='--')
+            
+            self.x_axis_min = self.entry45.get()        #get axis limits and set
+            self.x_axis_max = self.entry46.get()
+            self.y_axis_min = self.entry47.get()
+            self.y_axis_max = self.entry48.get()
+            
+            #x = [self.x_axis_min, self.x_axis_min]
+            #y = [self.y_axis_min, self.y_axis_min]
+            #self.a.plot(x,y, lw=1, color = 'black')
+            
+            #x = [self.x_axis_max, self.x_axis_max]
+            #y = [self.y_axis_max, self.y_axis_max]
+            #self.a.plot(x,y, lw=1, color = 'black')            
+            
+            x = [10000,1000,100,10,1]
+            y = [40,20,10,5,3 ]
+            
+            if (self.y_axis_max == '') or (self.y_axis_min == ''):
+                self.a.set_ylim(0, 10)
+            else:
+                self.a.set_ylim(float(self.y_axis_min),float(self.y_axis_max))
+            
+            if (self.x_axis_max == '') or (self.x_axis_min == ''):
+                self.a.set_xlim(0, 10)
+            else:                   
+                self.a.set_xlim(float(self.x_axis_min),float(self.x_axis_max))
+            
+            self.a.set_title ("Closed Loop Modulated Filter Noise", fontsize=10)
+            self.a.set_ylabel("dB", fontsize=10)
+            self.a.set_xlabel("Frequency", fontsize=10)
+            self.a.plot(x,y, lw=1, color = 'blue', label ="Results")
+            dataPlot = FigureCanvasTkAgg(self.f, self.master)
+            dataPlot.show()
+            dataPlot.get_tk_widget().grid(row=18, column=1, sticky=N+W+E+S, columnspan=23,rowspan=23)
+            self.a.legend(loc='upper right', bbox_to_anchor=(1.1, 1.05),fancybox=True, shadow=True, ncol=1).draggable()
+            
+        elif self.plot_type == 'N Divider Phase Noise':
+            
+            self.f = Figure(figsize=(0,0))
+            self.a = self.f.add_subplot(111)
+            #self.a.set_xscale('log')
+            self.a.grid(b=True, which='minor', color='gray', linestyle='--')
+            
+            self.x_axis_min = self.entry45.get()        #get axis limits and set
+            self.x_axis_max = self.entry46.get()
+            self.y_axis_min = self.entry47.get()
+            self.y_axis_max = self.entry48.get()
+            
+            #x = [self.x_axis_min, self.x_axis_min]
+            #y = [self.y_axis_min, self.y_axis_min]
+            #self.a.plot(x,y, lw=1, color = 'black')
+            
+            #x = [self.x_axis_max, self.x_axis_max]
+            #y = [self.y_axis_max, self.y_axis_max]
+            #self.a.plot(x,y, lw=1, color = 'black')            
+            
+            x = [10000,1000,100,10,1]
+            y = [40,20,10,5,3 ]
+            
+            if (self.y_axis_max == '') or (self.y_axis_min == ''):
+                self.a.set_ylim(0, 10)
+            else:
+                self.a.set_ylim(float(self.y_axis_min),float(self.y_axis_max))
+            
+            if (self.x_axis_max == '') or (self.x_axis_min == ''):
+                self.a.set_xlim(0, 10)
+            else:                   
+                self.a.set_xlim(float(self.x_axis_min),float(self.x_axis_max))
+            
+            self.a.set_title ("N Divider Phase Noise", fontsize=10)
+            self.a.set_ylabel("dB", fontsize=10)
+            self.a.set_xlabel("Frequency", fontsize=10)
+            self.a.plot(x,y, lw=1, color = 'blue', label ="Results")
+            dataPlot = FigureCanvasTkAgg(self.f, self.master)
+            dataPlot.show()
+            dataPlot.get_tk_widget().grid(row=18, column=1, sticky=N+W+E+S, columnspan=23,rowspan=23)
+            self.a.legend(loc='upper right', bbox_to_anchor=(1.1, 1.05),fancybox=True, shadow=True, ncol=1).draggable()
+            
+        elif self.plot_type == 'Delta Sigma Noise':
+            
+            self.f = Figure(figsize=(0,0))
+            self.a = self.f.add_subplot(111)
+            #self.a.set_xscale('log')
+            self.a.grid(b=True, which='minor', color='gray', linestyle='--')
+            
+            self.x_axis_min = self.entry45.get()        #get axis limits and set
+            self.x_axis_max = self.entry46.get()
+            self.y_axis_min = self.entry47.get()
+            self.y_axis_max = self.entry48.get()
+            
+            #x = [self.x_axis_min, self.x_axis_min]
+            #y = [self.y_axis_min, self.y_axis_min]
+            #self.a.plot(x,y, lw=1, color = 'black')
+            
+            #x = [self.x_axis_max, self.x_axis_max]
+            #y = [self.y_axis_max, self.y_axis_max]
+            #self.a.plot(x,y, lw=1, color = 'black')            
+            
+            x = [10000,1000,100,10,1]
+            y = [40,20,10,5,3 ]
+            
+            if (self.y_axis_max == '') or (self.y_axis_min == ''):
+                self.a.set_ylim(0, 10)
+            else:
+                self.a.set_ylim(float(self.y_axis_min),float(self.y_axis_max))
+            
+            if (self.x_axis_max == '') or (self.x_axis_min == ''):
+                self.a.set_xlim(0, 10)
+            else:                   
+                self.a.set_xlim(float(self.x_axis_min),float(self.x_axis_max))
+            
+            self.a.set_title ("Delta Sigma Noise", fontsize=10)
+            self.a.set_ylabel("dB", fontsize=10)
+            self.a.set_xlabel("Frequency", fontsize=10)
+            self.a.plot(x,y, lw=1, color = 'blue', label ="Results")
+            dataPlot = FigureCanvasTkAgg(self.f, self.master)
+            dataPlot.show()
+            dataPlot.get_tk_widget().grid(row=18, column=1, sticky=N+W+E+S, columnspan=23,rowspan=23)
+            self.a.legend(loc='upper right', bbox_to_anchor=(1.1, 1.05),fancybox=True, shadow=True, ncol=1).draggable()
+            
+        elif self.plot_type == 'Open Loop Phase Noise Overalay':
+            
+            self.f = Figure(figsize=(0,0))
+            self.a = self.f.add_subplot(111)
+            #self.a.set_xscale('log')
+            self.a.grid(b=True, which='minor', color='gray', linestyle='--')
+            
+            self.x_axis_min = self.entry45.get()        #get axis limits and set
+            self.x_axis_max = self.entry46.get()
+            self.y_axis_min = self.entry47.get()
+            self.y_axis_max = self.entry48.get()
+            
+            #x = [self.x_axis_min, self.x_axis_min]
+            #y = [self.y_axis_min, self.y_axis_min]
+            #self.a.plot(x,y, lw=1, color = 'black')
+            
+            #x = [self.x_axis_max, self.x_axis_max]
+            #y = [self.y_axis_max, self.y_axis_max]
+            #self.a.plot(x,y, lw=1, color = 'black')            
+            
+            x = [10000,1000,100,10,1]
+            y = [40,20,10,5,3 ]
+            
+            if (self.y_axis_max == '') or (self.y_axis_min == ''):
+                self.a.set_ylim(0, 10)
+            else:
+                self.a.set_ylim(float(self.y_axis_min),float(self.y_axis_max))
+            
+            if (self.x_axis_max == '') or (self.x_axis_min == ''):
+                self.a.set_xlim(0, 10)
+            else:                   
+                self.a.set_xlim(float(self.x_axis_min),float(self.x_axis_max))
+            
+            self.a.set_title ("Open Loop Phase Noise Overalay", fontsize=10)
+            self.a.set_ylabel("dB", fontsize=10)
+            self.a.set_xlabel("Frequency", fontsize=10)
+            self.a.plot(x,y, lw=1, color = 'blue', label ="Results")
+            dataPlot = FigureCanvasTkAgg(self.f, self.master)
+            dataPlot.show()
+            dataPlot.get_tk_widget().grid(row=18, column=1, sticky=N+W+E+S, columnspan=23,rowspan=23)
+            self.a.legend(loc='upper right', bbox_to_anchor=(1.1, 1.05),fancybox=True, shadow=True, ncol=1).draggable()
+            
+        elif self.plot_type == 'Composite Phase Noise':
+            
+            self.f = Figure(figsize=(0,0))
+            self.a = self.f.add_subplot(111)
+            #self.a.set_xscale('log')
+            self.a.grid(b=True, which='minor', color='gray', linestyle='--')
+            
+            self.x_axis_min = self.entry45.get()        #get axis limits and set
+            self.x_axis_max = self.entry46.get()
+            self.y_axis_min = self.entry47.get()
+            self.y_axis_max = self.entry48.get()
+            
+            #x = [self.x_axis_min, self.x_axis_min]
+            #y = [self.y_axis_min, self.y_axis_min]
+            #self.a.plot(x,y, lw=1, color = 'black')
+            
+            #x = [self.x_axis_max, self.x_axis_max]
+            #y = [self.y_axis_max, self.y_axis_max]
+            #self.a.plot(x,y, lw=1, color = 'black')            
+            
+            x = [10000,1000,100,10,1]
+            y = [40,20,10,5,3 ]
+            
+            if (self.y_axis_max == '') or (self.y_axis_min == ''):
+                self.a.set_ylim(0, 10)
+            else:
+                self.a.set_ylim(float(self.y_axis_min),float(self.y_axis_max))
+            
+            if (self.x_axis_max == '') or (self.x_axis_min == ''):
+                self.a.set_xlim(0, 10)
+            else:                   
+                self.a.set_xlim(float(self.x_axis_min),float(self.x_axis_max))
+            
+            self.a.set_title ("Composite Phase Noise", fontsize=10)
+            self.a.set_ylabel("dB", fontsize=10)
+            self.a.set_xlabel("Frequency", fontsize=10)
+            self.a.plot(x,y, lw=1, color = 'blue', label ="Results")
+            dataPlot = FigureCanvasTkAgg(self.f, self.master)
+            dataPlot.show()
+            dataPlot.get_tk_widget().grid(row=18, column=1, sticky=N+W+E+S, columnspan=23,rowspan=23)
+            self.a.legend(loc='upper right', bbox_to_anchor=(1.1, 1.05),fancybox=True, shadow=True, ncol=1).draggable()
+            
+        elif self.plot_type == 'All Noise Contributor':
+            
+            self.f = Figure(figsize=(0,0))
+            self.a = self.f.add_subplot(111)
+            #self.a.set_xscale('log')
+            self.a.grid(b=True, which='minor', color='gray', linestyle='--')
+            
+            self.x_axis_min = self.entry45.get()        #get axis limits and set
+            self.x_axis_max = self.entry46.get()
+            self.y_axis_min = self.entry47.get()
+            self.y_axis_max = self.entry48.get()
+            
+            #x = [self.x_axis_min, self.x_axis_min]
+            #y = [self.y_axis_min, self.y_axis_min]
+            #self.a.plot(x,y, lw=1, color = 'black')
+            
+            #x = [self.x_axis_max, self.x_axis_max]
+            #y = [self.y_axis_max, self.y_axis_max]
+            #self.a.plot(x,y, lw=1, color = 'black')            
+            
+            x = [10000,1000,100,10,1]
+            y = [40,20,10,5,3 ]
+            
+            if (self.y_axis_max == '') or (self.y_axis_min == ''):
+                self.a.set_ylim(0, 10)
+            else:
+                self.a.set_ylim(float(self.y_axis_min),float(self.y_axis_max))
+            
+            if (self.x_axis_max == '') or (self.x_axis_min == ''):
+                self.a.set_xlim(0, 10)
+            else:                   
+                self.a.set_xlim(float(self.x_axis_min),float(self.x_axis_max))
+            
+            self.a.set_title ("All Noise Contributor", fontsize=10)
+            self.a.set_ylabel("dB", fontsize=10)
+            self.a.set_xlabel("Frequency", fontsize=10)
+            self.a.plot(x,y, lw=1, color = 'blue', label ="Results")
+            dataPlot = FigureCanvasTkAgg(self.f, self.master)
+            dataPlot.show()
+            dataPlot.get_tk_widget().grid(row=18, column=1, sticky=N+W+E+S, columnspan=23,rowspan=23)
+            self.a.legend(loc='upper right', bbox_to_anchor=(1.1, 1.05),fancybox=True, shadow=True, ncol=1).draggable()
+            
+        elif self.plot_type == 'Time Domain Response':
+            
+            self.f = Figure(figsize=(0,0))
+            self.a = self.f.add_subplot(111)
+            #self.a.set_xscale('log')
+            self.a.grid(b=True, which='minor', color='gray', linestyle='--')
+            
+            self.x_axis_min = self.entry45.get()        #get axis limits and set
+            self.x_axis_max = self.entry46.get()
+            self.y_axis_min = self.entry47.get()
+            self.y_axis_max = self.entry48.get()
+            
+            #x = [self.x_axis_min, self.x_axis_min]
+            #y = [self.y_axis_min, self.y_axis_min]
+            #self.a.plot(x,y, lw=1, color = 'black')
+            
+            #x = [self.x_axis_max, self.x_axis_max]
+            #y = [self.y_axis_max, self.y_axis_max]
+            #self.a.plot(x,y, lw=1, color = 'black')            
+            
+            x = [10000,1000,100,10,1]
+            y = [40,20,10,5,3 ]
+            
+            if (self.y_axis_max == '') or (self.y_axis_min == ''):
+                self.a.set_ylim(0, 10)
+            else:
+                self.a.set_ylim(float(self.y_axis_min),float(self.y_axis_max))
+            
+            if (self.x_axis_max == '') or (self.x_axis_min == ''):
+                self.a.set_xlim(0, 10)
+            else:                   
+                self.a.set_xlim(float(self.x_axis_min),float(self.x_axis_max))
+            
+            self.a.set_title ("Time Domain Response", fontsize=10)
+            self.a.set_ylabel("dB", fontsize=10)
+            self.a.set_xlabel("Frequency", fontsize=10)
+            self.a.plot(x,y, lw=1, color = 'blue', label ="Results")
+            dataPlot = FigureCanvasTkAgg(self.f, self.master)
+            dataPlot.show()
+            dataPlot.get_tk_widget().grid(row=18, column=1, sticky=N+W+E+S, columnspan=23,rowspan=23)
+            self.a.legend(loc='upper right', bbox_to_anchor=(1.1, 1.05),fancybox=True, shadow=True, ncol=1).draggable()
+            
+        elif self.plot_type == 'Frequency Error Response':
+            
+            self.f = Figure(figsize=(0,0))
+            self.a = self.f.add_subplot(111)
+            #self.a.set_xscale('log')
+            self.a.grid(b=True, which='minor', color='gray', linestyle='--')
+            
+            self.x_axis_min = self.entry45.get()        #get axis limits and set
+            self.x_axis_max = self.entry46.get()
+            self.y_axis_min = self.entry47.get()
+            self.y_axis_max = self.entry48.get()
+            
+            #x = [self.x_axis_min, self.x_axis_min]
+            #y = [self.y_axis_min, self.y_axis_min]
+            #self.a.plot(x,y, lw=1, color = 'black')
+            
+            #x = [self.x_axis_max, self.x_axis_max]
+            #y = [self.y_axis_max, self.y_axis_max]
+            #self.a.plot(x,y, lw=1, color = 'black')            
+            
+            x = [10000,1000,100,10,1]
+            y = [40,20,10,5,3 ]
+            
+            if (self.y_axis_max == '') or (self.y_axis_min == ''):
+                self.a.set_ylim(0, 10)
+            else:
+                self.a.set_ylim(float(self.y_axis_min),float(self.y_axis_max))
+            
+            if (self.x_axis_max == '') or (self.x_axis_min == ''):
+                self.a.set_xlim(0, 10)
+            else:                   
+                self.a.set_xlim(float(self.x_axis_min),float(self.x_axis_max))
+            
+            self.a.set_title ("Frequency Error Response", fontsize=10)
+            self.a.set_ylabel("dB", fontsize=10)
+            self.a.set_xlabel("Frequency", fontsize=10)
+            self.a.plot(x,y, lw=1, color = 'blue', label ="Results")
+            dataPlot = FigureCanvasTkAgg(self.f, self.master)
+            dataPlot.show()
+            dataPlot.get_tk_widget().grid(row=18, column=1, sticky=N+W+E+S, columnspan=23,rowspan=23)
+            self.a.legend(loc='upper right', bbox_to_anchor=(1.1, 1.05),fancybox=True, shadow=True, ncol=1).draggable()
+            
+        elif self.plot_type == 'Time Domain Phase Settling':
+            
+            self.f = Figure(figsize=(0,0))
+            self.a = self.f.add_subplot(111)
+            #self.a.set_xscale('log')
+            self.a.grid(b=True, which='minor', color='gray', linestyle='--')
+            
+            self.x_axis_min = self.entry45.get()        #get axis limits and set
+            self.x_axis_max = self.entry46.get()
+            self.y_axis_min = self.entry47.get()
+            self.y_axis_max = self.entry48.get()
+            
+            #x = [self.x_axis_min, self.x_axis_min]
+            #y = [self.y_axis_min, self.y_axis_min]
+            #self.a.plot(x,y, lw=1, color = 'black')
+            
+            #x = [self.x_axis_max, self.x_axis_max]
+            #y = [self.y_axis_max, self.y_axis_max]
+            #self.a.plot(x,y, lw=1, color = 'black')            
+            
+            x = [10000,1000,100,10,1]
+            y = [40,20,10,5,3 ]
+            
+            if (self.y_axis_max == '') or (self.y_axis_min == ''):
+                self.a.set_ylim(0, 10)
+            else:
+                self.a.set_ylim(float(self.y_axis_min),float(self.y_axis_max))
+            
+            if (self.x_axis_max == '') or (self.x_axis_min == ''):
+                self.a.set_xlim(0, 10)
+            else:                   
+                self.a.set_xlim(float(self.x_axis_min),float(self.x_axis_max))
+            
+            self.a.set_title ("Time Domain Phase Settling", fontsize=10)
+            self.a.set_ylabel("dB", fontsize=10)
+            self.a.set_xlabel("Frequency", fontsize=10)
+            self.a.plot(x,y, lw=1, color = 'blue', label ="Results")
+            dataPlot = FigureCanvasTkAgg(self.f, self.master)
+            dataPlot.show()
+            dataPlot.get_tk_widget().grid(row=18, column=1, sticky=N+W+E+S, columnspan=23,rowspan=23)
+            self.a.legend(loc='upper right', bbox_to_anchor=(1.1, 1.05),fancybox=True, shadow=True, ncol=1).draggable()
+            
+        elif self.plot_type == 'Percentage Noise Contributions':
+            
+            self.f = Figure(figsize=(0,0))
+            self.a = self.f.add_subplot(111)
+            #self.a.set_xscale('log')
+            self.a.grid(b=True, which='minor', color='gray', linestyle='--')
+            
+            self.x_axis_min = self.entry45.get()        #get axis limits and set
+            self.x_axis_max = self.entry46.get()
+            self.y_axis_min = self.entry47.get()
+            self.y_axis_max = self.entry48.get()
+            
+            #x = [self.x_axis_min, self.x_axis_min]
+            #y = [self.y_axis_min, self.y_axis_min]
+            #self.a.plot(x,y, lw=1, color = 'black')
+            
+            #x = [self.x_axis_max, self.x_axis_max]
+            #y = [self.y_axis_max, self.y_axis_max]
+            #self.a.plot(x,y, lw=1, color = 'black')            
+            
+            x = [10000,1000,100,10,1]
+            y = [40,20,10,5,3 ]
+            
+            if (self.y_axis_max == '') or (self.y_axis_min == ''):
+                self.a.set_ylim(0, 10)
+            else:
+                self.a.set_ylim(float(self.y_axis_min),float(self.y_axis_max))
+            
+            if (self.x_axis_max == '') or (self.x_axis_min == ''):
+                self.a.set_xlim(0, 10)
+            else:                   
+                self.a.set_xlim(float(self.x_axis_min),float(self.x_axis_max))
+            
+            self.a.set_title ("Percentage Noise Contributions", fontsize=10)
+            self.a.set_ylabel("dB", fontsize=10)
+            self.a.set_xlabel("Frequency", fontsize=10)
+            self.a.plot(x,y, lw=1, color = 'blue', label ="Results")
+            dataPlot = FigureCanvasTkAgg(self.f, self.master)
+            dataPlot.show()
+            dataPlot.get_tk_widget().grid(row=18, column=1, sticky=N+W+E+S, columnspan=23,rowspan=23)
+            self.a.legend(loc='upper right', bbox_to_anchor=(1.1, 1.05),fancybox=True, shadow=True, ncol=1).draggable()
+            
+        elif self.plot_type == 'High-Passed Phase Noise':
+            
+            self.f = Figure(figsize=(0,0))
+            self.a = self.f.add_subplot(111)
+            #self.a.set_xscale('log')
+            self.a.grid(b=True, which='minor', color='gray', linestyle='--')
+            
+            self.x_axis_min = self.entry45.get()        #get axis limits and set
+            self.x_axis_max = self.entry46.get()
+            self.y_axis_min = self.entry47.get()
+            self.y_axis_max = self.entry48.get()
+            
+            #x = [self.x_axis_min, self.x_axis_min]
+            #y = [self.y_axis_min, self.y_axis_min]
+            #self.a.plot(x,y, lw=1, color = 'black')
+            
+            #x = [self.x_axis_max, self.x_axis_max]
+            #y = [self.y_axis_max, self.y_axis_max]
+            #self.a.plot(x,y, lw=1, color = 'black')            
+            
+            x = [10000,1000,100,10,1]
+            y = [40,20,10,5,3 ]
+            
+            if (self.y_axis_max == '') or (self.y_axis_min == ''):
+                self.a.set_ylim(0, 10)
+            else:
+                self.a.set_ylim(float(self.y_axis_min),float(self.y_axis_max))
+            
+            if (self.x_axis_max == '') or (self.x_axis_min == ''):
+                self.a.set_xlim(0, 10)
+            else:                   
+                self.a.set_xlim(float(self.x_axis_min),float(self.x_axis_max))
+            
+            self.a.set_title ("High-Passed Phase Noise", fontsize=10)
+            self.a.set_ylabel("dB", fontsize=10)
+            self.a.set_xlabel("Frequency", fontsize=10)
+            self.a.plot(x,y, lw=1, color = 'blue', label ="Results")
+            dataPlot = FigureCanvasTkAgg(self.f, self.master)
+            dataPlot.show()
+            dataPlot.get_tk_widget().grid(row=18, column=1, sticky=N+W+E+S, columnspan=23,rowspan=23)
+            self.a.legend(loc='upper right', bbox_to_anchor=(1.1, 1.05),fancybox=True, shadow=True, ncol=1).draggable()
+            
+        #else:
+        
 
 ############################################################################################################
 
@@ -3149,7 +3870,7 @@ class MainGUI(Frame):
             
             filterbox()     #prepares the filter box for data being sent back
             
-            if filtertype == 1:  #C1, C2, R2
+            if filtertype == 1:  #C1, C2, R2 Passive
                 
                 self.entry25.config(state='normal')
                 self.input425 = entry425.get()              #C1
@@ -3195,7 +3916,7 @@ class MainGUI(Frame):
                 self.entry28.insert(0, self.input428)
                 self.entry28.config(state='disabled') 
                 
-            else: #filtertype == 3:  #C1, C2, R2, C3, R3
+            else: #filtertype == 3:  #C1, C2, R2, C3, R3 ActiveC
 
                 self.entry25.config(state='normal')
                 self.input425 = entry425.get()              #C1
