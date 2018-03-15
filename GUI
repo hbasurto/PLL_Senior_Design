@@ -3,16 +3,26 @@ matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
+from matplotlib.pyplot import *
+import cmath
+import control
+import warnings
 import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter import *
-import Pmw, os, csv, datetime, math
+import os, csv, datetime, math #Pmw
 from tkinter import messagebox
 import tkinter.simpledialog
 import numpy as np
 from numpy import exp, sqrt, log, log10, absolute, genfromtxt
 from math import sin, cos, pi
-import warnings
+from numpy import linspace
+import sympy
+#from sympy import *
+from sympy import lambdify
+from scipy import signal
+from scipy.integrate import odeint
+sympy.init_printing()
 
 
 warnings.filterwarnings("ignore")
@@ -79,6 +89,14 @@ class MainGUI(Frame):
         label5.place(in_= Frame1, x=5, y=130)
         self.entry5 = Entry(Frame1, width=10)
         self.entry5.place(in_=Frame1, x=175, y=130)
+        
+        paramMenu=['GHz','MHz','kHz']           #VCO Gain Select
+        self.option_select7=StringVar(root)
+        self.option_select7.set(PFD_Freq_Hz)
+        drop2=OptionMenu(root,self.option_select7,*paramMenu)
+        drop2.place(in_=Frame1,x=245,y=127)   
+        drop2.config(font=('Arial 6 bold'),bg='white',width=3)
+        drop2['menu'].config(font=('Arial 6 bold'),bg='white') 
 
         label6 = ttk.Label(Frame1, text="Phase Detector Gain", font="Arial 10 bold")
         label6.place(in_= Frame1, x=5, y=160)
@@ -145,7 +163,7 @@ class MainGUI(Frame):
         self.entry12 = Entry(Frame1, width=10)
         self.entry12.place(in_=Frame1, x=510, y=40)
         
-        paramMenu=['GHz','MHz','kHz']
+        paramMenu=['GHz','MHz','kHz']                   #select for start freq
         self.option_select5=StringVar(root)
         self.option_select5.set(Start_Freq_Hz)
         drop3=OptionMenu(root,self.option_select5,*paramMenu)
@@ -158,7 +176,7 @@ class MainGUI(Frame):
         self.entry13 = Entry(Frame1, width=10)
         self.entry13.place(in_=Frame1, x=510, y=70)
         
-        paramMenu=['GHz','MHz','kHz']
+        paramMenu=['GHz','MHz','kHz']                   #select for stop freq
         self.option_select6=StringVar(root)
         self.option_select6.set(Stop_Freq_Hz)
         drop3=OptionMenu(root,self.option_select6,*paramMenu)
@@ -367,6 +385,7 @@ class MainGUI(Frame):
         #self.entry34.place(in_= Frame2, x=210, y=220)
     
         global filterbox
+        
         def filterbox():
                     
             global filtertype
@@ -443,12 +462,15 @@ class MainGUI(Frame):
             elif filtertype == 3:  #C1, C2, R2, C3, R3
                 global filterorder
             
-                filterselect = "Active C"
-                filter_type=Label(root, text='Active C      ')
+                filterselect = "Active A"
+                filter_type=Label(root, text='Active A      ')
                 filter_type.place(in_= Frame2, x=80, y=44)
                 
                 #self.label28.config(text="    ")     #Remove C4
                 #self.entry28.place_forget()
+                
+                self.label29.config(text="    ")     #Remove R1
+                self.entry29.place_forget()
                 
                 self.label30.config(text="    ")     #Remove R1
                 self.entry30.place_forget()
@@ -475,6 +497,7 @@ class MainGUI(Frame):
                 
                 if filterorder == '3':
                     
+                    filterorder = 3
                     filter_Order_Num=Label(root, text='3')
                     filter_Order_Num.place(in_= Frame2, x=90, y=70) 
                     
@@ -484,8 +507,9 @@ class MainGUI(Frame):
                     self.label33.config(text="    ")     #Remove R4
                     self.entry33.place_forget()
                 
-                elif filterorder == '4':
+                else: #elif filterorder == '4':
                     
+                    filterorder = 4
                     filter_Order_Num=Label(root, text='4')
                     filter_Order_Num.place(in_= Frame2, x=90, y=70)                     
                     
@@ -497,12 +521,15 @@ class MainGUI(Frame):
                     self.label33.place(in_= Frame2, x=175, y=190) 
                     self.entry33.place(in_= Frame2, x=210, y=190)
                 
-                else:
-                    self.label28.config(text="    ")     #Remove C4
-                    self.entry28.place_forget()
-                    
-                    self.label33.config(text="    ")     #Remove R4
-                    self.entry33.place_forget()
+                #else:
+                #    self.label28.config(text="    ")     #Remove C4
+                #    self.entry28.place_forget()
+                #    
+                #    self.label33.config(text="    ")     #Remove R4
+                #    self.entry33.place_forget()
+                #    
+                #    filter_Order_Num=Label(root, text='NA')
+                #    filter_Order_Num.place(in_= Frame2, x=90, y=70) 
                         
             else:
                 filter_type=Label(root, text='None        ')
@@ -573,24 +600,24 @@ class MainGUI(Frame):
         self.entry48 = Entry(Frame4, width=8)
         self.entry48.place(in_= Frame4, x=90, y=290)
         
-        paramMenu=['GHz','MHz','kHz']
-        option_select=StringVar(root)
-        option_select.set("GHz")
-        drop3=OptionMenu(root,option_select,*paramMenu)
+        paramMenu=['GHz','MHz','kHz']               #Fmin dropdown
+        self.option_select8=StringVar(root)
+        self.option_select8.set("GHz")
+        drop3=OptionMenu(root,self.option_select8,*paramMenu)
         drop3.place(in_=Frame4,x=150,y=200)   
         drop3.config(font=('Arial 6 bold'),bg='white',width=3)
         drop3['menu'].config(font=('Arial 6 bold'),bg='white') 
         
-        paramMenu=['GHz','MHz','kHz']
-        option_select=StringVar(root)
-        option_select.set("GHz")
-        drop3=OptionMenu(root,option_select,*paramMenu)
-        drop3.place(in_=Frame4,x=150,y=230)   
-        drop3.config(font=('Arial 6 bold'),bg='white',width=3)
-        drop3['menu'].config(font=('Arial 6 bold'),bg='white') 
-
-        scale_button = Button(Frame4, text="Set Scale", bg="white",font="Arial 10 bold", command=master.destroy)
-        scale_button.place(in_=Frame4,x=84,y=320)
+        paramMenu=['GHz','MHz','kHz']               #Fmax dropdown
+        self.option_select9=StringVar(root)
+        self.option_select9.set("GHz")
+        drop4=OptionMenu(root,self.option_select9,*paramMenu)
+        drop4.place(in_=Frame4,x=150,y=230)   
+        drop4.config(font=('Arial 6 bold'),bg='white',width=3)
+        drop4['menu'].config(font=('Arial 6 bold'),bg='white')
+        
+        #scale_button = Button(Frame4, text="Set Scale", bg="white",font="Arial 10 bold", command=set_scale)
+        #scale_button.place(in_=Frame4,x=84,y=320)
         
         exportPlot_button = Button(Frame4, text="Export Plot", bg="white",font="Arial 10 bold", command=master.destroy)
         exportPlot_button.place(in_=Frame4,x=80,y=370)
@@ -634,72 +661,373 @@ class MainGUI(Frame):
 
 ############################################################################################################
 
+    def pull_variables(self):
+        self.VCO_Freq                = self.entry1.get()
+        self.Fixed_in_Loop_Divider_R = self.entry2.get()
+        self.TCXO_Freq               = self.entry4.get()     #Rfreq
+        self.PFD_Freq                = self.entry3.get()     
+        self.VCO_Gain_Kvco           = self.entry5.get()
+        self.Phase_Detector_Gain_Kd  = self.entry6.get()
+        self.Phase_Detector_Offset   = self.entry7.get()
+        self.PLL_Division_Ratio_N    = self.entry8.get() #self.VCO_Freq / self.PFD_Freq      Gray out and auto fill
+        self.Desired_BW              = self.entry9.get()
+        self.Desired_Phase_Margin    = self.entry10.get() #*3.14)/(180)
+        self.Start_Freq              = self.entry12.get()
+        self.Stop_Freq               = self.entry13.get()
+        self.Points                  = self.entry14.get()
+        self.VCO_Input_Cap           = self.input417
+        self.C1                      = self.input425
+        self.C2                      = self.input426
+        self.C3                      = self.input427
+        self.C4                      = self.input435
+        self.R1                      = self.input430
+        self.R2                      = self.input431
+        self.R3                      = self.input432
+        self.R4                      = self.input436
+        self.L1                      = self.input428
+        self.dB_BW_3                 = self.entry38.get()
+        self.Actual_Phase_Margin     = self.entry39.get()
+        
+        self.VCO_Freq                = float(self.VCO_Freq)*1               #This is to fix the issue with the float.
+        self.Fixed_in_Loop_Divider_R = float(self.Fixed_in_Loop_Divider_R)*1
+        self.TCXO_Freq               = float(self.TCXO_Freq)*1
+        self.PFD_Freq                = float(self.PFD_Freq)*1    
+        self.VCO_Gain_Kvco           = float(self.VCO_Gain_Kvco)*1
+        self.Phase_Detector_Gain_Kd  = float(self.Phase_Detector_Gain_Kd)*1
+        self.Phase_Detector_Offset   = float(self.Phase_Detector_Offset)*1
+        self.PLL_Division_Ratio_N    = float(self.PLL_Division_Ratio_N)*1
+        self.Desired_BW              = float(self.Desired_BW)*1
+        self.Desired_Phase_Margin    = float(self.Desired_Phase_Margin)*1
+        self.Start_Freq              = float(self.Start_Freq)*1
+        self.Stop_Freq               = float(self.Stop_Freq)*1
+        self.Points                  = float(self.Points)*1
+        self.VCO_Input_Cap           = float(self.VCO_Input_Cap)*1
+        self.C1                      = float(self.C1)*1
+        self.C2                      = float(self.C2)*1
+        self.C3                      = float(self.C3)*1
+        self.C4                      = float(self.C4)*1
+        self.R1                      = float(self.R1)*1
+        self.R2                      = float(self.R2)*1
+        self.R3                      = float(self.R3)*1
+        self.R4                      = float(self.R4)*1
+        self.L1                      = float(self.L1)*1
+        self.dB_BW_3                 = float(self.dB_BW_3)*1
+        self.Actual_Phase_Margin     = float(self.Actual_Phase_Margin)*1
+
+        temp_option_select=self.option_select1.get()    #VCO Freq
+        if temp_option_select == 'GHz':
+            self.VCO_Freq = self.VCO_Freq*(10**9)
+        elif temp_option_select == 'MHz':
+            self.VCO_Freq = self.VCO_Freq*(10**6)
+        else:
+            self.VCO_Freq = self.VCO_Freq*(10**3)
+            
+        temp_option_select=self.option_select2.get()    #PDF Freq
+        if temp_option_select == 'GHz':
+            self.PFD_Freq = self.PFD_Freq*10**9
+        elif temp_option_select == 'MHz':
+            self.PFD_Freq = self.PFD_Freq*10**6
+        else:
+            self.PFD_Freq = self.PFD_Freq*10**3
+            
+        temp_option_select=self.option_select3.get()    #TCXO Freq
+        if temp_option_select == 'GHz':
+            self.TCXO_Freq = self.TCXO_Freq*10**9
+        elif temp_option_select == 'MHz':
+            self.TCXO_Freq = self.TCXO_Freq*10**6
+        else:
+            self.TCXO_Freq = self.TCXO_Freq*10**3
+            
+        temp_option_select=self.option_select4.get()    #Desired Bandwidth
+        if temp_option_select == 'GHz':
+            self.Desired_BW = self.Desired_BW*10**9
+        elif temp_option_select == 'MHz':
+            self.Desired_BW = self.Desired_BW*10**6
+        else:
+            self.Desired_BW = self.Desired_BW*10**3
+            
+        temp_option_select=self.option_select5.get()    #Start Freq
+        if temp_option_select == 'GHz':
+            self.Start_Freq = self.Start_Freq*10**9
+        elif temp_option_select == 'MHz':
+            self.Start_Freq = self.Start_Freq*10**6
+        else:
+            self.Start_Freq = self.Start_Freq*10**3
+            
+        temp_option_select=self.option_select6.get()    #Stop freq
+        if temp_option_select == 'GHz':
+            self.Stop_Freq = self.Stop_Freq*10**9
+        elif temp_option_select == 'MHz':
+            self.Stop_Freq = self.Stop_Freq*10**6
+        else:
+            self.Stop_Freq = self.Stop_Freq*10**3 
+
+    def compute(self):
+
+        #C4 = 10e-9 + VCO_Input_Cap
+        
+        #Active A Filter Ratio Calculation  Verifed with Matlab
+        self.T1 = (self.C1*self.C2*self.R2)/(self.C1+self.C2)
+        self.T3 = ((self.C3*self.R3+(self.C4-self.VCO_Input_Cap)*self.R3+(self.C4-self.VCO_Input_Cap)*self.R4)+sqrt(((self.C3*self.R3+(self.C4-self.VCO_Input_Cap)*self.R3+(self.C4-self.VCO_Input_Cap)*self.R4)**2)-4*self.C3*(self.C4-self.VCO_Input_Cap)*self.R3*self.R4))/2
+        self.T4 = ((self.C3*self.R3+(self.C4-self.VCO_Input_Cap)*self.R3+(self.C4-self.VCO_Input_Cap)*self.R4)-sqrt(((self.C3*self.R3+(self.C4-self.VCO_Input_Cap)*self.R3+(self.C4-self.VCO_Input_Cap)*self.R4)**2)-4*self.C3*(self.C4-self.VCO_Input_Cap)*self.R3*self.R4))/2
+        
+        self.Ratio_one = self.T3/self.T1
+        self.Ratio_two = self.T4/self.T1
+        
+        #Transfer Function Setup for Active A Fourth Order based on PH and BW    #Values verified with Matlab
+        self.Ratio = self.Ratio_one;              #T3/T1 should be between 0 and 1
+        self.Ratio2 = self.Ratio_two;             #T4/T1 should be between 0 and 1
+        self.T_one = ((1/math.cos(self.Desired_Phase_Margin))-math.tan(self.Desired_Phase_Margin))/(self.Desired_BW*(self.Ratio+self.Ratio2+1)); 
+        self.T_three = self.Ratio*self.T_one;
+        self.T_four = self.Ratio2*self.T_one;
+        self.T_two = 1/((self.Desired_BW**2)*(self.T_one+self.T_three+self.T_four));
+        
+        #Calculate R & C from Bandwidth and Cx   #Verifed using Matlab
+        #global Cx
+        #global C_one
+        #global C_two
+        #global C_three
+        #global C_four
+        #global R_one
+        #global R_two
+        #global R_three
+        #global R_four
+        
+        self.Cx = ((self.Phase_Detector_Gain_Kd*self.VCO_Gain_Kvco)/((self.Desired_BW**2)*self.PLL_Division_Ratio_N))*((1+(self.Desired_BW**2)*self.T_two**2)/((1+(self.Desired_BW**2)*self.T_one**2)*(1+(self.Desired_BW**2)*self.T_three**2)))**0.5
+        self.C_one = self.Cx*(self.T_one/self.T_two)
+        self.C_two = self.Cx*(1-(self.T_one/self.T_two))
+        self.R_two = self.T_two/self.C_two
+        self.C_four = self.C4;            #chosen value
+        self.C_three = (self.C_four-self.VCO_Input_Cap)*(4*self.T_three*self.T_four)/((self.T_three-self.T_four)**2)
+        self.R_three = (self.T_three+self.T_four)/(2*self.C_three+(self.C_four-self.VCO_Input_Cap))
+        self.R_four = (self.T_three+self.T_four)/(2*self.C_three+(self.C_four-self.VCO_Input_Cap))*(self.R4/self.R3)
+        
+        #Use S to generate transfer function for circuit 
+        self.TA = (self.C_one*self.C_two*self.R_two)/(self.C_one+self.C_two)
+        self.TB =  self.C_two*self.R_two
+        self.TC = ((self.C_three*self.R_three+self.C_four*self.R_three+self.C_four*self.R_four)+sqrt(((self.C_three*self.R_three+self.C_four*self.R_three+self.C_four*self.R_four)**2)-4*self.C_four*self.C_four*self.R_three*self.R_four))/2
+        self.TD = self.C_one+self.C_two
+        
+        #HL Transfer function for loop filter 4th Order Active A
+        #HL = (((1+s*TB))/(s*Cx))*(1/((1+s*TA)*(1+s*TC)*(1+s*TD)))        #Loop Filter Z(s)
+        self.num_HL= [float(self.TB),1]
+        self.den_HL= [float(self.Cx*self.TA*self.TC*self.TD), float(self.Cx*(self.TA*self.TD + self.TA*self.TC + self.TC*self.TD)), float(self.Cx*(self.TA+self.TC+self.TD)), float(self.Cx), 0]
+        self.HL = control.tf(self.num_HL,self.den_HL)
+########self.Poles_HL = control.pole(self.HL)
+        
+        #Generate list of frequencies; must use angular frequencies in bode command
+        #global G                #Forward Gain
+        #global GHBW
+        #global BDR
+        #global EDR
+        #global CLTF             #Closed Loop Tran Func
+        #global Gm_dB
+        
+        #All verifed to Matlab!   reference: http://mirror.thelifeofkenneth.com/lib/electronics_archive/feb2000pg30.pdf
+        self.num_G = [self.Phase_Detector_Gain_Kd*self.VCO_Gain_Kvco]
+        self.den_G = [1, 0]
+        self.G_nxt = control.tf(self.num_G,self.den_G)
+        self.G = self.G_nxt*self.HL
+        
+        self.GHBW = self.G * self.Phase_Detector_Gain_Kd                                #Bandwidth where GHBW = 1 in log that would be zero 
+        self.BDR  = (self.G/self.PLL_Division_Ratio_N)/(1+(self.G/self.PLL_Division_Ratio_N))  #Primary Feedback Ratio
+        self.EDR  = 1 / (1+(self.G/self.PLL_Division_Ratio_N))                       #Error Ratio
+        self.CLTF = (self.G / (1+(self.G/self.PLL_Division_Ratio_N)))                    #Closed Loop Transfer Function and Gain
+        
+        ##Open loop Transfer Function
+        #num_OL  = [Phase_Detector_Gain_Kd*]
+        #den_OL  = [1, 0]
+        #OLTF_nxt = control.tf(num_OL,den_OL)
+        #OLTF = OLTF_nxt*HL
+        #print(OLTF)
+        
+########        self.Gm,self.Pm,self.Wgm,self.Wpm = control.margin(self.GHBW)
+        #Gm= Gain Margin
+        #Pm= Phase Margin
+        #Wgm= Freqwhere the gain margin is measured at -180 degree 
+        #Wpm= Freq where Pm is measured, which is a 0dB gain crossing freq
+        
+        
+        #Closed Loop Response at Specific Frequency
+        mag_CLTF_Spec, phase_CLTF_Spec, omega_CLTF_Spec = control.bode_plot(self.CLTF, omega= [2*cmath.pi*self.PFD_Freq] ,Plot=False) 
+        
+        #Results
+########        self.Gm_dB = 20*log10(self.Gm)
+########        self.Actual_Phase_Margin = self.Pm
+        SpurMag = 20*log10(mag_CLTF_Spec)
+        
+        #################################################################################################################
+        # Noise Formulas #
+        
+        #Noise Integration From
+        Integration_Start_Freq = 1e1
+        Integration_Stop_Freq  = 2e7
+        
+        #################################################################################################################
+        #Reference Path Noise
+        
+        #Freq Offset User Inputs        #Note Ref_Freq_Offset and Ref_Buf_Noise should have same lenth
+        Ref_Freq_Offset = [1e-1, 1e0, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9, 1e9, 1e9, 1e9, 1e9, self.Stop_Freq ]
+        
+        #Freq Buffer Noise User Input    (dBC)
+        Ref_Buf_Noise=   [-60, -90, -115, -125, -130, -143, -156, -156, -156, -156, -156, -156, -156, -156, -156, -156]   #adding Stop freq at end
+        
+        #  Number of Points to evulate per spec range
+        z = np.log10( np.array(Ref_Freq_Offset) )
+        Ref_Buf_Noise_Length= len(Ref_Buf_Noise) 
+        m=[]
+        m.append(0)
+        m_ref= 0
+        
+        #Create list of constants for m
+        while m_ref < Ref_Buf_Noise_Length -1 :
+            
+            m.append(np.nan_to_num(( (Ref_Buf_Noise[m_ref + 1] - Ref_Buf_Noise[m_ref])  /  (z[m_ref + 1] - z[m_ref]))))
+                
+            m_ref = m_ref + 1
+                
+        m_array= np.array(m)
+                
+                
+        # Number of points to eval per spec range
+        points=[]
+        points.append(128)       # assuming 128 points                             ************ GUI Main screen input::: NOTE: add to user input. Depends on Number of Points on GUI screen
+        pts_ref= 0
+                
+        ##Create list of constants for m
+        while pts_ref < Ref_Buf_Noise_Length -1 :
+                    
+            points.append( np.power( ((Ref_Freq_Offset[pts_ref + 1]) / (Ref_Freq_Offset[pts_ref])), (1/points[0]) ))
+                    
+            pts_ref = pts_ref + 1
+                    
+        Ref_Pts_array= np.nan_to_num(np.array(points))
+        
+        self.mag_CLTF, self.phase_CLTF, self.omega_CLTF = control.bode_plot(self.CLTF, dB=True , Hz=True, deg= True, Plot=False)      
+
+        ##Plotting data for Open Loop Response
+        self.mag_OLTF, self.phase_OLTF, self.omega_OLTF = control.bode_plot(self.G, dB=True , Hz=True, deg= True, Plot=False)   
+
+        ##Plotting data for Loop Filter Response
+        self.mag_HL, self.phase_HL, self.omega_HL = control.bode_plot(self.HL, dB=True , Hz=True, deg= True, Plot=False) 
+                    
     def plot(self):
+        #global pull_variables
         self.plot_type = self.plotType.get()
         if self.plot_type == 'Open Loop Response':
             
+            self.pull_variables()
+            self.compute()
+            
             self.f = Figure(figsize=(0,0))
             self.a = self.f.add_subplot(111)
-            #self.a.set_xscale('log')
-            self.a.grid(b=True, which='minor', color='gray', linestyle='--')
+            self.a.set_xscale('log')
+            #self.a.grid(b=True, which='minor', color='gray', linestyle='--')
             
-            self.x_axis_min = self.entry45.get()        #get axis limits and set
-            self.x_axis_max = self.entry46.get()
+            self.x_axis_min = self.entry45.get()            #get axis limits and set
+            temp_option_select=self.option_select8.get()    #Multiply by drop down for x min
+            if temp_option_select == 'GHz':
+                self.x_axis_min = float(self.x_axis_min)*(10**9)
+            elif temp_option_select == 'MHz':
+                self.x_axis_min = float(self.x_axis_min)*(10**6)
+            else:
+                self.x_axis_min = float(self.x_axis_min)*(10**3)
+            
+            self.x_axis_max = self.entry46.get()            #get axis limits and set
+            temp_option_select=self.option_select9.get()    #Multiply by drop down for x max
+            if temp_option_select == 'GHz':
+                self.x_axis_max = float(self.x_axis_max)*(10**9)
+            elif temp_option_select == 'MHz':
+                self.x_axis_max = float(self.x_axis_max)*(10**6)
+            else:
+                self.x_axis_max = float(self.x_axis_max)*(10**3)
+                
+            #self.x_axis_min = self.entry45.get()           #get axis limits and set
+            #self.x_axis_max = self.entry46.get()
             self.y_axis_min = self.entry47.get()
             self.y_axis_max = self.entry48.get()
             
-            #x = [self.x_axis_min, self.x_axis_min]
-            #y = [self.y_axis_min, self.y_axis_min]
-            #self.a.plot(x,y, lw=1, color = 'black')
-            
-            #x = [self.x_axis_max, self.x_axis_max]
-            #y = [self.y_axis_max, self.y_axis_max]
-            #self.a.plot(x,y, lw=1, color = 'black')            
-            
-            x = [10000,1000,100,10,1]
-            y = [40,20,10,5,3 ]
+            #x = [10000,1000,100,10,1]
+            #y = [40,20,10,5,3 ]
             
             if (self.y_axis_max == '') or (self.y_axis_min == ''):
-                self.a.set_ylim(0, 10)
+                self.a.set_ylim(0, 50)
             else:
                 self.a.set_ylim(float(self.y_axis_min),float(self.y_axis_max))
             
             if (self.x_axis_max == '') or (self.x_axis_min == ''):
-                self.a.set_xlim(0, 10)
+                self.a.set_xlim(1, 10e10)
             else:                   
                 self.a.set_xlim(float(self.x_axis_min),float(self.x_axis_max))
             
             self.a.set_title ("Open Loop Response", fontsize=10)
-            self.a.set_ylabel("dB", fontsize=10)
-            self.a.set_xlabel("Frequency", fontsize=10)
-            self.a.plot(x, y, lw=1, color = 'blue', label ="Results")
+            self.a.set_ylabel("Magnitude [dB]/Phase [deg]", fontsize=10)
+            self.a.set_xlabel("Frequency [HZ]", fontsize=10)
+            self.a.plot(self.omega_OLTF, self.mag_OLTF, color='blue', label='Magnitude')   #Gain Reponse    self.a.plot.semilogx
+            self.a.plot(self.omega_OLTF, self.phase_OLTF, color='red', label='Phase') #Phase Response      self.a.plot.semilogx
+            self.a.grid(b=True, which='major', color='black', linestyle='-')
+            self.a.grid(b=True, which='minor', color='grey', linestyle='--')
             dataPlot = FigureCanvasTkAgg(self.f, self.master)
             dataPlot.show()
             dataPlot.get_tk_widget().grid(row=18, column=1, sticky=N+W+E+S, columnspan=23,rowspan=23)
             self.a.legend(loc='upper right', bbox_to_anchor=(1.1, 1.05),fancybox=True, shadow=True, ncol=1).draggable()
+            
+            #plt.figure('Open Loop Response')
+            #plt.semilogx(self.omega_OLTF, self.mag_OLTF, color='blue', label='Magnitude')   #Gain Reponse
+            #plt.semilogx(self.omega_OLTF, self.phase_OLTF, color='red', label='Phase') #Phase Response
+            #plt.grid(b=True, which='major', color='black', linestyle='-')
+            #plt.grid(b=True, which='minor', color='grey', linestyle='--')
+            #plt.xlabel('Frequency [HZ]')
+            #plt.ylabel('Magnitude [dB]/Phase [deg]')
+            #plt.title('Open Loop Response')
+            #plt.legend(loc='lower left', bbox_to_anchor=(0.05,0.05), ncol= 1).draggable() 
+            #plt.show()
+            
+            #self.a.set_title ("Open Loop Response", fontsize=10)
+            #self.a.set_ylabel("dB", fontsize=10)
+            #self.a.set_xlabel("Frequency", fontsize=10)
+            #self.a.plot(x, y, lw=1, color = 'blue', label ="Results")
+            #dataPlot = FigureCanvasTkAgg(self.f, self.master)
+            #dataPlot.show()
+            #dataPlot.get_tk_widget().grid(row=18, column=1, sticky=N+W+E+S, columnspan=23,rowspan=23)
+            #self.a.legend(loc='upper right', bbox_to_anchor=(1.1, 1.05),fancybox=True, shadow=True, ncol=1).draggable()
         
         elif self.plot_type == 'Close Loop Response':
             
+            self.pull_variables()
+            self.compute()
+            
             self.f = Figure(figsize=(0,0))
             self.a = self.f.add_subplot(111)
-            #self.a.set_xscale('log')
-            self.a.grid(b=True, which='minor', color='gray', linestyle='--')
+            self.a.set_xscale('log')
+            #self.a.grid(b=True, which='minor', color='gray', linestyle='--')
             
             self.x_axis_min = self.entry45.get()        #get axis limits and set
-            self.x_axis_max = self.entry46.get()
+            temp_option_select=self.option_select8.get()    #Multiply by drop down for x min
+            if temp_option_select == 'GHz':
+                self.x_axis_min = float(self.x_axis_min)*(10**9)
+            elif temp_option_select == 'MHz':
+                self.x_axis_min = float(self.x_axis_min)*(10**6)
+            else:
+                self.x_axis_min = float(self.x_axis_min)*(10**3)
+            
+            self.x_axis_max = self.entry46.get()        #get axis limits and set
+            temp_option_select=self.option_select9.get()    #Multiply by drop down for x max
+            if temp_option_select == 'GHz':
+                self.x_axis_max = float(self.x_axis_max)*(10**9)
+            elif temp_option_select == 'MHz':
+                self.x_axis_max = float(self.x_axis_max)*(10**6)
+            else:
+                self.x_axis_max = float(self.x_axis_max)*(10**3)
+            
+            #self.x_axis_min = self.entry45.get()        #get axis limits and set
+            #self.x_axis_max = self.entry46.get()
             self.y_axis_min = self.entry47.get()
             self.y_axis_max = self.entry48.get()
             
-            #x = [self.x_axis_min, self.x_axis_min]
-            #y = [self.y_axis_min, self.y_axis_min]
-            #self.a.plot(x,y, lw=1, color = 'black')
-            
-            #x = [self.x_axis_max, self.x_axis_max]
-            #y = [self.y_axis_max, self.y_axis_max]
-            #self.a.plot(x,y, lw=1, color = 'black')            
-            
-            x = [x*2*pi/50 for x in range(51)]
-            y = [sin(t) for t in x]
+            #x = [x*2*pi/50 for x in range(51)]
+            #y = [sin(t) for t in x]
+            #y1 = [2*sin(t) for t in x]
             
             if (self.y_axis_max == '') or (self.y_axis_min == ''):
                 self.a.set_ylim(-1.1, 1.1)
@@ -711,24 +1039,56 @@ class MainGUI(Frame):
             else:                   
                 self.a.set_xlim(float(self.x_axis_min),float(self.x_axis_max))
             
-            self.a.set_title ("Close Loop Response", fontsize=10)
-            self.a.set_ylabel("dB", fontsize=10)
-            self.a.set_xlabel("Frequency", fontsize=10)
-            self.a.plot(x,y, lw=1, color = 'blue', label ="Results")
+            self.a.set_title ("Closed Loop Response", fontsize=10)
+            self.a.set_ylabel("Magnitude [dB]/Phase [deg]", fontsize=10)
+            self.a.set_xlabel("Frequency [HZ]", fontsize=10)
+            self.a.plot(self.omega_CLTF, self.mag_CLTF, color='blue', label='Magnitude')   #Gain Reponse    self.a.plot.semilogx
+            self.a.plot(self.omega_CLTF, self.phase_CLTF, color='red', label='Phase') #Phase Response      self.a.plot.semilogx
+            self.a.grid(b=True, which='major', color='black', linestyle='-')
+            self.a.grid(b=True, which='minor', color='grey', linestyle='--')
             dataPlot = FigureCanvasTkAgg(self.f, self.master)
             dataPlot.show()
             dataPlot.get_tk_widget().grid(row=18, column=1, sticky=N+W+E+S, columnspan=23,rowspan=23)
             self.a.legend(loc='upper right', bbox_to_anchor=(1.1, 1.05),fancybox=True, shadow=True, ncol=1).draggable()
             
+            #self.a.set_title ("Close Loop Response", fontsize=10)
+            #self.a.set_ylabel("dB", fontsize=10)
+            #self.a.set_xlabel("Frequency", fontsize=10)
+            #self.a.plot(x,y, lw=1, color = 'blue', label ="Results")
+            #self.a.plot(x,y1, lw=1, color = 'red', label ="Results 2")
+            #dataPlot = FigureCanvasTkAgg(self.f, self.master)
+            #dataPlot.show()
+            #dataPlot.get_tk_widget().grid(row=18, column=1, sticky=N+W+E+S, columnspan=23,rowspan=23)
+            #self.a.legend(loc='upper right', bbox_to_anchor=(1.1, 1.05),fancybox=True, shadow=True, ncol=1).draggable()
+            
         elif self.plot_type == 'Loop Filter Response':
+            
+            self.pull_variables()
+            self.compute()
             
             self.f = Figure(figsize=(0,0))
             self.a = self.f.add_subplot(111)
-            #self.a.set_xscale('log')
-            self.a.grid(b=True, which='minor', color='gray', linestyle='--')
+            self.a.set_xscale('log')
+            #self.a.grid(b=True, which='minor', color='gray', linestyle='--')
             
             self.x_axis_min = self.entry45.get()        #get axis limits and set
-            self.x_axis_max = self.entry46.get()
+            temp_option_select=self.option_select8.get()    #Multiply by drop down for x min
+            if temp_option_select == 'GHz':
+                self.x_axis_min = float(self.x_axis_min)*(10**9)
+            elif temp_option_select == 'MHz':
+                self.x_axis_min = float(self.x_axis_min)*(10**6)
+            else:
+                self.x_axis_min = float(self.x_axis_min)*(10**3)
+            
+            self.x_axis_max = self.entry46.get()        #get axis limits and set
+            temp_option_select=self.option_select9.get()    #Multiply by drop down for x max
+            if temp_option_select == 'GHz':
+                self.x_axis_max = float(self.x_axis_max)*(10**9)
+            elif temp_option_select == 'MHz':
+                self.x_axis_max = float(self.x_axis_max)*(10**6)
+            else:
+                self.x_axis_max = float(self.x_axis_max)*(10**3)
+                
             self.y_axis_min = self.entry47.get()
             self.y_axis_max = self.entry48.get()
             
@@ -740,8 +1100,8 @@ class MainGUI(Frame):
             #y = [self.y_axis_max, self.y_axis_max]
             #self.a.plot(x,y, lw=1, color = 'black')            
             
-            x = [10000,1000,100,10,1]
-            y = [40,20,10,5,3 ]
+            #x = [10000,1000,100,10,1]
+            #y = [40,20,10,5,3 ]
             
             if (self.y_axis_max == '') or (self.y_axis_min == ''):
                 self.a.set_ylim(0, 10)
@@ -754,15 +1114,30 @@ class MainGUI(Frame):
                 self.a.set_xlim(float(self.x_axis_min),float(self.x_axis_max))
             
             self.a.set_title ("Loop Filter Response", fontsize=10)
-            self.a.set_ylabel("dB", fontsize=10)
-            self.a.set_xlabel("Frequency", fontsize=10)
-            self.a.plot(x,y, lw=1, color = 'blue', label ="Results")
+            self.a.set_ylabel("Magnitude [dB]/Phase [deg]", fontsize=10)
+            self.a.set_xlabel("Frequency [HZ]", fontsize=10)
+            self.a.plot(self.omega_HL, self.mag_HL, color='blue', label='Magnitude')   #Gain Reponse    self.a.plot.semilogx
+            self.a.plot(self.omega_HL, self.phase_HL, color='red', label='Phase') #Phase Response      self.a.plot.semilogx
+            self.a.grid(b=True, which='major', color='black', linestyle='-')
+            self.a.grid(b=True, which='minor', color='grey', linestyle='--')
             dataPlot = FigureCanvasTkAgg(self.f, self.master)
             dataPlot.show()
             dataPlot.get_tk_widget().grid(row=18, column=1, sticky=N+W+E+S, columnspan=23,rowspan=23)
             self.a.legend(loc='upper right', bbox_to_anchor=(1.1, 1.05),fancybox=True, shadow=True, ncol=1).draggable()
             
+            #self.a.set_title ("Loop Filter Response", fontsize=10)
+            #self.a.set_ylabel("dB", fontsize=10)
+            #self.a.set_xlabel("Frequency", fontsize=10)
+            #self.a.plot(x,y, lw=1, color = 'blue', label ="Results")
+            #dataPlot = FigureCanvasTkAgg(self.f, self.master)
+            #dataPlot.show()
+            #dataPlot.get_tk_widget().grid(row=18, column=1, sticky=N+W+E+S, columnspan=23,rowspan=23)
+            #self.a.legend(loc='upper right', bbox_to_anchor=(1.1, 1.05),fancybox=True, shadow=True, ncol=1).draggable()
+            
         elif self.plot_type == 'Reference Phase Noise':
+            
+            self.pull_variables()
+            self.compute()
             
             self.f = Figure(figsize=(0,0))
             self.a = self.f.add_subplot(111)
@@ -806,6 +1181,9 @@ class MainGUI(Frame):
             
         elif self.plot_type == 'Phase Detector Noise':
             
+            self.pull_variables()
+            self.compute()
+            
             self.f = Figure(figsize=(0,0))
             self.a = self.f.add_subplot(111)
             #self.a.set_xscale('log')
@@ -847,6 +1225,9 @@ class MainGUI(Frame):
             self.a.legend(loc='upper right', bbox_to_anchor=(1.1, 1.05),fancybox=True, shadow=True, ncol=1).draggable()
             
         elif self.plot_type == 'VCO Phase Noise':
+            
+            self.pull_variables()
+            self.compute()
             
             self.f = Figure(figsize=(0,0))
             self.a = self.f.add_subplot(111)
@@ -890,6 +1271,9 @@ class MainGUI(Frame):
             
         elif self.plot_type == 'Closed Loop Modulated Filter Noise':
             
+            self.pull_variables()
+            self.compute()
+            
             self.f = Figure(figsize=(0,0))
             self.a = self.f.add_subplot(111)
             #self.a.set_xscale('log')
@@ -931,6 +1315,9 @@ class MainGUI(Frame):
             self.a.legend(loc='upper right', bbox_to_anchor=(1.1, 1.05),fancybox=True, shadow=True, ncol=1).draggable()
             
         elif self.plot_type == 'N Divider Phase Noise':
+            
+            self.pull_variables()
+            self.compute()
             
             self.f = Figure(figsize=(0,0))
             self.a = self.f.add_subplot(111)
@@ -974,6 +1361,9 @@ class MainGUI(Frame):
             
         elif self.plot_type == 'Delta Sigma Noise':
             
+            self.pull_variables()
+            self.compute()
+            
             self.f = Figure(figsize=(0,0))
             self.a = self.f.add_subplot(111)
             #self.a.set_xscale('log')
@@ -1015,6 +1405,9 @@ class MainGUI(Frame):
             self.a.legend(loc='upper right', bbox_to_anchor=(1.1, 1.05),fancybox=True, shadow=True, ncol=1).draggable()
             
         elif self.plot_type == 'Open Loop Phase Noise Overalay':
+            
+            self.pull_variables()
+            self.compute()
             
             self.f = Figure(figsize=(0,0))
             self.a = self.f.add_subplot(111)
@@ -1058,6 +1451,9 @@ class MainGUI(Frame):
             
         elif self.plot_type == 'Composite Phase Noise':
             
+            self.pull_variables()
+            self.compute()
+            
             self.f = Figure(figsize=(0,0))
             self.a = self.f.add_subplot(111)
             #self.a.set_xscale('log')
@@ -1099,6 +1495,9 @@ class MainGUI(Frame):
             self.a.legend(loc='upper right', bbox_to_anchor=(1.1, 1.05),fancybox=True, shadow=True, ncol=1).draggable()
             
         elif self.plot_type == 'All Noise Contributor':
+            
+            self.pull_variables()
+            self.compute()
             
             self.f = Figure(figsize=(0,0))
             self.a = self.f.add_subplot(111)
@@ -1142,6 +1541,9 @@ class MainGUI(Frame):
             
         elif self.plot_type == 'Time Domain Response':
             
+            self.pull_variables()
+            self.compute()
+            
             self.f = Figure(figsize=(0,0))
             self.a = self.f.add_subplot(111)
             #self.a.set_xscale('log')
@@ -1183,6 +1585,9 @@ class MainGUI(Frame):
             self.a.legend(loc='upper right', bbox_to_anchor=(1.1, 1.05),fancybox=True, shadow=True, ncol=1).draggable()
             
         elif self.plot_type == 'Frequency Error Response':
+            
+            self.pull_variables()
+            self.compute()
             
             self.f = Figure(figsize=(0,0))
             self.a = self.f.add_subplot(111)
@@ -1226,6 +1631,9 @@ class MainGUI(Frame):
             
         elif self.plot_type == 'Time Domain Phase Settling':
             
+            self.pull_variables()
+            self.compute()
+            
             self.f = Figure(figsize=(0,0))
             self.a = self.f.add_subplot(111)
             #self.a.set_xscale('log')
@@ -1268,6 +1676,9 @@ class MainGUI(Frame):
             
         elif self.plot_type == 'Percentage Noise Contributions':
             
+            self.pull_variables()
+            self.compute()
+            
             self.f = Figure(figsize=(0,0))
             self.a = self.f.add_subplot(111)
             #self.a.set_xscale('log')
@@ -1309,6 +1720,9 @@ class MainGUI(Frame):
             self.a.legend(loc='upper right', bbox_to_anchor=(1.1, 1.05),fancybox=True, shadow=True, ncol=1).draggable()
             
         elif self.plot_type == 'High-Passed Phase Noise':
+            
+            self.pull_variables()
+            self.compute()
             
             self.f = Figure(figsize=(0,0))
             self.a = self.f.add_subplot(111)
@@ -1360,9 +1774,11 @@ class MainGUI(Frame):
         root.geometry("450x235")
         
         root.title("Double Click to Select Input")
-        #global filtertype
+        global filterorder
         #global filterbox
         def load_filterbox():
+            #global filterorder            
+            
             if filtertype == 1:  #C1, C2, R2
                 
                 self.entry25.config(state='normal')             #C1
@@ -1428,6 +1844,18 @@ class MainGUI(Frame):
                 self.entry32.delete(0, END)
                 self.entry32.insert(0, self.input432)
                 self.entry32.config(state='disabled')
+                
+            if filterorder == 4:
+                
+                self.entry28.config(state='normal')              #R4
+                self.entry28.delete(0, END)
+                self.entry28.insert(0, self.input435)
+                self.entry28.config(state='disabled')
+                
+                self.entry33.config(state='normal')              #C4
+                self.entry33.delete(0, END)
+                self.entry33.insert(0, self.input436)
+                self.entry33.config(state='disabled')
         
         def ensure_dir(self, f):
             if not os.path.exists(f):
@@ -1442,7 +1870,9 @@ class MainGUI(Frame):
             global loadedvalues
             global filtertype
             global filterbox
+            global filterorder
             global noise_array
+
             loadedvalues= load_from_csv()
             
             self.entry1.delete(0, END)
@@ -1578,9 +2008,31 @@ class MainGUI(Frame):
             self.input442 = loadedvalues[57]
             self.input443 = loadedvalues[58]
             self.input444 = loadedvalues[59]
-            self.input445 = loadedvalues[60]                        
+            self.input445 = loadedvalues[60]
+            filterorder = loadedvalues[61]            
+            dropx = loadedvalues[62]
+            if dropx == 0:
+                self.option_select7.set('GHz')
+            elif dropx == 1:
+                self.option_select7.set('MHz')
+            else:
+                self.option_select7.set('kHz')
+            dropx = loadedvalues[63]
+            if dropx == 0:
+                self.option_select8.set('GHz')
+            elif dropx == 1:
+                self.option_select8.set('MHz')
+            else:
+                self.option_select8.set('kHz')
+            dropx = loadedvalues[64]
+            if dropx == 0:
+                self.option_select9.set('GHz')
+            elif dropx == 1:
+                self.option_select9.set('MHz')
+            else:
+                self.option_select9.set('kHz')
             for x in range(0,219):
-                y = x+61
+                y = x+65
                 noise_array[x]= loadedvalues[y]
 
             filterbox()
@@ -1632,6 +2084,7 @@ class MainGUI(Frame):
         #root.geometry("400x400")
         global array
         global noise_array
+        global filterorder
         
         def save_to_csv(array, name='test'):
             # load an array from given name .csv file into certain array
@@ -1697,15 +2150,13 @@ class MainGUI(Frame):
             array[21] = 2
         array[22] = self.entry23.get()
         array[23] = self.entry24.get()
-        #print(self.option_select6)
         temp_option_select=self.option_select6.get()
         if temp_option_select == 'GHz':
             array[24] = 0
         elif temp_option_select == 'MHz':
             array[24] = 1
         else:
-            array[24] = 2    
-        #print(array[24])
+            array[24] = 2
         temp_option_select=self.option_select10.get()
         if temp_option_select == "Frequency Step":
             array[25] = 0
@@ -1748,8 +2199,32 @@ class MainGUI(Frame):
         array[58] = self.input443
         array[59] = self.input444
         array[60] = self.input445
+        array[61] = filterorder
+        temp_option_select=self.option_select7.get()
+        if temp_option_select == 'GHz':
+            array[62] = 0
+        elif temp_option_select == 'MHz':
+            array[62] = 1
+        else:
+            array[62] = 2
+            
+        temp_option_select=self.option_select8.get()
+        if temp_option_select == 'GHz':
+            array[63] = 0
+        elif temp_option_select == 'MHz':
+            array[63] = 1
+        else:
+            array[63] = 2
+            
+        temp_option_select=self.option_select9.get()
+        if temp_option_select == 'GHz':
+            array[64] = 0
+        elif temp_option_select == 'MHz':
+            array[64] = 1
+        else:
+            array[64] = 2
         for x in range(0,219):
-            y = x+61
+            y = x+65
             array[y] = noise_array[x]
             
         
@@ -3833,12 +4308,12 @@ class MainGUI(Frame):
             global input415
             global input416
             
-            input412 = entry412.get()
+            #input412 = entry412.get()
             #input413 = entry413.get()
-            input414 = entry414.get()
-            input415 = entry415.get()
-            input416 = entry416.get()
-            self.input417 = entry417.get()
+            #input414 = entry414.get()
+            #input415 = entry415.get()
+            #input416 = entry416.get()
+            self.input417 = entry417.get()      #Save VCO input
             self.input418 = entry418.get()
             self.input419 = entry419.get()
             self.input420 = entry420.get()
@@ -3846,27 +4321,27 @@ class MainGUI(Frame):
             self.input422 = entry422.get()
             self.input423 = entry423.get()
             self.input424 = entry424.get()
-            self.input425 = entry425.get()
-            self.input426 = entry426.get()
-            self.input427 = entry427.get()
-            self.input428 = entry428.get()
+            #self.input425 = entry425.get()
+            #self.input426 = entry426.get()
+            #self.input427 = entry427.get()
+            #self.input428 = entry428.get()
             #input429 = entry429.get()
-            self.input430 = entry430.get()
-            self.input431 = entry431.get()
-            self.input432 = entry432.get()
+            #self.input430 = entry430.get()
+            #self.input431 = entry431.get()
+            #self.input432 = entry432.get()
             #input433 = entry433.get()
             #input434 = entry434.get()
-            self.input435 = entry435.get()
-            self.input436 = entry436.get()
+            #self.input435 = entry435.get()
+            #self.input436 = entry436.get()
             #self.input437 = entry437.get()
             #self.input438 = entry438.get()
             #self.input439 = entry439.get()
-            self.input440 = entry440.get()
-            self.input441 = entry441.get()
-            self.input442 = entry442.get()
-            self.input443 = entry443.get()
-            self.input444 = entry444.get()
-            self.input445 = entry445.get()
+            #self.input440 = entry440.get()
+            #self.input441 = entry441.get()
+            #self.input442 = entry442.get()
+            #self.input443 = entry443.get()
+            #self.input444 = entry444.get()
+            #self.input445 = entry445.get()
             
             filterbox()     #prepares the filter box for data being sent back
             
@@ -3916,7 +4391,7 @@ class MainGUI(Frame):
                 self.entry28.insert(0, self.input428)
                 self.entry28.config(state='disabled') 
                 
-            else: #filtertype == 3:  #C1, C2, R2, C3, R3 ActiveC
+            else: #filtertype == 3:  #C1, C2, R2, C3, R3 ActiveA
 
                 self.entry25.config(state='normal')
                 self.input425 = entry425.get()              #C1
@@ -3947,6 +4422,22 @@ class MainGUI(Frame):
                 self.entry32.delete(0, END)
                 self.entry32.insert(0, self.input432)
                 self.entry32.config(state='disabled')
+                
+                filterorder = filter_order.get()
+                
+                if filterorder == '4':
+                
+                    self.entry28.config(state='normal')
+                    self.input435 = entry435.get()              #C4
+                    self.entry28.delete(0, END)
+                    self.entry28.insert(0, self.input435)
+                    self.entry28.config(state='disabled')
+                
+                    self.entry33.config(state='normal')
+                    self.input436 = entry436.get()              #R4
+                    self.entry33.delete(0, END)
+                    self.entry33.insert(0, self.input436)
+                    self.entry33.config(state='disabled')
                         
             #else:
 
@@ -4046,6 +4537,13 @@ class MainGUI(Frame):
             
             chosen_option = option_filtertype.get()
             
+            if filterorder == 3:
+                entry435.config(state='disabled')
+                entry436.config(state='disabled')
+            else:
+                entry435.config(state='normal')
+                entry436.config(state='normal')            
+            
             if chosen_option == 'Passive':
                 pic_option = pic1
                 pic.config(image=pic_option)
@@ -4081,9 +4579,9 @@ class MainGUI(Frame):
                 
                 entry432.config(state='disabled')       #R3
                 
-                entry435.config(state='disabled')        #L3
+                #entry435.config(state='disabled')        #C4
                 
-                entry436.config(state='disabled')        #C4
+                #entry436.config(state='disabled')        #R4
                 
                 #entry437.config(state='disabled')        #L5
                 
@@ -4126,9 +4624,9 @@ class MainGUI(Frame):
                 
                 entry432.config(state='disabled')           #R3
                 
-                entry435.config(state='disabled')            #L3
+                #entry435.config(state='disabled')            #C4
                 
-                entry436.config(state='disabled')            #C4
+                #entry436.config(state='disabled')            #R4
                 
                 #entry437.config(state='disabled')            #L5 
                 
@@ -4140,7 +4638,7 @@ class MainGUI(Frame):
                 pic_option = pic3
                 pic.config(image=pic_option)
                 filtertype = 3
-                filterselect = "activeC"
+                filterselect = "activeA"
 
                 entry418.config(state='normal')          #C3/Cvco
                        
@@ -4170,9 +4668,9 @@ class MainGUI(Frame):
                 
                 entry432.config(state='normal')             #R3
                 
-                entry435.config(state='disabled')            #L3
+                #entry435.config(state='disabled')            #C4
                 
-                entry436.config(state='disabled')            #C4
+                #entry436.config(state='disabled')            #R4
                 
                 #entry437.config(state='disabled')            #L5 
                 
@@ -4191,9 +4689,16 @@ class MainGUI(Frame):
                 entry435.config(state='normal')
                 entry436.config(state='normal')
         
-        pic1 = PhotoImage(file='C:/Users/Eric/Desktop/Senior D/RC.gif')
-        pic2 = PhotoImage(file='C:/Users/Eric/Desktop/Senior D/Butter.gif')
-        pic3 = PhotoImage(file='C:/Users/Eric/Desktop/Senior D/ActiveC.gif')
+        
+        os.chdir(os.path.join(os.getenv('userprofile'), 'Desktop'))  # change the current directory to desktop
+        #pic1 = (os.chdir('GD PLL Design Tool'), "RC.gif")  # change the cuurent dir
+        pic1 = PhotoImage(os.chdir('GD PLL Design Tool'), file='RC.gif')
+        #pic1 = PhotoImage(file='C:/Users/Eric/Desktop/Senior D/RC.gif')
+        os.chdir(os.path.join(os.getenv('userprofile'), 'Desktop'))        
+        pic2 = PhotoImage(os.chdir('GD PLL Design Tool'), file='Butter.gif')              #(file='C:/Users/Eric/Desktop/Senior D/Butter.gif')
+        os.chdir(os.path.join(os.getenv('userprofile'), 'Desktop'))        
+        #pic3 = PhotoImage(file='C:/Users/Eric/Desktop/Senior D/ActiveC.gif')
+        pic3 = PhotoImage(os.chdir('GD PLL Design Tool'), file='ActiveC.gif')
         pic = ttk.Label(root, image=pic1)
         pic.image = pic1 
         pic.place(in_=Frame3, x=10, y=0)
@@ -4207,7 +4712,7 @@ class MainGUI(Frame):
         option_filtertype=StringVar(root)
         option_filtertype.set(filterselect)
         #option_filter.set("Passive")
-        myoptions=['Passive','Butterworth','activeC']
+        myoptions=['Passive','Butterworth','activeA']
         drop_menu = OptionMenu(root, option_filtertype, *myoptions, command=change_input)
         drop_menu.place(in_=Frame1, x=250, y=30)
         drop_menu.config(font=('Arial 7 bold'),bg='white',width=14)
@@ -4553,9 +5058,11 @@ array = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1    #Rows of 20
         ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
         ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
         ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+        ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
         ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
         
-loadedvalues = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1    #300
+loadedvalues = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1    #320
+        ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
         ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
         ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
         ,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
@@ -4581,7 +5088,8 @@ noise_array = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
               ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
               ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
               ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-              ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] #240
+              ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+              ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] #260
               
 temp_noise_array = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
               ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
@@ -4594,7 +5102,8 @@ temp_noise_array = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
               ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
               ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
               ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-              ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] #240
+              ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+              ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] #260
 
 filtertype = 0
 filterselect = "Passive"
